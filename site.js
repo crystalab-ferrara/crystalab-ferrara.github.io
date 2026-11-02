@@ -29,7 +29,8 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); if (btn) btn.focus(); }
     });
-    document.addEventListener('click', function (e) { if (nav.classList.contains('open') && !nav.contains(e.target)) setMenu(false); });
+    // a tap on the icon replaces it (menu ↔ close), so a target no longer in the page counts as inside
+    document.addEventListener('click', function (e) { if (nav.classList.contains('open') && e.target.isConnected && !nav.contains(e.target)) setMenu(false); });
     [].forEach.call(nav.querySelectorAll('.nav-links a'), function (a) { a.addEventListener('click', function () { setMenu(false); }); });
     // while it is open, Tab cycles through the menu button and the links
     nav.addEventListener('keydown', function (e) {

@@ -82,7 +82,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .nav-links a[aria-current="page"] { color: var(--ink); }
 .nav-links a[aria-current="page"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 3px; height: 2px; background: var(--beam); border-radius: 2px; }
 .menu-btn { display: none; margin-left: auto; background: none; border: 0; padding: 10px; cursor: pointer; color: var(--ink); }
-.menu-btn svg { width: 26px; height: 26px; }
+.menu-btn svg { width: 26px; height: 26px; pointer-events: none; }
 @media (max-width: 1080px) {
   .menu-btn { display: block; }
   .nav-links { position: absolute; top: var(--nav-h); left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0;

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Page not found · Crystal Lab Ferrara</title>
+<meta name="description" content="This page does not exist on the Crystal Lab Ferrara website.">
+<link rel="icon" href="img/logo-48.png">
+<link rel="preload" href="fonts/ibm-plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="site.css">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="./"><img src="img/logo.png" alt="" width="34" height="46"><span>Crystal Lab<small>Ferrara · UniFe &amp; INFN</small></span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    <nav class="nav-main" aria-label="Main">
+      <ul class="nav-links" id="menu">
+        <li><a href="./">Home</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="technologies.html">Technologies</a></li>
+        <li><a href="equipment.html">Equipment</a></li>
+        <li><a href="collaborations.html">Collaborations</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="theses.html">Theses</a></li>
+        <li><a href="team.html">Team</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<script>
+(function () {
+  var map = {"home":"./","research-lines":"research.html","technologies":"technologies.html","collaborations":"collaborations.html","publications":"publications.html","thesis-opportunities":"theses.html","meet-the-team":"team.html"};
+  var seg = location.pathname.split('/').filter(Boolean);
+  for (var i = 0; i < seg.length; i++) if (map.hasOwnProperty(seg[i])) { location.replace('/' + map[seg[i]].replace('./', '')); return; }
+})();
+</script>
+<section class="page-hero light">
+  <picture><source srcset="img/photos/xrd-cabinets.webp" type="image/webp"><img src="img/photos/xrd-cabinets.jpg" alt="The X-ray diffractometers" fetchpriority="high"></picture>
+  <div class="wrap">
+    <span class="beam" aria-hidden="true"></span>
+    <h1 class="rise">Page not found.</h1>
+    <p class="rise d1">This address leads nowhere: the page may have moved or never existed. Here is where everything is.</p>
+  </div>
+</section>
+<section class="section white">
+  <div class="wrap">
+    <div class="lines-grid">
+      <a href="./"><b>Home.</b><span>The lab in one page</span></a>
+      <a href="research.html"><b>Research.</b><span>Eleven research lines, from LHC beams to dark matter</span></a>
+      <a href="technologies.html"><b>Technologies.</b><span>Cleanroom fabrication and metrology</span></a>
+      <a href="equipment.html"><b>Equipment.</b><span>Instruments open to collaborations</span></a>
+      <a href="collaborations.html"><b>Collaborations.</b><span>Facilities, partners and funding</span></a>
+      <a href="publications.html"><b>Publications.</b><span>All 169 papers, searchable</span></a>
+      <a href="theses.html"><b>Theses.</b><span>Bachelor, master and PhD topics</span></a>
+      <a href="team.html"><b>Team.</b><span>The people of the lab</span></a>
+      <a href="mailto:crystals@fe.infn.it"><b>Write to us.</b><span>crystals@fe.infn.it</span></a>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <p class="foot-lead">Theses, collaborations, crystals: write to us.</p>
+        <a class="mail" href="mailto:crystals@fe.infn.it">crystals@fe.infn.it</a>
+      </div>
+      <div class="foot-logos">
+        <img src="img/logos/infn.png" alt="INFN" width="48" height="48">
+        <img src="img/logos/unife.png" alt="University of Ferrara" width="108" height="48">
+      </div>
+    </div>
+  </div>
+  <div class="foot-bar">
+    <div class="wrap foot-bottom">
+      <p>Crystal Lab Ferrara · Department of Physics and Earth Science, University of Ferrara and INFN Ferrara · Via Saragat 1, 44122 Ferrara, Italy</p>
+      <p><a href="https://www.iubenda.com/privacy-policy/42065383">Privacy policy</a> · <a href="https://www.iubenda.com/privacy-policy/42065383/cookie-policy">Cookie policy</a></p>
+    </div>
+  </div>
+</footer>
+<script src="site.js" defer></script>
+</body>
+</html>

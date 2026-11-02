@@ -36,9 +36,9 @@
 
 <script>
 (function () {
-  var map = {"home":"./","research-lines":"research.html","technologies":"technologies.html","collaborations":"collaborations.html","publications":"publications.html","thesis-opportunities":"theses.html","meet-the-team":"team.html"};
+  var map = {"home":"./","research-lines":"research.html","technologies":"technologies.html","collaborations":"collaborations.html","publications":"publications.html","thesis-opportunities":"theses.html","meet-the-team":"team.html","particle-steering-using-bent-crystals":"beam-steering.html","intense-positron-sources":"positron-source.html"};
   var seg = location.pathname.split('/').filter(Boolean);
-  for (var i = 0; i < seg.length; i++) if (map.hasOwnProperty(seg[i])) { location.replace('/' + map[seg[i]].replace('./', '')); return; }
+  for (var i = seg.length - 1; i >= 0; i--) if (map.hasOwnProperty(seg[i])) { location.replace('/' + map[seg[i]].replace('./', '')); return; }
 })();
 </script>
 <section class="page-hero light">
@@ -73,8 +73,8 @@
         <a class="mail" href="mailto:crystals@fe.infn.it">crystals@fe.infn.it</a>
       </div>
       <div class="foot-logos">
-        <img src="img/logos/infn.png" alt="INFN" width="56" height="56">
-        <img src="img/logos/unife.png" alt="University of Ferrara" width="126" height="56">
+        <img src="img/logos/infn.png" alt="INFN" width="56" height="56" loading="lazy">
+        <img src="img/logos/unife.png" alt="University of Ferrara" width="126" height="56" loading="lazy">
       </div>
     </div>
   </div>

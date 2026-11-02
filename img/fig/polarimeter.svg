@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="fig" viewBox="0 0 560 280" role="img" aria-labelledby="fig-pol-t fig-pol-d"><style>.plane { fill: none; stroke: #8e9aab; stroke-width: 1.3; }
+.body { fill: #f3f5f8; stroke: #dde3eb; }
+.xtal-fill { fill: #dce8f6; stroke: #0a5fb0; }
+.ray, .ray2, .photon { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ray { stroke: #0a5fb0; }
+.ray2 { stroke: #f39a2e; }
+.photon { stroke: #6b7686; stroke-width: 1.6; }
+.ref { fill: none; stroke: #5b6474; stroke-width: 1; stroke-dasharray: 4 4; }
+.dim { stroke: #5b6474; stroke-width: 1; }
+.tip { fill: #0a5fb0; }
+.tip2 { fill: #f39a2e; }
+.block { fill: #f3f5f8; stroke: #aab4c2; }
+.block.xtal { fill: #e6eef8; }
+.atom { fill: #7d899a; }
+.tile { fill: #0a5fb0; }
+.det, .sample { fill: #2f3744; }
+.lbl { fill: #2f3744; font-size: 16px; }
+.note { fill: #5b6474; font-size: 14px; }
+.strong { fill: #0d1117; font-weight: 600; }
+.blue { fill: #0a5fb0; font-weight: 600; }
+.orange { fill: #b45f0c; font-weight: 600; }
+.sub { font-size: 12px; }
+.axis { stroke: #2f3744; stroke-width: 1.4; }
+.curve { fill: none; stroke: #2f3744; stroke-width: 2; }
+.kid { fill: none; stroke: #0a5fb0; stroke-width: 1.6; }
+.pol { fill: none; stroke: #0a5fb0; stroke-width: 2; }
+.xtal-line { fill: none; stroke: #9ec3ea; stroke-width: 9; }
+.area { stroke: none; opacity: .14; }
+.ray-area { fill: #0a5fb0; }
+.ray2-area { fill: #f39a2e; }
+text { display: none; }</style>
+<title id="fig-pol-t">Mapping birefringence with a polarimeter</title><desc id="fig-pol-d">A laser beam passes a polariser, crosses a silicon sample and then an analyser before reaching a detector. Birefringence in the sample turns the linear polarisation slightly elliptical; scanning the sample point by point gives a map of the birefringence and of its axes.</desc>
+<defs><marker id="fig-pol-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>
+<marker id="fig-pol-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip2" d="M0 0L10 5L0 10z"/></marker></defs><rect class="det" x="20" y="134" width="56" height="32" rx="3"/><text class="lbl" x="48" y="190" text-anchor="middle">laser</text>
+<line class="ray" x1="76" y1="150" x2="536" y2="150" marker-end="url(#fig-pol-a)"/>
+<rect class="tile" x="128" y="120" width="5" height="60"/><text class="lbl" x="130" y="204" text-anchor="middle">polariser</text>
+<line class="ray" x1="180" y1="68" x2="180" y2="108" marker-start="url(#fig-pol-a)" marker-end="url(#fig-pol-a)"/><text class="note" x="180" y="56" text-anchor="middle">linear</text>
+<rect class="block xtal" x="236" y="80" width="34" height="140"/><text class="lbl" x="253" y="242" text-anchor="middle">silicon sample</text>
+<path class="dim" d="M 278 80 v 140" marker-start="url(#fig-pol-a)" marker-end="url(#fig-pol-a)"/><text class="note" x="286" y="116" text-anchor="start">scan</text>
+<ellipse class="pol" cx="330" cy="88" rx="7" ry="22" transform="rotate(12 330 88)"/><text class="note" x="330" y="56" text-anchor="middle">slightly elliptical</text>
+<rect class="tile" x="398" y="120" width="5" height="60"/><text class="lbl" x="400" y="204" text-anchor="middle">analyser</text>
+<rect class="det" x="484" y="134" width="40" height="32" rx="3"/><text class="lbl" x="504" y="190" text-anchor="middle">detector</text></svg>

@@ -54,6 +54,7 @@
 <section class="section">
   <div class="wrap">
     <h2 class="h2 map-title">Where our crystals go.</h2>
+    <a class="skip-map" href="#partners">Skip the map, go to the list of partners</a>
     <div class="labmap">
       <div class="labmap-figure">
         <img src="img/map-europe.svg" alt="" width="900" height="640">
@@ -86,7 +87,7 @@
   <g class="lab c-p" tabindex="0" role="button" aria-label="IJCLab, Orsay" data-name="IJCLab" data-city="Orsay" data-cat="Institutes and companies" data-logo="img/logos/ijclab.jpg" data-text="Design of the crystal-based positron source for the FCC-ee.">
     <circle class="hit" cx="317.3" cy="346.4" r="16"/><circle class="ring" cx="317.3" cy="346.4" r="12"/><circle class="dot" cx="317.3" cy="346.4" r="6"/><text x="328.3" y="350.9" text-anchor="start">IJCLab</text>
   </g>
-  <g class="lab c-p" tabindex="0" role="button" aria-label="ESA, Noordwijk" data-name="ESA" data-city="Noordwijk" data-cat="Institutes and companies" data-logo="img/logos/esa.png" data-text="OTELLO, the ESA contract led by the University of Ferrara, develops the technologies for gamma-ray Laue lenses.">
+  <g class="lab c-p" tabindex="0" role="button" aria-label="ESA, Noordwijk" data-name="ESA" data-city="Noordwijk" data-cat="Institutes and companies" data-logo="img/logos/esa.png" data-text="OTELLO, the ESA contract led by the University of Ferrara, develops the technologies for γ-ray Laue lenses.">
     <circle class="hit" cx="363.3" cy="222.6" r="16"/><circle class="ring" cx="363.3" cy="222.6" r="12"/><circle class="dot" cx="363.3" cy="222.6" r="6"/><text x="352.3" y="227.1" text-anchor="end">ESA</text>
   </g>
   <g class="lab c-p" tabindex="0" role="button" aria-label="cosine, Sassenheim" data-name="cosine" data-city="Sassenheim" data-cat="Institutes and companies" data-logo="img/logos/cosine.png" data-text="Makers of silicon pore optics for ESA X-ray telescopes: we measure the miscut of their silicon wafers and, for the ESA project ASTROLAUE2, of oriented silicon coupons by high-resolution X-ray diffraction.">
@@ -110,13 +111,13 @@
   <g class="lab c-x" tabindex="0" role="button" aria-label="European XFEL, Hamburg" data-name="European XFEL" data-city="Hamburg" data-cat="Synchrotrons and X-ray lasers" data-logo="img/logos/xfel.png" data-text="Silicon and diamond beam splitters for MHz X-ray multi-projection imaging.">
     <circle class="hit" cx="484.7" cy="169.1" r="16"/><circle class="ring" cx="484.7" cy="169.1" r="12"/><circle class="dot" cx="484.7" cy="169.1" r="6"/><text x="473.7" y="173.6" text-anchor="end">European XFEL</text>
   </g>
-  <g class="lab c-p" tabindex="0" role="button" aria-label="INAF, Milano" data-name="INAF" data-city="Milano" data-cat="Institutes and companies" data-logo="img/logos/inaf-wordmark.png" data-text="Laue lenses for gamma-ray astronomy: OTELLO and NOW-CB.">
+  <g class="lab c-p" tabindex="0" role="button" aria-label="INAF, Milano" data-name="INAF" data-city="Milano" data-cat="Institutes and companies" data-logo="img/logos/inaf-wordmark.png" data-text="Laue lenses for γ-ray astronomy: OTELLO and NOW-CB.">
     <circle class="hit" cx="486.5" cy="467.5" r="16"/><circle class="ring" cx="486.5" cy="467.5" r="12"/><circle class="dot" cx="486.5" cy="467.5" r="6"/><text x="486.5" y="455.5" text-anchor="middle">INAF</text>
   </g>
   <g class="lab c-b" tabindex="0" role="button" aria-label="DESY, Hamburg" data-name="DESY" data-city="Hamburg" data-cat="Particle beams" data-logo="img/logos/desy.png" data-text="Electron test beam of a few GeV, used to qualify bent crystals and calorimeter prototypes.">
     <circle class="hit" cx="505.8" cy="179.6" r="16"/><circle class="ring" cx="505.8" cy="179.6" r="12"/><circle class="dot" cx="505.8" cy="179.6" r="6"/><text x="516.8" y="184.1" text-anchor="start">DESY</text>
   </g>
-  <g class="lab c-p" tabindex="0" role="button" aria-label="INAF, Bologna" data-name="INAF" data-city="Bologna" data-cat="Institutes and companies" data-logo="img/logos/inaf-wordmark.png" data-text="Laue lenses for gamma-ray astronomy: OTELLO and NOW-CB.">
+  <g class="lab c-p" tabindex="0" role="button" aria-label="INAF, Bologna" data-name="INAF" data-city="Bologna" data-cat="Institutes and companies" data-logo="img/logos/inaf-wordmark.png" data-text="Laue lenses for γ-ray astronomy: OTELLO and NOW-CB.">
     <circle class="hit" cx="542.7" cy="501.1" r="16"/><circle class="ring" cx="542.7" cy="501.1" r="12"/><circle class="dot" cx="542.7" cy="501.1" r="6"/><text x="542.7" y="523.1" text-anchor="middle">INAF</text>
   </g>
   <g class="lab c-x" tabindex="0" role="button" aria-label="MAX IV, Lund" data-name="MAX IV" data-city="Lund" data-cat="Synchrotrons and X-ray lasers" data-logo="img/logos/maxiv.png" data-text="Ultrafast 3D X-ray imaging with crystal beam splitters.">
@@ -130,6 +131,7 @@
   </g>
 </svg>
       </div>
+      <label class="lab-pick"><span>Choose a laboratory</span><select id="lab-pick"><option value="">All 16 partners</option><optgroup label="Particle beams"><option value="CERN|Geneva">CERN · Geneva</option><option value="DESY|Hamburg">DESY · Hamburg</option><option value="Fermilab|Batavia">Fermilab · Batavia</option><option value="MAMI|Mainz">MAMI · Mainz</option><option value="PSI|Villigen">PSI · Villigen</option><option value="SLAC|Stanford">SLAC · Stanford</option></optgroup><optgroup label="Synchrotrons and X-ray lasers"><option value="Elettra|Trieste">Elettra · Trieste</option><option value="ESRF|Grenoble">ESRF · Grenoble</option><option value="European XFEL|Hamburg">European XFEL · Hamburg</option><option value="MAX IV|Lund">MAX IV · Lund</option></optgroup><optgroup label="Institutes and companies"><option value="cosine|Sassenheim">cosine · Sassenheim</option><option value="ESA|Noordwijk">ESA · Noordwijk</option><option value="IJCLab|Orsay">IJCLab · Orsay</option><option value="INAF|Bologna">INAF · Bologna</option><option value="INAF|Milano">INAF · Milano</option><option value="INRiM|Torino">INRiM · Torino</option><option value="LNGS|Gran Sasso">LNGS · Gran Sasso</option></optgroup></select></label>
       <aside class="lab-card" aria-live="polite">
         <img class="lab-logo" src="img/logo.png" alt="" hidden>
         <h3><span class="lab-name">16 partners</span> <span class="lab-city">· 7 countries</span></h3>
@@ -138,32 +140,31 @@
         <p class="lab-hint">Select a point on the map to see what we do there.</p>
       </aside>
     </div>
-    <div class="map-picker" aria-label="Choose a laboratory"><button type="button" data-name="CERN" data-city="Geneva">CERN</button><button type="button" data-name="DESY" data-city="Hamburg">DESY</button><button type="button" data-name="MAMI" data-city="Mainz">MAMI</button><button type="button" data-name="Fermilab" data-city="Batavia">Fermilab</button><button type="button" data-name="SLAC" data-city="Stanford">SLAC</button><button type="button" data-name="PSI" data-city="Villigen">PSI</button><button type="button" data-name="European XFEL" data-city="Hamburg">European XFEL</button><button type="button" data-name="ESRF" data-city="Grenoble">ESRF</button><button type="button" data-name="MAX IV" data-city="Lund">MAX IV</button><button type="button" data-name="Elettra" data-city="Trieste">Elettra</button><button type="button" data-name="LNGS" data-city="Gran Sasso">LNGS</button><button type="button" data-name="IJCLab" data-city="Orsay">IJCLab</button><button type="button" data-name="ESA" data-city="Noordwijk">ESA</button><button type="button" data-name="cosine" data-city="Sassenheim">cosine</button><button type="button" data-name="INAF" data-city="Bologna">INAF (Bologna)</button><button type="button" data-name="INAF" data-city="Milano">INAF (Milano)</button><button type="button" data-name="INRiM" data-city="Torino">INRiM</button></div>
     <ul class="map-legend" aria-label="Legend"><li class="c-b">Particle beams</li><li class="c-x">Synchrotrons and X-ray lasers</li><li class="c-p">Institutes and companies</li><li class="c-home">Ferrara</li></ul>
-    <h3 class="partners-head">Particle beams</h3>
+    <h3 class="partners-head" id="partners">Particle beams</h3>
     <div class="partners">
-      <div class="partner" id="p-cern"><div class="logo"><img src="img/logos/cern.png" alt="" loading="lazy"></div><div><h4>CERN <span class="nw">· Geneva</span></h4><p>Beam tests at the SPS North Area and crystal collimation in the LHC: bent crystals, oriented calorimeters and positron-source prototypes.</p></div></div>
-      <div class="partner" id="p-desy"><div class="logo"><img src="img/logos/desy.png" alt="" loading="lazy"></div><div><h4>DESY <span class="nw">· Hamburg</span></h4><p>Electron test beam of a few GeV, used to qualify bent crystals and calorimeter prototypes.</p></div></div>
-      <div class="partner" id="p-mami"><div class="logo"><img src="img/logos/mami.png" alt="" loading="lazy"></div><div><h4>MAMI <span class="nw">· Mainz</span></h4><p>Sub-GeV electron and positron beams to study channeling and radiation of light particles in crystals.</p></div></div>
-      <div class="partner" id="p-fermilab"><div class="logo"><img src="img/logos/fermilab.png" alt="" loading="lazy"></div><div><h4>Fermilab <span class="nw">· Batavia</span></h4><p>Crystal shadowing of the electrostatic septum for the slow extraction to the Mu2e experiment.</p></div></div>
-      <div class="partner" id="p-slac"><div class="logo"><img src="img/logos/slac.png" alt="" loading="lazy"></div><div><h4>SLAC <span class="nw">· Stanford</span></h4><p>Multi-GeV electron beams to study quasi-channeling and strong-field radiation in oriented crystals (E336).</p></div></div>
-      <div class="partner" id="p-psi"><div class="logo"><img src="img/logos/psi-full.png" alt="" loading="lazy"></div><div><h4>PSI <span class="nw">· Villigen</span></h4><p>Design and beam tests of the crystal-based positron source for the P3 experiment.</p></div></div>
+      <div class="partner" id="p-cern"><div class="logo"><img src="img/logos/cern.png" alt="" width="141" height="128" loading="lazy"></div><div><h4>CERN <span class="nw">· Geneva</span></h4><p>Beam tests at the SPS North Area and crystal collimation in the LHC: bent crystals, oriented calorimeters and positron-source prototypes.</p></div></div>
+      <div class="partner" id="p-desy"><div class="logo"><img src="img/logos/desy.png" alt="" width="128" height="128" loading="lazy"></div><div><h4>DESY <span class="nw">· Hamburg</span></h4><p>Electron test beam of a few GeV, used to qualify bent crystals and calorimeter prototypes.</p></div></div>
+      <div class="partner" id="p-mami"><div class="logo"><img src="img/logos/mami.png" alt="" width="180" height="128" loading="lazy"></div><div><h4>MAMI <span class="nw">· Mainz</span></h4><p>Sub-GeV electron and positron beams to study channeling and radiation of light particles in crystals.</p></div></div>
+      <div class="partner" id="p-fermilab"><div class="logo"><img src="img/logos/fermilab.png" alt="" width="340" height="61" loading="lazy"></div><div><h4>Fermilab <span class="nw">· Batavia</span></h4><p>Crystal shadowing of the electrostatic septum for the slow extraction to the Mu2e experiment.</p></div></div>
+      <div class="partner" id="p-slac"><div class="logo"><img src="img/logos/slac.png" alt="" width="340" height="56" loading="lazy"></div><div><h4>SLAC <span class="nw">· Stanford</span></h4><p>Multi-GeV electron beams to study quasi-channeling and strong-field radiation in oriented crystals (E336).</p></div></div>
+      <div class="partner" id="p-psi"><div class="logo"><img src="img/logos/psi-full.png" alt="" width="340" height="118" loading="lazy"></div><div><h4>PSI <span class="nw">· Villigen</span></h4><p>Design and beam tests of the crystal-based positron source for the P3 experiment.</p></div></div>
     </div>
     <h3 class="partners-head">Synchrotrons and X-ray lasers</h3>
     <div class="partners">
-      <div class="partner" id="p-european-xfel"><div class="logo"><img src="img/logos/xfel.png" alt="" loading="lazy"></div><div><h4>European XFEL <span class="nw">· Hamburg</span></h4><p>Silicon and diamond beam splitters for MHz X-ray multi-projection imaging.</p></div></div>
-      <div class="partner" id="p-esrf"><div class="logo"><img src="img/logos/esrf.png" alt="" loading="lazy"></div><div><h4>ESRF <span class="nw">· Grenoble</span></h4><p>Synchrotron X-ray diffraction to measure the curvature and lattice quality of our crystals.</p></div></div>
-      <div class="partner" id="p-max-iv"><div class="logo"><img src="img/logos/maxiv.png" alt="" loading="lazy"></div><div><h4>MAX IV <span class="nw">· Lund</span></h4><p>Ultrafast 3D X-ray imaging with crystal beam splitters.</p></div></div>
-      <div class="partner" id="p-elettra"><div class="logo"><img src="img/logos/elettra.jpg" alt="" loading="lazy"></div><div><h4>Elettra <span class="nw">· Trieste</span></h4><p>Characterisation of X-ray optics for the CRYSTAL BOND project.</p></div></div>
+      <div class="partner" id="p-european-xfel"><div class="logo"><img src="img/logos/xfel.png" alt="" width="128" height="128" loading="lazy"></div><div><h4>European XFEL <span class="nw">· Hamburg</span></h4><p>Silicon and diamond beam splitters for MHz X-ray multi-projection imaging.</p></div></div>
+      <div class="partner" id="p-esrf"><div class="logo"><img src="img/logos/esrf.png" alt="" width="103" height="128" loading="lazy"></div><div><h4>ESRF <span class="nw">· Grenoble</span></h4><p>Synchrotron X-ray diffraction to measure the curvature and lattice quality of our crystals.</p></div></div>
+      <div class="partner" id="p-max-iv"><div class="logo"><img src="img/logos/maxiv.png" alt="" width="340" height="74" loading="lazy"></div><div><h4>MAX IV <span class="nw">· Lund</span></h4><p>Ultrafast 3D X-ray imaging with crystal beam splitters.</p></div></div>
+      <div class="partner" id="p-elettra"><div class="logo"><img src="img/logos/elettra.jpg" alt="" width="175" height="128" loading="lazy"></div><div><h4>Elettra <span class="nw">· Trieste</span></h4><p>Characterisation of X-ray optics for the CRYSTAL BOND project.</p></div></div>
     </div>
     <h3 class="partners-head">Institutes and companies</h3>
     <div class="partners">
-      <div class="partner" id="p-lngs"><div class="logo"><img src="img/logos/lngs-infn.png" alt="" loading="lazy"></div><div><h4>LNGS <span class="nw">· Gran Sasso</span></h4><p>Underground tests of cryogenic crystal detectors for DANAE and BULLKID-DM.</p></div></div>
-      <div class="partner" id="p-ijclab"><div class="logo"><img src="img/logos/ijclab.jpg" alt="" loading="lazy"></div><div><h4>IJCLab <span class="nw">· Orsay</span></h4><p>Design of the crystal-based positron source for the FCC-ee.</p></div></div>
-      <div class="partner" id="p-esa"><div class="logo"><img src="img/logos/esa.png" alt="" loading="lazy"></div><div><h4>ESA <span class="nw">· Noordwijk</span></h4><p>OTELLO, the ESA contract led by the University of Ferrara, develops the technologies for gamma-ray Laue lenses.</p></div></div>
-      <div class="partner" id="p-cosine"><div class="logo"><img src="img/logos/cosine.png" alt="" loading="lazy"></div><div><h4>cosine <span class="nw">· Sassenheim</span></h4><p>Makers of silicon pore optics for ESA X-ray telescopes: we measure the miscut of their silicon wafers and, for the ESA project ASTROLAUE2, of oriented silicon coupons by high-resolution X-ray diffraction.</p></div></div>
-      <div class="partner" id="p-inaf"><div class="logo"><img src="img/logos/inaf-wordmark.png" alt="" loading="lazy"></div><div><h4>INAF <span class="nw">· Bologna · Milano</span></h4><p>Laue lenses for gamma-ray astronomy: OTELLO and NOW-CB.</p></div></div>
-      <div class="partner" id="p-inrim"><div class="logo"><img src="img/logos/inrim.jpg" alt="" loading="lazy"></div><div><h4>INRiM <span class="nw">· Torino</span></h4><p>Metrology and finite-element modelling of bent crystals for OTELLO.</p></div></div>
+      <div class="partner" id="p-lngs"><div class="logo"><img src="img/logos/lngs-infn.png" alt="" width="334" height="128" loading="lazy"></div><div><h4>LNGS <span class="nw">· Gran Sasso</span></h4><p>Underground tests of cryogenic crystal detectors for DANAE and BULLKID-DM.</p></div></div>
+      <div class="partner" id="p-ijclab"><div class="logo"><img src="img/logos/ijclab.jpg" alt="" width="193" height="128" loading="lazy"></div><div><h4>IJCLab <span class="nw">· Orsay</span></h4><p>Design of the crystal-based positron source for the FCC-ee.</p></div></div>
+      <div class="partner" id="p-esa"><div class="logo"><img src="img/logos/esa.png" alt="" width="340" height="124" loading="lazy"></div><div><h4>ESA <span class="nw">· Noordwijk</span></h4><p>OTELLO, the ESA contract led by the University of Ferrara, develops the technologies for γ-ray Laue lenses.</p></div></div>
+      <div class="partner" id="p-cosine"><div class="logo"><img src="img/logos/cosine.png" alt="" width="340" height="105" loading="lazy"></div><div><h4>cosine <span class="nw">· Sassenheim</span></h4><p>Makers of silicon pore optics for ESA X-ray telescopes: we measure the miscut of their silicon wafers and, for the ESA project ASTROLAUE2, of oriented silicon coupons by high-resolution X-ray diffraction.</p></div></div>
+      <div class="partner" id="p-inaf"><div class="logo"><img src="img/logos/inaf-wordmark.png" alt="" width="340" height="125" loading="lazy"></div><div><h4>INAF <span class="nw">· Bologna · Milano</span></h4><p>Laue lenses for γ-ray astronomy: OTELLO and NOW-CB.</p></div></div>
+      <div class="partner" id="p-inrim"><div class="logo"><img src="img/logos/inrim.jpg" alt="" width="340" height="117" loading="lazy"></div><div><h4>INRiM <span class="nw">· Torino</span></h4><p>Metrology and finite-element modelling of bent crystals for OTELLO.</p></div></div>
     </div>
     <div class="funding">
       <h2 class="h2">Funding.</h2>
@@ -194,8 +195,8 @@
         <a class="mail" href="mailto:crystals@fe.infn.it">crystals@fe.infn.it</a>
       </div>
       <div class="foot-logos">
-        <img src="img/logos/infn.png" alt="INFN" width="56" height="56">
-        <img src="img/logos/unife.png" alt="University of Ferrara" width="126" height="56">
+        <img src="img/logos/infn.png" alt="INFN" width="56" height="56" loading="lazy">
+        <img src="img/logos/unife.png" alt="University of Ferrara" width="126" height="56" loading="lazy">
       </div>
     </div>
   </div>

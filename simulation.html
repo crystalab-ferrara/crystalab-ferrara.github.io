@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulation · Crystal Lab Ferrara</title>
+<meta name="description" content="Crystal physics in Geant4. Channeling, coherent radiation and pair production in oriented crystals, simulated in Geant4 and in our own codes. A research line of Crystal Lab Ferrara, University of Ferrara and INFN.">
+<link rel="icon" href="img/logo-48.png">
+<link rel="preload" href="fonts/ibm-plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="site.css">
+<link rel="canonical" href="https://crystalab-ferrara.github.io/simulation.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Crystal Lab Ferrara">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Simulation · Crystal Lab Ferrara">
+<meta property="og:description" content="Crystal physics in Geant4. Channeling, coherent radiation and pair production in oriented crystals, simulated in Geant4 and in our own codes. A research line of Crystal Lab Ferrara, University of Ferrara and INFN.">
+<meta property="og:url" content="https://crystalab-ferrara.github.io/simulation.html">
+<meta property="og:image" content="https://crystalab-ferrara.github.io/img/og/hands-infn.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="./"><img src="img/logo.png" alt="" width="34" height="46"><span>Crystal Lab<small>Ferrara · UniFe &amp; INFN</small></span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    <nav class="nav-main" aria-label="Main">
+      <ul class="nav-links" id="menu">
+        <li><a href="./">Home</a></li>
+        <li><a href="research.html" aria-current="page">Research</a></li>
+        <li><a href="technologies.html">Technologies</a></li>
+        <li><a href="equipment.html">Equipment</a></li>
+        <li><a href="collaborations.html">Collaborations</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="theses.html">Theses</a></li>
+        <li><a href="team.html">Team</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="eq-sheet line-sheet">
+  <div class="wrap eq-intro">
+    <p class="crumb"><a href="research.html">Research</a> › Detectors and simulation</p>
+    <h1>Simulation</h1>
+    <p class="eq-kind">Crystal physics in Geant4</p>
+    <p class="eq-lead">Channeling, coherent radiation and pair production in oriented crystals, simulated in Geant4 and in our own codes.</p>
+  </div>
+</section>
+<section class="section white">
+  <div class="wrap phys">
+    <h2 class="h2">The physics.</h2>
+    <figure class="line-fig"><svg class="fig" viewBox="0 0 560 330" role="img" aria-labelledby="fig-pot-t fig-pot-d">
+<title id="fig-pot-t">Planar channeling in the continuous potential of the crystal planes</title><desc id="fig-pot-d">The transverse potential energy of a positive particle between atomic planes forms wells, highest at each plane. A particle whose transverse energy is below the well depth is trapped and oscillates inside one channel: it is channeled. One with more transverse energy crosses the planes: it is over the barrier.</desc>
+<defs><marker id="fig-pot-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>
+<marker id="fig-pot-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip2" d="M0 0L10 5L0 10z"/></marker></defs><line class="ref" x1="70" y1="62" x2="70" y2="232"/><line class="ref" x1="220" y1="62" x2="220" y2="232"/><line class="ref" x1="370" y1="62" x2="370" y2="232"/><line class="ref" x1="520" y1="62" x2="520" y2="232"/>
+<line class="ref" x1="40" y1="72" x2="70" y2="72"/>
+<line class="axis" x1="40" y1="232" x2="548" y2="232"/>
+<polyline class="curve" points="70,72 71.5,78.3 73,84.5 74.5,90.6 76,96.6 77.5,102.4 79,108.1 80.5,113.7 82,119.1 83.5,124.4 85,129.6 86.5,134.7 88,139.6 89.5,144.4 91,149.1 92.5,153.6 94,158 95.5,162.3 97,166.5 98.5,170.5 100,174.4 101.5,178.2 103,181.8 104.5,185.3 106,188.7 107.5,192 109,195.1 110.5,198.1 112,201 113.5,203.8 115,206.4 116.5,208.9 118,211.3 119.5,213.5 121,215.6 122.5,217.6 124,219.5 125.5,221.2 127,222.8 128.5,224.3 130,225.6 131.5,226.8 133,227.9 134.5,228.9 136,229.7 137.5,230.4 139,231 140.5,231.4 142,231.7 143.5,231.9 145,232 146.5,231.9 148,231.7 149.5,231.4 151,231 152.5,230.4 154,229.7 155.5,228.9 157,227.9 158.5,226.8 160,225.6 161.5,224.3 163,222.8 164.5,221.2 166,219.5 167.5,217.6 169,215.6 170.5,213.5 172,211.3 173.5,208.9 175,206.4 176.5,203.8 178,201 179.5,198.1 181,195.1 182.5,192 184,188.7 185.5,185.3 187,181.8 188.5,178.2 190,174.4 191.5,170.5 193,166.5 194.5,162.3 196,158 197.5,153.6 199,149.1 200.5,144.4 202,139.6 203.5,134.7 205,129.6 206.5,124.4 208,119.1 209.5,113.7 211,108.1 212.5,102.4 214,96.6 215.5,90.6 217,84.5 218.5,78.3 220,72 221.5,78.3 223,84.5 224.5,90.6 226,96.6 227.5,102.4 229,108.1 230.5,113.7 232,119.1 233.5,124.4 235,129.6 236.5,134.7 238,139.6 239.5,144.4 241,149.1 242.5,153.6 244,158 245.5,162.3 247,166.5 248.5,170.5 250,174.4 251.5,178.2 253,181.8 254.5,185.3 256,188.7 257.5,192 259,195.1 260.5,198.1 262,201 263.5,203.8 265,206.4 266.5,208.9 268,211.3 269.5,213.5 271,215.6 272.5,217.6 274,219.5 275.5,221.2 277,222.8 278.5,224.3 280,225.6 281.5,226.8 283,227.9 284.5,228.9 286,229.7 287.5,230.4 289,231 290.5,231.4 292,231.7 293.5,231.9 295,232 296.5,231.9 298,231.7 299.5,231.4 301,231 302.5,230.4 304,229.7 305.5,228.9 307,227.9 308.5,226.8 310,225.6 311.5,224.3 313,222.8 314.5,221.2 316,219.5 317.5,217.6 319,215.6 320.5,213.5 322,211.3 323.5,208.9 325,206.4 326.5,203.8 328,201 329.5,198.1 331,195.1 332.5,192 334,188.7 335.5,185.3 337,181.8 338.5,178.2 340,174.4 341.5,170.5 343,166.5 344.5,162.3 346,158 347.5,153.6 349,149.1 350.5,144.4 352,139.6 353.5,134.7 355,129.6 356.5,124.4 358,119.1 359.5,113.7 361,108.1 362.5,102.4 364,96.6 365.5,90.6 367,84.5 368.5,78.3 370,72 371.5,78.3 373,84.5 374.5,90.6 376,96.6 377.5,102.4 379,108.1 380.5,113.7 382,119.1 383.5,124.4 385,129.6 386.5,134.7 388,139.6 389.5,144.4 391,149.1 392.5,153.6 394,158 395.5,162.3 397,166.5 398.5,170.5 400,174.4 401.5,178.2 403,181.8 404.5,185.3 406,188.7 407.5,192 409,195.1 410.5,198.1 412,201 413.5,203.8 415,206.4 416.5,208.9 418,211.3 419.5,213.5 421,215.6 422.5,217.6 424,219.5 425.5,221.2 427,222.8 428.5,224.3 430,225.6 431.5,226.8 433,227.9 434.5,228.9 436,229.7 437.5,230.4 439,231 440.5,231.4 442,231.7 443.5,231.9 445,232 446.5,231.9 448,231.7 449.5,231.4 451,231 452.5,230.4 454,229.7 455.5,228.9 457,227.9 458.5,226.8 460,225.6 461.5,224.3 463,222.8 464.5,221.2 466,219.5 467.5,217.6 469,215.6 470.5,213.5 472,211.3 473.5,208.9 475,206.4 476.5,203.8 478,201 479.5,198.1 481,195.1 482.5,192 484,188.7 485.5,185.3 487,181.8 488.5,178.2 490,174.4 491.5,170.5 493,166.5 494.5,162.3 496,158 497.5,153.6 499,149.1 500.5,144.4 502,139.6 503.5,134.7 505,129.6 506.5,124.4 508,119.1 509.5,113.7 511,108.1 512.5,102.4 514,96.6 515.5,90.6 517,84.5 518.5,78.3 520,72"/>
+<line class="ray" x1="242" y1="152" x2="348" y2="152" marker-start="url(#fig-pot-a)" marker-end="url(#fig-pot-a)"/>
+<line class="ray2" x1="70" y1="44" x2="520" y2="44" marker-end="url(#fig-pot-b)"/>
+<line class="dim" x1="48" y1="232" x2="48" y2="72" marker-start="url(#fig-pot-a)" marker-end="url(#fig-pot-a)"/>
+<text class="lbl strong" x="40" y="158" text-anchor="end">U<tspan class="sub" dy="4">0</tspan></text>
+<text class="lbl orange" x="520" y="28" text-anchor="end">over the barrier: E⊥ &gt; U₀</text>
+<text class="lbl blue" x="295" y="262" text-anchor="middle">channeled: E⊥ &lt; U₀</text>
+<text class="lbl" x="548" y="262" text-anchor="end">x</text>
+<text class="note" x="520" y="290" text-anchor="end">dashed: atomic planes</text>
+<text class="note" x="20" y="318" text-anchor="start">U₀ ≈ 20 eV for silicon (110) planes</text></svg><figcaption>Transverse potential energy between silicon planes. A particle below the barrier is channeled; one above it crosses the planes.</figcaption></figure>
+    <div class="phys-text">
+      <p>Geant4, the toolkit used to simulate detectors and beam lines throughout particle physics, treats matter as amorphous, with atoms placed at random. In a crystal this fails whenever a particle travels close to a plane or an axis, where it feels the averaged, continuous potential of many atoms at once.</p>
+      <p>We follow each particle in that continuous potential, step by step along its trajectory. Comparing its transverse energy with the depth of the well tells whether it is trapped between planes (channeled), crossing them over the barrier, or reflected by a bent plane; incoherent scattering on nuclei and electrons, which changes the transverse energy, is added along the way.</p>
+      <p>The radiation of an ultrarelativistic particle on such a curved trajectory is computed with the <b>Baier–Katkov</b> quasi-classical formula, which includes the recoil of the emission; the same approach gives coherent pair production by photons. These models, first written in our codes CRYSTALRAD and RADCHARM++, are now part of Geant4 as G4<wbr>Channeling<wbr>FastSim<wbr>Model, G4<wbr>Baier<wbr>Katkov and G4<wbr>Coherent<wbr>Pair<wbr>Production, so any Geant4 user can simulate oriented crystals in a full setup. Two members of the group belong to the Geant4 Collaboration.</p>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <h2 class="h2">What we have shown.</h2>
+    <p class="line-summary">Two group members belong to the Geant4 Collaboration. We implemented channeling, coherent radiation and coherent pair production in Geant4 (G4<wbr>Channeling<wbr>FastSim<wbr>Model, G4<wbr>Baier<wbr>Katkov, G4<wbr>Coherent<wbr>PairProduction), building on our CRYSTALRAD and RADCHARM++ codes.</p>
+    <div class="results long">
+      <article class="result"><b>Geant4</b><p>Channeling, Baier–Katkov radiation and coherent pair production in oriented crystals, implemented as a Geant4 simulation model.</p><p class="src"><a href="https://doi.org/10.1007/s40042-023-00834-6">J. Korean Phys. Soc. 83 (2023)</a></p></article>
+      <article class="result"><b>CRYSTALRAD</b><p>Our code for coherent effects and radiation in oriented crystals, the basis of the Geant4 models.</p><p class="src"><a href="https://doi.org/10.1103/PhysRevAccelBeams.22.064601">Phys. Rev. Accel. Beams 22 (2019)</a></p></article>
+      <article class="result"><b>Python tool</b><p>Reads Geant4 simulations step by step and compares each particle’s energy with the channel potential, to tell which coherent effect is at work.</p><p class="src"><a href="https://doi.org/10.1016/j.nima.2025.170277">Nucl. Instrum. Methods A 1074 (2025)</a></p></article>
+      <article class="result"><b>855 MeV</b><p>Relativistic molecular-dynamics simulations of electrons in bent silicon (111), compared with data from MAMI, from axial to planar channeling.</p><p class="src"><a href="https://doi.org/10.1140/epjp/s13360-021-02268-0">European Physical Journal Plus 137 (2022)</a></p></article>
+    </div>
+  </div>
+</section>
+<section class="section white">
+  <div class="wrap line-more">
+    <div>
+      <h2 class="h2">Read first.</h2>
+      <ol class="pubs read">
+        <li><b><a href="https://doi.org/10.1007/s40042-023-00834-6">Geant4 simulation model of electromagnetic processes in oriented crystals for accelerator physics</a></b><span><strong>Sytov A.</strong>, <strong>Bandiera L.</strong>, Cho K., Hwang S., et al. · <i>J. Korean Phys. Soc. 83 (2023)</i></span></li>
+        <li><b><a href="https://doi.org/10.1103/PhysRevAccelBeams.22.064601">Simulation code for modeling of coherent effects of radiation generation in oriented crystals</a></b><span><strong>Sytov A.I.</strong>, Tikhomirov V.V., <strong>Bandiera L.</strong> · <i>Phys. Rev. Accel. Beams 22, 064601 (2019)</i></span></li>
+        <li><b><a href="https://doi.org/10.1016/j.nimb.2015.03.031">RADCHARM++: A C++ routine to compute the electromagnetic radiation generated by relativistic charged particles in crystals and complex structures</a></b><span><strong>Bandiera L.</strong>, Bagli E., <strong>Guidi V.</strong>, Tikhomirov V.V. · <i>Nucl. Instrum. Methods B 355 (2015)</i></span></li>
+        <li><b><a href="https://doi.org/10.1016/j.nima.2025.170277">A novel tool for advanced analysis of Geant4 simulations of charged particles interactions in oriented crystals</a></b><span>Negrello R., <strong>Bandiera L.</strong>, Canale N. … <strong>Fedeli P.</strong>, <strong>Guidi V.</strong>, <strong>Mazzolari A.</strong> et al. · <i>Nucl. Instrum. Methods A 1074 (2025)</i></span></li>
+        <li><b><a href="https://doi.org/10.1140/epjp/s13360-021-02268-0">MBN explorer atomistic simulations of 855 MeV electron propagation and radiation emission in oriented silicon bent crystal: theory versus experiment</a></b><span>Haurylavets V.V., Leukovich A., <strong>Sytov A.</strong> … <strong>Bandiera L.</strong>, <strong>Mazzolari A.</strong>, <strong>Romagnoni M.</strong> et al. · <i>European Physical Journal Plus 137 (2022)</i></span></li>
+      </ol>
+      <p class="papers"><a href="publications.html?line=simulate">All 3 papers on this line →</a></p>
+    </div>
+    <aside class="eq-side">
+      <h2>Projects</h2>
+      <ul class="chips"><li>TRILLION (MSCA GF)</li><li>GEANT4INFN</li></ul>
+      <h2>Thesis topics</h2>
+      <ul class="side-list"><li><a href="theses.html#t-simulations-of-beam-test-setups-for">Simulations of beam-test setups for oriented crystals</a></li><li><a href="theses.html#t-development-of-crystal-physics-in-the">Development of crystal physics in the Geant4 toolkit</a></li><li><a href="theses.html#t-simulations-of-plasma-wakefield-acceleration-in">Simulations of plasma wakefield acceleration in solid targets at SLAC E336</a></li></ul>
+      <h2>Contact</h2>
+      <p class="eq-lines"><a href="mailto:sytov@fe.infn.it">Alexei Sytov</a><a href="mailto:paterno@fe.infn.it">Gianfranco Paternò</a></p>
+    </aside>
+  </div>
+</section>
+<nav class="wrap eq-pager" aria-label="Other research lines">
+  <a href="gravitational-waves.html">← Gravitational waves</a>
+  <a href="research.html">All research lines</a>
+  <a href="beam-steering.html">Beam steering →</a>
+</nav>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <p class="foot-lead">Theses, collaborations, crystals: write to us.</p>
+        <a class="mail" href="mailto:crystals@fe.infn.it">crystals@fe.infn.it</a>
+      </div>
+      <div class="foot-logos">
+        <img src="img/logos/infn.png" alt="INFN" width="56" height="56" loading="lazy">
+        <img src="img/logos/unife.png" alt="University of Ferrara" width="126" height="56" loading="lazy">
+      </div>
+    </div>
+  </div>
+  <div class="foot-bar">
+    <div class="wrap foot-bottom">
+      <p>Crystal Lab Ferrara · Department of Physics and Earth Science, University of Ferrara and INFN Ferrara · Via Saragat 1, 44122 Ferrara, Italy</p>
+      <p><a href="https://www.iubenda.com/privacy-policy/42065383">Privacy policy</a> · <a href="https://www.iubenda.com/privacy-policy/42065383/cookie-policy">Cookie policy</a></p>
+    </div>
+  </div>
+</footer>
+<script src="site.js" defer></script>
+</body>
+</html>

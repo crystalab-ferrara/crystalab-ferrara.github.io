@@ -31,6 +31,14 @@
     });
     document.addEventListener('click', function (e) { if (nav.classList.contains('open') && !nav.contains(e.target)) setMenu(false); });
     [].forEach.call(nav.querySelectorAll('.nav-links a'), function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+    // while it is open, Tab cycles through the menu button and the links
+    nav.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab' || !btn || !nav.classList.contains('open')) return;
+      var f = [btn].concat([].slice.call(nav.querySelectorAll('.nav-links a[href]')));
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
   }
 
   // Home carousel: crossfade every 6 s, dots, pause; stops when reduced motion is requested.
@@ -75,8 +83,10 @@
     var stop = function () { if (timer) clearInterval(timer); timer = null; };
     // a keyboard visitor inside the header holds the slide, so a focused link never disappears under the focus;
     // mouse clicks on the dots or the pause button leave no visible focus and do not hold it
+    var canHover = window.matchMedia('(hover: hover)').matches;
     var focusHold = function () {
       var el = document.activeElement;
+      if (canHover && hero.querySelector('.hero-lines:hover, .hero-ctrl:hover')) return true;
       return !!el && el !== document.body && hero.contains(el) && el.matches(':focus-visible');
     };
     var play = function () { stop(); timer = setInterval(function () { if (!focusHold()) show(i + 1); }, 6000); };
@@ -133,7 +143,10 @@
   if (labmap) {
     var labs = [].slice.call(labmap.querySelectorAll('.lab'));
     var card = labmap.querySelector('.lab-card');
+    var card0 = card.innerHTML;
+    var sel = document.getElementById('lab-pick');
     var pick = function (g) {
+      if (sel) sel.value = g.getAttribute('data-name') + '|' + g.getAttribute('data-city');
       labs.forEach(function (l) { l.classList.toggle('on', l === g); if (l === g) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current'); });
       var logo = card.querySelector('.lab-logo'); logo.src = g.getAttribute('data-logo'); logo.hidden = false;
       card.querySelector('.lab-name').textContent = g.getAttribute('data-name');
@@ -147,32 +160,13 @@
       g.addEventListener('click', function () { pick(g); });
       g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(g); } });
     });
-    // the row of names under the map (shown on phones, where the dots are too close to tap) picks the same lab
-    var pickers = [].slice.call(document.querySelectorAll('.map-picker button'));
-    pickers.forEach(function (b) {
-      b.addEventListener('click', function () {
-        var g = labs.filter(function (l) { return l.getAttribute('data-name') === b.getAttribute('data-name') && l.getAttribute('data-city') === b.getAttribute('data-city'); })[0];
-        if (!g) return;
-        pick(g);
-        pickers.forEach(function (o) { if (o === b) o.setAttribute('aria-current', 'true'); else o.removeAttribute('aria-current'); });
-      });
+    if (sel) sel.addEventListener('change', function () {
+      var g = labs.filter(function (l) { return l.getAttribute('data-name') + '|' + l.getAttribute('data-city') === sel.value; })[0];
+      if (g) { pick(g); return; }
+      // "All partners": back to the summary
+      labs.forEach(function (l) { l.classList.remove('on'); l.removeAttribute('aria-current'); });
+      card.innerHTML = card0;
     });
-  }
-
-  // Research index: highlight the line in view.
-  var toc = document.querySelector('.toc');
-  if (toc && 'IntersectionObserver' in window) {
-    var links = {};
-    [].forEach.call(toc.querySelectorAll('a'), function (a) { links[a.getAttribute('href').slice(1)] = a; });
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (e.isIntersecting && links[e.target.id]) {
-          Object.keys(links).forEach(function (k) { links[k].classList.remove('on'); links[k].removeAttribute('aria-current'); });
-          links[e.target.id].classList.add('on'); links[e.target.id].setAttribute('aria-current', 'true');
-        }
-      });
-    }, { rootMargin: '-35% 0px -60% 0px' });
-    [].forEach.call(document.querySelectorAll('.line-item'), function (el) { io.observe(el); });
   }
 
   // Publications: live filter over title, authors and journal, and by research line; both live in the address (?q=, ?line=) so they can be shared.
@@ -185,7 +179,9 @@
     var empty = document.querySelector('.empty');
     var tools = document.querySelector('.pub-tools');
     var lineSel = document.getElementById('pub-line');
+    var yearSel = document.getElementById('pub-year');
     var total = items.length;
+    var toTools = document.querySelector('.to-tools'), toCount = document.querySelector('.to-tools-count');
     // NFKD also turns sub- and superscripts (Al₂O₃, μ⁺) into plain characters, so typing "al2o3" finds them
     var norm = function (s) { return s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, ''); };
     // data-a holds the full author list and data-r the full journal name, so "et al." authors and unabbreviated journals are found too
@@ -213,8 +209,11 @@
         // a year with nothing left to show drops out of the year index too
         var link = yearLinks.filter(function (a) { return a.getAttribute('href') === '#' + b.id; })[0];
         if (link) link.hidden = n === 0;
+        var opt = yearSel && yearSel.querySelector('option[value="' + b.id + '"]');
+        if (opt) opt.disabled = n === 0;
       });
       count.textContent = words.length || line ? shown + ' of ' + total + ' papers' : total + ' papers';
+      if (toCount) toCount.textContent = count.textContent;
       empty.hidden = shown !== 0;
       var url = new URL(location.href);
       if (q.value.trim()) url.searchParams.set('q', q.value.trim()); else url.searchParams.delete('q');
@@ -225,6 +224,8 @@
     };
     q.addEventListener('input', run);
     if (lineSel) lineSel.addEventListener('change', run);
+    // phones: the year menu stands in for the row of years
+    if (yearSel) yearSel.addEventListener('change', function () { if (yearSel.value) location.hash = yearSel.value; });
     var clear = document.querySelector('.clear-search');
     if (clear) clear.addEventListener('click', function () { q.value = ''; if (lineSel) lineSel.value = ''; run(); q.focus(); });
     var params = new URLSearchParams(location.search);
@@ -236,6 +237,8 @@
     // the sticky search bar's height decides where a year lands when its link is followed
     var setTools = function () { document.documentElement.style.setProperty('--tools-h', tools.offsetHeight + 'px'); };
     setTools(); window.addEventListener('resize', setTools);
+    // phones: once the toolbar has scrolled away, a button at the bottom brings it back and keeps the count in view
+    if (toTools) toTools.addEventListener('click', function (e) { e.preventDefault(); tools.scrollIntoView({ block: 'start' }); tools.focus({ preventScroll: true }); });
     // the year in view is marked in the index: the band that decides starts just below the nav and the sticky bar
     var markYear = function (id) { yearLinks.forEach(function (a) { if (a.getAttribute('href') === '#' + id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); }); };
     yearLinks.forEach(function (a) { a.addEventListener('click', function () { markYear(a.getAttribute('href').slice(1)); }); });
@@ -246,6 +249,7 @@
       var line = (nav ? nav.offsetHeight : 0) + tools.offsetHeight + 32, cur = null;
       blocks.forEach(function (b) { if (!b.hidden && b.getBoundingClientRect().top <= line) cur = b; });
       if (cur) markYear(cur.id);
+      if (toTools) toTools.hidden = tools.getBoundingClientRect().bottom > 0;
     };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; setTimeout(fromScroll, 80); } }, { passive: true });
     fromScroll();

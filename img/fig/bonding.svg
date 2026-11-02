@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="fig" viewBox="0 0 560 320" role="img" aria-labelledby="fig-bond-t fig-bond-d"><style>.plane { fill: none; stroke: #8e9aab; stroke-width: 1.3; }
+.body { fill: #f3f5f8; stroke: #dde3eb; }
+.xtal-fill { fill: #dce8f6; stroke: #0a5fb0; }
+.ray, .ray2, .photon { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ray { stroke: #0a5fb0; }
+.ray2 { stroke: #f39a2e; }
+.photon { stroke: #6b7686; stroke-width: 1.6; }
+.ref { fill: none; stroke: #5b6474; stroke-width: 1; stroke-dasharray: 4 4; }
+.dim { stroke: #5b6474; stroke-width: 1; }
+.tip { fill: #0a5fb0; }
+.tip2 { fill: #f39a2e; }
+.block { fill: #f3f5f8; stroke: #aab4c2; }
+.block.xtal { fill: #e6eef8; }
+.atom { fill: #7d899a; }
+.tile { fill: #0a5fb0; }
+.det, .sample { fill: #2f3744; }
+.lbl { fill: #2f3744; font-size: 16px; }
+.note { fill: #5b6474; font-size: 14px; }
+.strong { fill: #0d1117; font-weight: 600; }
+.blue { fill: #0a5fb0; font-weight: 600; }
+.orange { fill: #b45f0c; font-weight: 600; }
+.sub { font-size: 12px; }
+.axis { stroke: #2f3744; stroke-width: 1.4; }
+.curve { fill: none; stroke: #2f3744; stroke-width: 2; }
+.kid { fill: none; stroke: #0a5fb0; stroke-width: 1.6; }
+.pol { fill: none; stroke: #0a5fb0; stroke-width: 2; }
+.xtal-line { fill: none; stroke: #9ec3ea; stroke-width: 9; }
+.area { stroke: none; opacity: .14; }
+.ray-area { fill: #0a5fb0; }
+.ray2-area { fill: #f39a2e; }
+text { display: none; }</style>
+<title id="fig-bond-t">Anodic bonding of a crystal to a figured substrate</title><desc id="fig-bond-d">Left: a flat crystal plate above a glass substrate whose surface has been figured to the wanted curvature. Right: heated and under a voltage, with the crystal positive, sodium ions in the glass drift away from the interface, the surfaces are pulled together and bond, and the crystal takes the shape of the substrate.</desc>
+<defs><marker id="fig-bond-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>
+<marker id="fig-bond-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip2" d="M0 0L10 5L0 10z"/></marker></defs><text class="lbl strong" x="30" y="34" text-anchor="start">1  crystal and substrate</text><text class="lbl strong" x="310" y="34" text-anchor="start">2  bonded, with its shape</text>
+<rect class="block xtal" x="50" y="140" width="180" height="9"/><polygon class="block" points="40,262 40,204 45,202.2 50,200.6 55,199 60,197.5 65,196.1 70,194.8 75,193.6 80,192.5 85,191.4 90,190.5 95,189.6 100,188.9 105,188.2 110,187.6 115,187.1 120,186.7 125,186.4 130,186.2 135,186 140,186 145,186 150,186.2 155,186.4 160,186.7 165,187.1 170,187.6 175,188.2 180,188.9 185,189.6 190,190.5 195,191.4 200,192.5 205,193.6 210,194.8 215,196.1 220,197.5 225,199 230,200.6 235,202.2 240,204 240,262"/>
+<text class="lbl" x="140" y="128" text-anchor="middle">crystal plate</text><text class="note" x="140" y="290" text-anchor="middle">glass figured to shape</text>
+<line class="ray" x1="248" y1="190" x2="296" y2="190" marker-end="url(#fig-bond-a)"/><text class="note" x="272" y="176" text-anchor="middle">heat</text><text class="note" x="272" y="214" text-anchor="middle">voltage</text>
+<polygon class="block" points="300,262 300,204 305,202.2 310,200.6 315,199 320,197.5 325,196.1 330,194.8 335,193.6 340,192.5 345,191.4 350,190.5 355,189.6 360,188.9 365,188.2 370,187.6 375,187.1 380,186.7 385,186.4 390,186.2 395,186 400,186 405,186 410,186.2 415,186.4 420,186.7 425,187.1 430,187.6 435,188.2 440,188.9 445,189.6 450,190.5 455,191.4 460,192.5 465,193.6 470,194.8 475,196.1 480,197.5 485,199 490,200.6 495,202.2 500,204 500,262"/><polyline class="xtal-line" points="308,191 312.6,189.3 317.2,187.7 321.8,186.1 326.4,184.7 331,183.3 335.6,182.1 340.2,180.9 344.8,179.8 349.4,178.8 354,177.9 358.6,177 363.2,176.3 367.8,175.6 372.4,175.1 377,174.6 381.6,174.2 386.2,173.9 390.8,173.7 395.4,173.5 400,173.5 404.6,173.5 409.2,173.7 413.8,173.9 418.4,174.2 423,174.6 427.6,175.1 432.2,175.6 436.8,176.3 441.4,177 446,177.9 450.6,178.8 455.2,179.8 459.8,180.9 464.4,182.1 469,183.3 473.6,184.7 478.2,186.1 482.8,187.7 487.4,189.3 492,191"/>
+<text class="lbl" x="400" y="152" text-anchor="middle">+  crystal (anode)</text><text class="lbl" x="400" y="290" text-anchor="middle">−  cathode</text><line class="ray2" x1="350" y1="208" x2="350" y2="244" marker-end="url(#fig-bond-b)"/><text class="note" x="356" y="226" text-anchor="start">Na⁺</text><line class="ray2" x1="400" y1="202" x2="400" y2="238" marker-end="url(#fig-bond-b)"/><text class="note" x="406" y="220" text-anchor="start">Na⁺</text><line class="ray2" x1="450" y1="208" x2="450" y2="244" marker-end="url(#fig-bond-b)"/><text class="note" x="456" y="226" text-anchor="start">Na⁺</text>
+<text class="note" x="548" y="72" text-anchor="end">Si–O–Si bonds at the interface,</text><text class="note" x="548" y="94" text-anchor="end">no glue layer</text></svg>

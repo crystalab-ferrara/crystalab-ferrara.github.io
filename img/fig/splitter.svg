@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="fig" viewBox="0 0 560 320" role="img" aria-labelledby="fig-split-t fig-split-d"><style>.plane { fill: none; stroke: #8e9aab; stroke-width: 1.3; }
+.body { fill: #f3f5f8; stroke: #dde3eb; }
+.xtal-fill { fill: #dce8f6; stroke: #0a5fb0; }
+.ray, .ray2, .photon { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ray { stroke: #0a5fb0; }
+.ray2 { stroke: #f39a2e; }
+.photon { stroke: #6b7686; stroke-width: 1.6; }
+.ref { fill: none; stroke: #5b6474; stroke-width: 1; stroke-dasharray: 4 4; }
+.dim { stroke: #5b6474; stroke-width: 1; }
+.tip { fill: #0a5fb0; }
+.tip2 { fill: #f39a2e; }
+.block { fill: #f3f5f8; stroke: #aab4c2; }
+.block.xtal { fill: #e6eef8; }
+.atom { fill: #7d899a; }
+.tile { fill: #0a5fb0; }
+.det, .sample { fill: #2f3744; }
+.lbl { fill: #2f3744; font-size: 16px; }
+.note { fill: #5b6474; font-size: 14px; }
+.strong { fill: #0d1117; font-weight: 600; }
+.blue { fill: #0a5fb0; font-weight: 600; }
+.orange { fill: #b45f0c; font-weight: 600; }
+.sub { font-size: 12px; }
+.axis { stroke: #2f3744; stroke-width: 1.4; }
+.curve { fill: none; stroke: #2f3744; stroke-width: 2; }
+.kid { fill: none; stroke: #0a5fb0; stroke-width: 1.6; }
+.pol { fill: none; stroke: #0a5fb0; stroke-width: 2; }
+.xtal-line { fill: none; stroke: #9ec3ea; stroke-width: 9; }
+.area { stroke: none; opacity: .14; }
+.ray-area { fill: #0a5fb0; }
+.ray2-area { fill: #f39a2e; }
+text { display: none; }</style>
+<title id="fig-split-t">X-ray multi-projection imaging with crystal beam splitters</title><desc id="fig-split-d">An X-ray beam crosses two thin crystals. Each diffracts part of the beam and lets the rest through; two more crystals send the diffracted beams back towards the sample, which is reached from three directions at the same time. Behind it, three detectors record three views in a single shot.</desc>
+<defs><marker id="fig-split-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>
+<marker id="fig-split-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip2" d="M0 0L10 5L0 10z"/></marker></defs><polyline class="ray" points="20,160 150,160 220,160 430,160 532,160"/><polyline class="ray2" points="150,160 282,70 430,160 532,222"/><polyline class="ray2" points="220,160 302,252 430,160 532,86.7"/>
+<rect class="tile" x="147" y="146" width="6" height="28" transform="rotate(0 150 160)"/><rect class="tile" x="217" y="146" width="6" height="28" transform="rotate(0 220 160)"/><rect class="tile" x="279" y="56" width="6" height="28" transform="rotate(34 282 70)"/><rect class="tile" x="299" y="238" width="6" height="28" transform="rotate(-34 302 252)"/>
+<circle class="sample" cx="430" cy="160" r="11"/>
+<rect class="det" x="532" y="206" width="10" height="32"/><rect class="det" x="532" y="144" width="10" height="32"/><rect class="det" x="532" y="70.7" width="10" height="32"/>
+<text class="lbl blue" x="22" y="148" text-anchor="start">X-ray beam</text><text class="note" x="185" y="198" text-anchor="middle">thin crystal splitters</text>
+<text class="lbl" x="430" y="196" text-anchor="middle">sample</text><text class="lbl strong" x="548" y="22" text-anchor="end">three views, one shot</text><text class="note" x="548" y="312" text-anchor="end">not to scale</text></svg>

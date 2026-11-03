@@ -501,7 +501,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .eq-groupbox + .eq-groupbox { margin-top: 56px; }
 .eq-group { font-size: var(--fs-h3); }
 .eq-rows { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
-.eq-rows a { display: block; height: 100%; background: var(--surface); border-radius: var(--radius); border-left: 3px solid var(--beam); color: var(--ink); text-decoration: none; transition: box-shadow .2s ease; }
+.eq-rows a { display: block; background: var(--surface); border-radius: var(--radius); color: var(--ink); text-decoration: none; transition: box-shadow .2s ease; }
 .eq-rows a:hover { box-shadow: 0 10px 28px rgba(13, 17, 23, 0.08); }
 .eq-rows a:hover .eq-model { text-decoration: underline; }
 .eq-rows .eq-body { padding: 14px 18px 16px; }
@@ -513,8 +513,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .eq-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(13, 17, 23, 0.08); }
 .eq-card img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
 .eq-card img[src*="xrd-cabinets"], .eq-photo img[src*="xrd-cabinets"] { object-position: 85% 50%; }
-/* cards without a photo open with the same short beam mark as the page headers */
-.eq-card.no-photo .eq-body::before { content: ""; width: 40px; height: 3px; border-radius: 2px; background: var(--beam); margin-bottom: 10px; }
+/* instruments without a photo open with the same short beam mark as the page headers */
+.eq-rows .eq-body::before { content: ""; width: 40px; height: 3px; border-radius: 2px; background: var(--beam); margin-bottom: 10px; }
 .eq-body { display: flex; flex-direction: column; gap: 4px; padding: 18px 20px 22px; }
 .eq-body b { font-size: var(--fs-lead); line-height: 1.3; }
 .eq-model { color: var(--accent); font-weight: 500; }

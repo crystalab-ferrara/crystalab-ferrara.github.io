@@ -500,13 +500,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .eq-rows a:hover { box-shadow: 0 10px 28px rgba(13, 17, 23, 0.08); }
 .eq-rows a:hover .eq-model { text-decoration: underline; }
 .eq-rows .eq-body { padding: 14px 18px 16px; }
-/* wide screens: the group name and its compact rows on the left, the photo cards on the right */
-@media (min-width: 1000px) {
-  .eq-groupbox { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); grid-template-rows: auto 1fr; grid-template-areas: "head cards" "rows cards"; column-gap: 32px; align-items: start; }
-  .eq-group { grid-area: head; }
-  .eq-rows { grid-area: rows; grid-template-columns: 1fr; }
-  .eq-groupbox .eq-grid { grid-area: cards; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+/* every group on the same grid, three columns on wide screens; instruments without a photo stack in one cell */
+@media (min-width: 1000px) { .eq-groupbox .eq-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.eq-grid > .eq-rows { grid-template-columns: 1fr; align-content: start; }
 .eq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
 .eq-card { display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius); overflow: hidden; color: var(--ink); text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
 .eq-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(13, 17, 23, 0.08); }

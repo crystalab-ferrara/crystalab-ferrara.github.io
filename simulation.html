@@ -4,17 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Simulation · Crystal Lab Ferrara</title>
-<meta name="description" content="Crystal physics in Geant4. Channeling, coherent radiation and pair production in oriented crystals, simulated in Geant4 and in our own codes. A research line of Crystal Lab Ferrara, University of Ferrara and INFN.">
+<meta name="description" content="Crystal physics in Geant4. Channeling, coherent radiation and pair production in oriented crystals, simulated in Geant4 and in our own codes.">
 <link rel="icon" href="img/logo-48.png">
 <link rel="preload" href="fonts/ibm-plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="site.css">
 <link rel="canonical" href="https://crystalab-ferrara.github.io/simulation.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Crystal Lab Ferrara">
 <meta property="og:locale" content="en_GB">
 <meta property="og:title" content="Simulation · Crystal Lab Ferrara">
-<meta property="og:description" content="Crystal physics in Geant4. Channeling, coherent radiation and pair production in oriented crystals, simulated in Geant4 and in our own codes. A research line of Crystal Lab Ferrara, University of Ferrara and INFN.">
+<meta property="og:description" content="Crystal physics in Geant4. Channeling, coherent radiation and pair production in oriented crystals, simulated in Geant4 and in our own codes.">
 <meta property="og:url" content="https://crystalab-ferrara.github.io/simulation.html">
 <meta property="og:image" content="https://crystalab-ferrara.github.io/img/og/hands-infn.jpg">
 <meta property="og:image:width" content="1200">
@@ -71,16 +70,16 @@
 <text class="note" x="520" y="290" text-anchor="end">dashed: atomic planes</text>
 <text class="note" x="20" y="318" text-anchor="start">U₀ ≈ 20 eV for silicon (110) planes</text></svg><figcaption>Transverse potential energy between silicon planes. A particle below the barrier is channeled; one above it crosses the planes.</figcaption></figure>
     <div class="phys-text">
-      <p>Geant4, the toolkit used to simulate detectors and beam lines throughout particle physics, treats matter as amorphous, with atoms placed at random. In a crystal this fails whenever a particle travels close to a plane or an axis, where it feels the averaged, continuous potential of many atoms at once.</p>
-      <p>We follow each particle in that continuous potential, step by step along its trajectory. Comparing its transverse energy with the depth of the well tells whether it is trapped between planes (channeled), crossing them over the barrier, or reflected by a bent plane; incoherent scattering on nuclei and electrons, which changes the transverse energy, is added along the way.</p>
-      <p>The radiation of an ultrarelativistic particle on such a curved trajectory is computed with the <b>Baier–Katkov</b> quasi-classical formula, which includes the recoil of the emission; the same approach gives coherent pair production by photons. These models, first written in our codes CRYSTALRAD and RADCHARM++, are now part of Geant4 as G4<wbr>Channeling<wbr>FastSim<wbr>Model, G4<wbr>Baier<wbr>Katkov and G4<wbr>Coherent<wbr>Pair<wbr>Production, so any Geant4 user can simulate oriented crystals in a full setup. Two members of the group belong to the Geant4 Collaboration.</p>
+      <p>Geant4, the toolkit used to sim­u­late de­tec­tors and beam lines through­out par­ti­cle physics, treats matter as amor­phous, with atoms placed at random. In a crystal this fails when­ev­er a par­ti­cle travels close to a plane or an axis, where it feels the av­er­aged, con­tin­u­ous po­ten­tial of many atoms at once.</p>
+      <p>We follow each par­ti­cle in that con­tin­u­ous po­ten­tial, step by step along its tra­jec­to­ry. Compar­ing its trans­verse energy with the depth of the well tells whether it is trapped between planes (chan­neled), cross­ing them over the barrier, or re­flect­ed by a bent plane; in­co­her­ent scatter­ing on nuclei and elec­trons, which changes the trans­verse energy, is added along the way.</p>
+      <p>The radia­tion of an ultra­relativistic par­ti­cle on such a curved tra­jec­to­ry is com­put­ed with the <b>Baier–Katkov</b> quasi-clas­si­cal formula, which in­cludes the recoil of the emis­sion; the same ap­proach gives co­her­ent pair produc­tion by photons. These models, first written in our codes CRYSTALRAD and RADCHARM++, are now part of Geant4 as G4<wbr>Channel­ing<wbr>FastSim<wbr>Model, G4<wbr>Baier<wbr>Katkov and G4<wbr>Co­her­ent<wbr>Pair<wbr>Produc­tion, so any Geant4 user can sim­u­late ori­ent­ed crys­tals in a full setup. Two members of the group belong to the Geant4 Collabora­tion.</p>
     </div>
   </div>
 </section>
 <section class="section">
   <div class="wrap">
     <h2 class="h2">What we have shown.</h2>
-    <p class="line-summary">Two group members belong to the Geant4 Collaboration. We implemented channeling, coherent radiation and coherent pair production in Geant4 (G4<wbr>Channeling<wbr>FastSim<wbr>Model, G4<wbr>Baier<wbr>Katkov, G4<wbr>Coherent<wbr>PairProduction), building on our CRYSTALRAD and RADCHARM++ codes.</p>
+    <p class="line-summary">Two group members belong to the Geant4 Collabora­tion. We im­ple­ment­ed channel­ing, co­her­ent radia­tion and co­her­ent pair produc­tion in Geant4 (G4<wbr>Channel­ing<wbr>FastSim<wbr>Model, G4<wbr>Baier<wbr>Katkov, G4<wbr>Co­her­ent<wbr>Pair<wbr>Produc­tion), build­ing on our CRYSTALRAD and RADCHARM++ codes.</p>
     <div class="results long">
       <article class="result"><b>Geant4</b><p>Channeling, Baier–Katkov radiation and coherent pair production in oriented crystals, implemented as a Geant4 simulation model.</p><p class="src"><a href="https://doi.org/10.1007/s40042-023-00834-6">J. Korean Phys. Soc. 83 (2023)</a></p></article>
       <article class="result"><b>CRYSTALRAD</b><p>Our code for coherent effects and radiation in oriented crystals, the basis of the Geant4 models.</p><p class="src"><a href="https://doi.org/10.1103/PhysRevAccelBeams.22.064601">Phys. Rev. Accel. Beams 22 (2019)</a></p></article>
@@ -94,17 +93,17 @@
     <div>
       <h2 class="h2">Read first.</h2>
       <ol class="pubs read">
-        <li><b><a href="https://doi.org/10.1007/s40042-023-00834-6">Geant4 simulation model of electromagnetic processes in oriented crystals for accelerator physics</a></b><span><strong>Sytov A.</strong>, <strong>Bandiera L.</strong>, Cho K., Hwang S., et al. · <i>J. Korean Phys. Soc. 83 (2023)</i></span></li>
-        <li><b><a href="https://doi.org/10.1103/PhysRevAccelBeams.22.064601">Simulation code for modeling of coherent effects of radiation generation in oriented crystals</a></b><span><strong>Sytov A.I.</strong>, Tikhomirov V.V., <strong>Bandiera L.</strong> · <i>Phys. Rev. Accel. Beams 22, 064601 (2019)</i></span></li>
-        <li><b><a href="https://doi.org/10.1016/j.nimb.2015.03.031">RADCHARM++: A C++ routine to compute the electromagnetic radiation generated by relativistic charged particles in crystals and complex structures</a></b><span><strong>Bandiera L.</strong>, Bagli E., <strong>Guidi V.</strong>, Tikhomirov V.V. · <i>Nucl. Instrum. Methods B 355 (2015)</i></span></li>
-        <li><b><a href="https://doi.org/10.1016/j.nima.2025.170277">A novel tool for advanced analysis of Geant4 simulations of charged particles interactions in oriented crystals</a></b><span>Negrello R., <strong>Bandiera L.</strong>, Canale N. … <strong>Fedeli P.</strong>, <strong>Guidi V.</strong>, <strong>Mazzolari A.</strong> et al. · <i>Nucl. Instrum. Methods A 1074 (2025)</i></span></li>
-        <li><b><a href="https://doi.org/10.1140/epjp/s13360-021-02268-0">MBN explorer atomistic simulations of 855 MeV electron propagation and radiation emission in oriented silicon bent crystal: theory versus experiment</a></b><span>Haurylavets V.V., Leukovich A., <strong>Sytov A.</strong> … <strong>Bandiera L.</strong>, <strong>Mazzolari A.</strong>, <strong>Romagnoni M.</strong> et al. · <i>European Physical Journal Plus 137 (2022)</i></span></li>
+        <li><b><a href="https://doi.org/10.1007/s40042-023-00834-6">Geant4 simulation model of electromagnetic processes in oriented crystals for accelerator physics</a></b><span><strong>Sytov A.</strong>, <strong>Bandiera L.</strong>, Cho K., Hwang S., et al. · <i>J. Korean Phys. Soc. 83 (2023)</i></span></li>
+        <li><b><a href="https://doi.org/10.1103/PhysRevAccelBeams.22.064601">Simulation code for modeling of coherent effects of radiation generation in oriented crystals</a></b><span><strong>Sytov A.I.</strong>, Tikhomirov V.V., <strong>Bandiera L.</strong> · <i>Phys. Rev. Accel. Beams 22, 064601 (2019)</i></span></li>
+        <li><b><a href="https://doi.org/10.1016/j.nimb.2015.03.031">RADCHARM++: A C++ routine to compute the electromagnetic radiation generated by relativistic charged particles in crystals and complex structures</a></b><span><strong>Bandiera L.</strong>, Bagli E., <strong>Guidi V.</strong>, Tikhomirov V.V. · <i>Nucl. Instrum. Methods B 355 (2015)</i></span></li>
+        <li><b><a href="https://doi.org/10.1016/j.nima.2025.170277">A novel tool for advanced analysis of Geant4 simulations of charged particles interactions in oriented crystals</a></b><span>Negrello R., <strong>Bandiera L.</strong>, Canale N. … <strong>Fedeli P.</strong>, <strong>Guidi V.</strong>, <strong>Mazzolari A.</strong> et al. · <i>Nucl. Instrum. Methods A 1074 (2025)</i></span></li>
+        <li><b><a href="https://doi.org/10.1140/epjp/s13360-021-02268-0">MBN explorer atomistic simulations of 855 MeV electron propagation and radiation emission in oriented silicon bent crystal: theory versus experiment</a></b><span>Haurylavets V.V., Leukovich A., <strong>Sytov A.</strong> … <strong>Bandiera L.</strong>, <strong>Mazzolari A.</strong>, <strong>Romagnoni M.</strong> et al. · <i>European Physical Journal Plus 137 (2022)</i></span></li>
       </ol>
       <p class="papers"><a href="publications.html?line=simulate">All 3 papers on this line →</a></p>
     </div>
     <aside class="eq-side">
       <h2>Projects</h2>
-      <ul class="chips"><li>TRILLION (MSCA GF)</li><li>GEANT4INFN</li></ul>
+      <p class="proj-list">TRILLION (MSCA GF) · GEANT4INFN</p>
       <h2>Thesis topics</h2>
       <ul class="side-list"><li><a href="theses.html#t-simulations-of-beam-test-setups-for">Simulations of beam-test setups for oriented crystals</a></li><li><a href="theses.html#t-development-of-crystal-physics-in-the">Development of crystal physics in the Geant4 toolkit</a></li><li><a href="theses.html#t-simulations-of-plasma-wakefield-acceleration-in">Simulations of plasma wakefield acceleration in solid targets at SLAC E336</a></li></ul>
       <h2>Contact</h2>
@@ -126,7 +125,7 @@
         <a class="mail" href="mailto:crystals@fe.infn.it">crystals@fe.infn.it</a>
       </div>
       <div class="foot-logos">
-        <img src="img/logos/infn.png" alt="INFN" width="56" height="56" loading="lazy">
+        <img src="img/logos/infn.svg" alt="INFN" width="107" height="56" loading="lazy">
         <img src="img/logos/unife.png" alt="University of Ferrara" width="126" height="56" loading="lazy">
       </div>
     </div>

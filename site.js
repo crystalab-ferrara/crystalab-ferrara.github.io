@@ -30,7 +30,7 @@
       if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); if (btn) btn.focus(); }
     });
     // a tap on the icon replaces it (menu ↔ close), so a target no longer in the page counts as inside
-    document.addEventListener('click', function (e) { if (nav.classList.contains('open') && e.target.isConnected && !nav.contains(e.target)) setMenu(false); });
+    document.addEventListener('click', function (e) { if (nav.classList.contains('open') && e.target.isConnected && !nav.contains(e.target)) { e.preventDefault(); e.stopPropagation(); setMenu(false); } }, true);
     [].forEach.call(nav.querySelectorAll('.nav-links a'), function (a) { a.addEventListener('click', function () { setMenu(false); }); });
     // while it is open, Tab cycles through the menu button and the links
     nav.addEventListener('keydown', function (e) {
@@ -161,6 +161,9 @@
       g.addEventListener('click', function () { pick(g); });
       g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(g); } });
     });
+    var narrow = window.matchMedia('(max-width: 700px)');
+    var setTabs = function () { labs.forEach(function (g) { g.setAttribute('tabindex', narrow.matches ? '-1' : '0'); }); };
+    setTabs(); if (narrow.addEventListener) narrow.addEventListener('change', setTabs);
     if (sel) sel.addEventListener('change', function () {
       var g = labs.filter(function (l) { return l.getAttribute('data-name') + '|' + l.getAttribute('data-city') === sel.value; })[0];
       if (g) { pick(g); return; }

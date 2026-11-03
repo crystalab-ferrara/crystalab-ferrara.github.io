@@ -28,6 +28,7 @@
 .area { stroke: none; opacity: .14; }
 .ray-area { fill: #0a5fb0; }
 .ray2-area { fill: #f39a2e; }
+.lbl { font-size: 20px; } .note { font-size: 18px; } .sub { font-size: 15px; } @media (max-width: 360px) { .line-fig { padding-inline: 2px; } .lbl { font-size: 20.5px; } .note { font-size: 19.5px; } } }
 text { display: none; }</style>
 <title id="fig-pos-t">Three ways to make positrons from an electron beam</title><desc id="fig-pos-d">Top: electrons hit a thick amorphous tungsten target and produce positrons, with a lot of heat. Middle, hybrid scheme: a thin oriented tungsten crystal radiates photons, and an amorphous target downstream converts them into positrons. Bottom: a single thick oriented crystal both radiates and converts.</desc>
 <defs><marker id="fig-pos-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>

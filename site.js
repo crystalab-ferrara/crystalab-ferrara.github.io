@@ -88,7 +88,8 @@
     var focusHold = function () {
       var el = document.activeElement;
       if (canHover && hero.querySelector('.hero-lines:hover, .hero-ctrl:hover')) return true;
-      return !!el && el !== document.body && hero.contains(el) && el.matches(':focus-visible');
+      if (!el || el === document.body || !hero.contains(el)) return false;
+      try { return el.matches(':focus-visible'); } catch (e) { return true; }
     };
     var play = function () { stop(); timer = setInterval(function () { if (!focusHold()) show(i + 1); }, 6000); };
 
@@ -155,7 +156,7 @@
       card.querySelector('.lab-cat').textContent = g.getAttribute('data-cat');
       card.querySelector('.lab-text').textContent = g.getAttribute('data-text');
       // on narrow screens the card sits under the map: bring it into view
-      if (window.innerWidth <= 900) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      if (window.innerWidth <= 900) card.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     };
     labs.forEach(function (g) {
       g.addEventListener('click', function () { pick(g); });
@@ -216,8 +217,8 @@
         var opt = yearSel && yearSel.querySelector('option[value="' + b.id + '"]');
         if (opt) opt.disabled = n === 0;
       });
-      count.textContent = words.length || line ? shown + ' of ' + total + ' papers' : total + ' papers';
-      if (toCount) toCount.textContent = count.textContent;
+      var said = words.length || line ? shown + ' of ' + total + ' papers' : total + ' papers';
+      clearTimeout(run.t); run.t = setTimeout(function () { count.textContent = said; if (toCount) toCount.textContent = said; }, 300);
       empty.hidden = shown !== 0;
       var url = new URL(location.href);
       if (q.value.trim()) url.searchParams.set('q', q.value.trim()); else url.searchParams.delete('q');

@@ -28,6 +28,7 @@
 .area { stroke: none; opacity: .14; }
 .ray-area { fill: #0a5fb0; }
 .ray2-area { fill: #f39a2e; }
+.lbl { font-size: 20px; } .note { font-size: 18px; } .sub { font-size: 15px; } @media (max-width: 360px) { .line-fig { padding-inline: 2px; } .lbl { font-size: 20.5px; } .note { font-size: 19.5px; } } }
 text { display: none; }</style>
 <title id="fig-bond-t">Anodic bonding of a crystal to a figured substrate</title><desc id="fig-bond-d">Left: a flat crystal plate above a glass substrate whose surface has been figured to the wanted curvature. Right: heated and under a voltage, with the crystal positive, sodium ions in the glass drift away from the interface, the surfaces are pulled together and bond, and the crystal takes the shape of the substrate.</desc>
 <defs><marker id="fig-bond-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>

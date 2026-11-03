@@ -28,6 +28,7 @@
 .area { stroke: none; opacity: .14; }
 .ray-area { fill: #0a5fb0; }
 .ray2-area { fill: #f39a2e; }
+.lbl { font-size: 20px; } .note { font-size: 18px; } .sub { font-size: 15px; } @media (max-width: 360px) { .line-fig { padding-inline: 2px; } .lbl { font-size: 20.5px; } .note { font-size: 19.5px; } } }
 text { display: none; }</style>
 <title id="fig-pot-t">Planar channeling in the continuous potential of the crystal planes</title><desc id="fig-pot-d">The transverse potential energy of a positive particle between atomic planes forms wells, highest at each plane. A particle whose transverse energy is below the well depth is trapped and oscillates inside one channel: it is channeled. One with more transverse energy crosses the planes: it is over the barrier.</desc>
 <defs><marker id="fig-pot-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>

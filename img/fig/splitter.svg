@@ -28,6 +28,7 @@
 .area { stroke: none; opacity: .14; }
 .ray-area { fill: #0a5fb0; }
 .ray2-area { fill: #f39a2e; }
+.lbl { font-size: 20px; } .note { font-size: 18px; } .sub { font-size: 15px; } @media (max-width: 360px) { .line-fig { padding-inline: 2px; } .lbl { font-size: 20.5px; } .note { font-size: 19.5px; } } }
 text { display: none; }</style>
 <title id="fig-split-t">X-ray multi-projection imaging with crystal beam splitters</title><desc id="fig-split-d">An X-ray beam crosses two thin crystals. Each diffracts part of the beam and lets the rest through; two more crystals send the diffracted beams back towards the sample, which is reached from three directions at the same time. Behind it, three detectors record three views in a single shot.</desc>
 <defs><marker id="fig-split-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>

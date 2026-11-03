@@ -28,6 +28,7 @@
 .area { stroke: none; opacity: .14; }
 .ray-area { fill: #0a5fb0; }
 .ray2-area { fill: #f39a2e; }
+.lbl { font-size: 20px; } .note { font-size: 18px; } .sub { font-size: 15px; } @media (max-width: 360px) { .line-fig { padding-inline: 2px; } .lbl { font-size: 20.5px; } .note { font-size: 19.5px; } } }
 text { display: none; }</style>
 <title id="fig-shower-t">Longitudinal profile of an electromagnetic shower in a misaligned and in an aligned crystal</title><desc id="fig-shower-d">Energy deposited per unit depth against depth, for the same high-energy electron, positron or photon. In the misaligned crystal the curve rises slowly and peaks deep inside. In the crystal aligned with the beam it peaks much earlier and falls to zero within a shorter depth. The two curves enclose the same area, the same energy.</desc>
 <defs><marker id="fig-shower-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="tip" d="M0 0L10 5L0 10z"/></marker>

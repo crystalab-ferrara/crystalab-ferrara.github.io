@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Quiz HACCP Pasticceria</title>
+<meta name="description" content="Simulazione d'esame HACCP per pasticceria: 100 domande su farine, latte, lievito, pasta sfoglia, pasta frolla, creme e norme, con soluzioni commentate.">
+<style>
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(../fonts/ibm-plex-sans-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(../fonts/ibm-plex-sans-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* Layout: one working column (setup bar, question card, results) with a reference sheet of
+   the numbers to memorise beside it on wide screens; the sheet drops below on phones.
+   Steel-grey lab ground, white work surface, the blue of the food-industry plaster as the accent. */
+:root {
+  --bg: #eef2f5; --surface: #ffffff; --ink: #15212b; --muted: #586a78; --line: #d3dce3;
+  --accent: #1f5fd1; --accent-ink: #ffffff; --accent-soft: #e4edfc;
+  --ok: #17784a; --ok-soft: #e1f3ea; --bad: #b42318; --bad-soft: #fbe7e5;
+  --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fs-small: .8125rem; --fs-body: 1rem; --fs-q: 1.1875rem; --fs-h2: 1.375rem; --fs-h1: clamp(1.625rem, 4vw, 2.25rem);
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d141a; --surface: #152029; --ink: #e3eaf0; --muted: #94a5b2; --line: #263540;
+  --accent: #6f9ffc; --accent-ink: #0d141a; --accent-soft: #1b2b45;
+  --ok: #4cc38a; --ok-soft: #12291f; --bad: #f2786b; --bad-soft: #33191a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0d141a; --surface: #152029; --ink: #e3eaf0; --muted: #94a5b2; --line: #263540;
+  --accent: #6f9ffc; --accent-ink: #0d141a; --accent-soft: #1b2b45;
+  --ok: #4cc38a; --ok-soft: #12291f; --bad: #f2786b; --bad-soft: #33191a; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 var(--fs-body)/1.55 var(--font); -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+a { color: var(--accent) }
+button, select { font: inherit; color: inherit }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px }
+
+header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; margin-bottom: 20px }
+.eyebrow { font-size: var(--fs-small); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 4px }
+h1 { font-size: var(--fs-h1); line-height: 1.15; margin: 0; text-wrap: balance; font-weight: 700 }
+.sub { margin: 6px 0 0; color: var(--muted); max-width: 60ch }
+.dl { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); text-decoration: none; font-weight: 600; font-size: .9375rem }
+.dl:hover { border-color: var(--accent) }
+
+nav.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 20px; overflow-x: auto }
+nav.tabs a { padding: 10px 14px; text-decoration: none; color: var(--muted); font-weight: 600; border-bottom: 3px solid transparent; margin-bottom: -1px; white-space: nowrap }
+nav.tabs a[aria-current="page"] { color: var(--ink); border-color: var(--accent) }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr) } }
+
+.setup { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 14px; margin-bottom: 16px }
+.setup .row { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center }
+.lbl { font-size: var(--fs-small); font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; min-width: 88px }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden }
+.seg input, .chips input { position: absolute; opacity: 0; pointer-events: none }
+.seg label { padding: 7px 12px; cursor: pointer; font-size: .9375rem }
+.seg label + input + label, .seg input + label ~ label { border-left: 1px solid var(--line) }
+.seg input:checked + label { background: var(--accent); color: var(--accent-ink); font-weight: 600 }
+.seg input:focus-visible + label, .chips input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: -3px }
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+.chips label { padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-size: .875rem; user-select: none }
+.chips input:checked + label { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); font-weight: 600 }
+select { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface) }
+.btn { padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-weight: 600 }
+.btn:hover:not(:disabled) { border-color: var(--accent) }
+.btn:disabled { opacity: .45; cursor: default }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink) }
+.hint { font-size: var(--fs-small); color: var(--muted); margin: 0 }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px }
+.qhead { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: var(--fs-small); color: var(--muted) }
+.qhead b { color: var(--ink); font-variant-numeric: tabular-nums }
+.tag { padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); font-weight: 600 }
+.bar { height: 4px; background: var(--line); border-radius: 2px; margin: 12px 0 18px; overflow: hidden }
+.bar span { display: block; height: 100%; background: var(--accent); transition: width .25s }
+.q { font-size: var(--fs-q); line-height: 1.4; font-weight: 600; margin: 0 0 16px; text-wrap: pretty }
+.opts { display: grid; gap: 8px }
+.opt { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start; text-align: left; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; line-height: 1.45 }
+.opt:hover:not(:disabled) { border-color: var(--accent) }
+.opt:disabled { cursor: default }
+.key { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--line); font-weight: 700; font-size: .8125rem; color: var(--muted) }
+.opt.picked { border-color: var(--accent); background: var(--accent-soft) }
+.opt.picked .key { background: var(--accent); border-color: var(--accent); color: var(--accent-ink) }
+.opt.right { border-color: var(--ok); background: var(--ok-soft) }
+.opt.right .key { background: var(--ok); border-color: var(--ok); color: var(--surface) }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft) }
+.opt.wrong .key { background: var(--bad); border-color: var(--bad); color: var(--surface) }
+.fb { margin-top: 14px; padding: 12px 14px; border-radius: 8px; border-left: 4px solid var(--ok); background: var(--ok-soft) }
+.fb.no { border-color: var(--bad); background: var(--bad-soft) }
+.fb p { margin: 0 }
+.fb p + p { margin-top: 6px }
+.nav { display: flex; gap: 8px; align-items: center; margin-top: 18px; flex-wrap: wrap }
+.nav .sp { flex: 1 }
+.map { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line) }
+.map button { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-size: .75rem; font-variant-numeric: tabular-nums; padding: 0 }
+.map button.done { background: var(--accent-soft); border-color: var(--accent) }
+.map button.cur { outline: 2px solid var(--ink); outline-offset: 1px }
+.confirm { margin-top: 14px; padding: 12px 14px; border: 1px solid var(--bad); border-radius: 8px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
+.confirm p { margin: 0; flex: 1 1 240px }
+
+.score { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px }
+.big { font-size: 3rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums }
+.pill { padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: .875rem }
+.pill.ok { background: var(--ok-soft); color: var(--ok) } .pill.no { background: var(--bad-soft); color: var(--bad) }
+.bytopic { display: grid; gap: 8px; margin: 18px 0 }
+.bt { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 3.5rem; gap: 10px; align-items: center; font-size: .9375rem }
+.bt .track { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden }
+.bt .track span { display: block; height: 100%; background: var(--accent) }
+.bt .n { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted) }
+@media (max-width: 520px) { .bt { grid-template-columns: minmax(0, 1fr) 3.5rem } .bt .track { grid-column: 1 / -1; grid-row: 2 } }
+.review { display: grid; gap: 10px; margin-top: 12px }
+.rv { border: 1px solid var(--line); border-left: 4px solid var(--ok); border-radius: 8px; padding: 12px 14px }
+.rv.no { border-left-color: var(--bad) }
+.rv h3 { font-size: 1rem; margin: 0 0 6px; line-height: 1.4 }
+.rv p { margin: 4px 0 0; font-size: .9375rem }
+.rv .yours { color: var(--bad) } .rv .good { color: var(--ok); font-weight: 600 }
+.rv .ex { color: var(--muted) }
+h2 { font-size: var(--fs-h2); margin: 0 0 10px; text-wrap: balance }
+
+aside.ref { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px) }
+@media (max-width: 900px) { aside.ref { position: static } }
+aside h2 { font-size: 1rem; margin: 0 0 10px }
+aside dl { margin: 0; display: grid; gap: 0 }
+aside dl div { display: grid; gap: 2px; padding: 8px 0; border-top: 1px solid var(--line) }
+aside dt { font-size: var(--fs-small); color: var(--muted) }
+aside dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent) }
+aside ol { margin: 6px 0 0; padding-left: 1.3em; font-size: .875rem }
+aside h3 { font-size: var(--fs-small); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 16px 0 0 }
+
+.solbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 16px }
+.sol-topic { margin-bottom: 28px }
+.sol-topic h2 { padding-bottom: 6px; border-bottom: 2px solid var(--accent) }
+.sq { padding: 14px 0; border-bottom: 1px solid var(--line) }
+.sq h3 { font-size: 1rem; margin: 0 0 8px; line-height: 1.4; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) }
+.sq h3 .num { color: var(--accent); font-variant-numeric: tabular-nums }
+.sq ol { list-style: none; margin: 0 0 0 2.4rem; padding: 0; display: grid; gap: 3px; font-size: .9375rem }
+.sq li { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) }
+.sq li b { color: var(--muted) }
+.sq .ex { margin: 8px 0 0 2.4rem; font-size: .9375rem; color: var(--muted) }
+.show .sq li.c { color: var(--ok); font-weight: 600 } .show .sq li.c b { color: var(--ok) }
+.sq .ex { display: none } .show .sq .ex { display: block }
+footer { margin-top: 40px; font-size: var(--fs-small); color: var(--muted) }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Simulazione d'esame · alimentaristi</p>
+      <h1>HACCP in pasticceria</h1>
+      <p class="sub">100 domande su farine, latte, lievito, pasta sfoglia, pasta frolla, creme e norme igieniche, con soluzioni commentate.</p>
+    </div>
+    <a class="dl" href="HACCP-pasticceria-100-domande.docx" download>Domande in Word (.docx)</a>
+  </header>
+
+  <nav class="tabs" aria-label="Sezioni">
+    <a href="#quiz" id="tab-quiz">Quiz</a>
+    <a href="#soluzioni" id="tab-sol">Tutte le domande con le soluzioni</a>
+  </nav>
+
+  <div class="layout">
+    <main>
+      <section id="view-quiz">
+        <form class="setup" id="setup" aria-label="Impostazioni della prova">
+          <div class="row">
+            <span class="lbl">Modalità</span>
+            <div class="seg" role="radiogroup" aria-label="Modalità">
+              <input type="radio" name="mode" id="m-esame" value="esame" checked><label for="m-esame">Esame: correzione alla fine</label>
+              <input type="radio" name="mode" id="m-studio" value="studio"><label for="m-studio">Allenamento: correzione subito</label>
+            </div>
+          </div>
+          <div class="row">
+            <span class="lbl">Argomenti</span>
+            <div class="chips" id="chips"></div>
+          </div>
+          <div class="row">
+            <label class="lbl" for="count">Domande</label>
+            <select id="count">
+              <option value="10">10</option>
+              <option value="20" selected>20</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+              <option value="all">tutte quelle scelte</option>
+            </select>
+            <button class="btn primary" type="submit" id="go">Nuova prova</button>
+            <p class="hint">Tastiera: A–D per rispondere, Invio per andare avanti.</p>
+          </div>
+        </form>
+        <div id="stage" aria-live="polite"></div>
+      </section>
+
+      <section id="view-sol" hidden>
+        <div class="solbar">
+          <button class="btn" type="button" id="toggle-sol" aria-pressed="true">Nascondi le risposte</button>
+          <p class="hint">Nascondi le risposte per ripassare: provi a rispondere e poi le mostri.</p>
+        </div>
+        <div id="sol" class="show"></div>
+      </section>
+    </main>
+
+    <aside class="ref" aria-label="Valori da ricordare">
+      <h2>Valori da ricordare</h2>
+      <dl>
+        <div><dt>Creme, panna, paste farcite</dt><dd>0 / +4 °C</dd></div>
+        <div><dt>Latte pastorizzato</dt><dd>0 / +4 °C</dd></div>
+        <div><dt>Surgelati</dt><dd>≤ −18 °C</dd></div>
+        <div><dt>Zona di pericolo</dt><dd>circa +5 … +60 °C</dd></div>
+        <div><dt>Mantenimento a caldo</dt><dd>≥ +60 °C</dd></div>
+        <div><dt>Abbattimento (refrigerazione)</dt><dd>+70 → +3 °C in ≤ 90 min</dd></div>
+        <div><dt>Abbattimento (surgelazione)</dt><dd>+70 → −18 °C in ≤ 4 h</dd></div>
+        <div><dt>Pastorizzazione latte HTST</dt><dd>72 °C × 15 s</dd></div>
+        <div><dt>Olio di frittura, composti polari</dt><dd>≤ 25%</dd></div>
+        <div><dt>«Senza glutine»</dt><dd>≤ 20 mg/kg</dd></div>
+      </dl>
+      <h3>I 7 principi HACCP</h3>
+      <ol>
+        <li>Analisi dei pericoli</li>
+        <li>Punti critici di controllo (CCP)</li>
+        <li>Limiti critici</li>
+        <li>Monitoraggio</li>
+        <li>Azioni correttive</li>
+        <li>Verifica</li>
+        <li>Documentazione e registrazioni</li>
+      </ol>
+    </aside>
+  </div>
+
+  <footer>Materiale di ripasso. La soglia del 70% è indicativa: formato e soglia dell'esame reale li decide l'ente che organizza il corso.</footer>
+</div>
+
+<script>
+const D = {"topics":[["farine","Farine e cereali"],["latte","Latte, panna e burro"],["lievito","Lievito e lievitazione"],["sfoglia","Pasta sfoglia"],["frolla","Pasta frolla e biscotti"],["creme","Creme, uova e farciture"],["norme","Igiene, norme HACCP e altro"]],"qs":[{"n":1,"t":"farine","q":"Qual è il principale pericolo chimico legato a farine e cereali?","o":["I nitriti","Il cloro dell'acqua di impasto","L'istamina","Le micotossine prodotte dalle muffe (es. deossinivalenolo, aflatossine)"],"a":3,"e":"Le micotossine si formano quando il cereale ammuffisce in campo o in un magazzino umido e non vengono distrutte dalla cottura. Si prevengono comprando da fornitori qualificati e conservando la farina all'asciutto. I limiti di legge sono nel Reg. UE 2023/915."},{"n":2,"t":"farine","q":"Come si conservano correttamente i sacchi di farina in magazzino?","o":["In cella frigorifera insieme a creme e panna","Aperti, per far «respirare» la farina","Su pallet o scaffali sollevati da terra e staccati dal muro, in luogo fresco e asciutto, chiusi, con rotazione FIFO","Appoggiati a terra vicino al forno, così restano asciutti"],"a":2,"e":"Sollevare i sacchi da terra e staccarli dal muro permette di pulire e di controllare la presenza di infestanti. Umidità e calore favoriscono muffe e insetti. Il primo sacco entrato è il primo a essere usato (FIFO)."},{"n":3,"t":"farine","q":"In un sacco di farina trovi piccoli insetti e filamenti simili a ragnatele. Cosa fai?","o":["La mescoli con farina nuova per diluire il problema","Non lo usi, lo isoli, controlli i sacchi vicini e segnali il problema per l'intervento di disinfestazione","La usi solo per prodotti cotti ad alta temperatura","Setacci la farina e la usi normalmente"],"a":1,"e":"I filamenti sono tipici delle tarme della farina (es. Ephestia kuehniella). La farina infestata è contaminata e va scartata; l'infestazione può essersi estesa ad altri sacchi. L'evento va registrato e gestito con il piano di lotta agli infestanti."},{"n":4,"t":"farine","q":"Perché non si deve assaggiare un impasto crudo a base di farina?","o":["Non c'è alcun rischio: la farina è un prodotto sterile","La farina è un ingrediente crudo che può contenere batteri patogeni (es. E. coli produttori di tossine, Salmonella), eliminati solo dalla cottura","Perché il lievito vivo continua a fermentare nello stomaco","Perché il glutine crudo è tossico per tutti"],"a":1,"e":"La farina non subisce trattamenti che uccidono i batteri. Focolai di E. coli STEC sono stati collegati a impasti crudi. La cottura completa rende sicuro il prodotto."},{"n":5,"t":"farine","q":"Un prodotto può riportare la dicitura «senza glutine» se il glutine non supera:","o":["200 mg/kg","0 mg/kg: deve esserne del tutto privo","20 mg/kg (20 ppm)","100 mg/kg"],"a":2,"e":"Lo stabilisce il Reg. UE 828/2014. La dicitura «con contenuto di glutine molto basso» vale invece fino a 100 mg/kg."},{"n":6,"t":"farine","q":"Dal punto di vista della sicurezza alimentare, a cosa serve setacciare la farina?","o":["A eliminare le micotossine","A ridurre il contenuto di glutine","A distruggere le spore batteriche","A trattenere grumi, eventuali corpi estranei e insetti (pericolo fisico)"],"a":3,"e":"La setacciatura è una misura di controllo contro i pericoli fisici. Non ha effetto su batteri, spore, micotossine o glutine."},{"n":7,"t":"farine","q":"Il laboratorio produce anche dolci senza glutine. Come si evita la contaminazione crociata?","o":["Basta mettere carta forno nuova sullo stesso banco infarinato","Si possono preparare subito dopo il pane nella stessa planetaria, senza lavarla","Basta cuocerli a una temperatura più alta","Lavorandoli in momenti o spazi separati, con attrezzi puliti o dedicati, e conservando le farine senza glutine chiuse e separate"],"a":3,"e":"La farina resta sospesa nell'aria e si deposita su banchi e attrezzi. La cottura non elimina il glutine, quindi l'unica difesa è la separazione e una pulizia accurata."},{"n":8,"t":"farine","q":"Quale di questi ingredienti è un allergene da dichiarare secondo il Reg. UE 1169/2011?","o":["Amido di mais","Cereali contenenti glutine (frumento, segale, orzo, avena, farro, kamut)","Farina di riso","Fecola di patate"],"a":1,"e":"I cereali contenenti glutine sono il primo dei 14 allergeni dell'Allegato II del Reg. UE 1169/2011. Riso, patata e mais non contengono glutine."},{"n":9,"t":"farine","q":"Cosa indica il «tipo» di una farina di grano tenero (00, 0, 1, 2, integrale)?","o":["Il livello di sicurezza igienica","La data di macinazione","Il grado di raffinazione, misurato dal contenuto di ceneri (sali minerali)","Il contenuto di glutine"],"a":2,"e":"Più la farina è raffinata (00), meno ceneri contiene. Il tipo non dice nulla sulla sicurezza né sulla quantità di glutine."},{"n":10,"t":"farine","q":"Dove si mette la farina travasata dai sacchi?","o":["Sopra la farina vecchia, rabboccando","Nei sacchi vuoti di un altro prodotto","In un secchio qualsiasi, senza coperchio","In contenitori per alimenti puliti e chiusi, etichettati con tipo di farina e lotto o scadenza; prima di riempirli si svuotano e si puliscono"],"a":3,"e":"Rabboccare farina nuova su quella vecchia impedisce la rotazione e mantiene eventuali infestanti. L'etichetta conserva la rintracciabilità."},{"n":11,"t":"farine","q":"Quali infestanti sono tipici dei magazzini di farine?","o":["Tarme della farina, tribolio e punteruoli","Zecche","Pidocchi","Zanzare"],"a":0,"e":"Sono insetti delle derrate che si sviluppano in farine, cereali e frutta secca. Si controllano con pulizia, rotazione, contenitori chiusi e trappole a feromoni."},{"n":12,"t":"farine","q":"Una farina ha odore di muffa e grumi duri che non si sciolgono. Cosa fai?","o":["La setacci e la usi","La fai asciugare al sole","La usi per il pane, che cuoce più a lungo","La consideri non conforme: non la usi, la separi e la segnali"],"a":3,"e":"Odore di muffa e grumi indicano che ha preso umidità. Può contenere muffe e micotossine, che la cottura non elimina."},{"n":13,"t":"farine","q":"Perché la polvere di farina nel laboratorio va limitata?","o":["Perché rovina il colore dei dolci","Non è un problema","Perché può causare allergie respiratorie negli operatori («asma del panettiere») e si deposita su superfici e prodotti","Perché fa lievitare troppo gli impasti"],"a":2,"e":"Si limita versando la farina con calma, usando impastatrici con coperchio e pulendo con aspirazione invece che soffiando o spazzando a secco."},{"n":14,"t":"latte","q":"A quale temperatura va conservato il latte pastorizzato?","o":["Tra +8 e +10 °C","Tra 0 e +4 °C","A temperatura ambiente fino all'apertura","A −18 °C"],"a":1,"e":"Il latte pastorizzato è un prodotto deperibile e va tenuto in frigorifero (0/+4 °C) anche quando è chiuso, entro la data di scadenza."},{"n":15,"t":"latte","q":"Quale combinazione tempo/temperatura corrisponde alla pastorizzazione rapida (HTST) del latte?","o":["135–140 °C per pochi secondi","72 °C per 15 secondi","100 °C per 10 minuti","60 °C per 1 minuto"],"a":1,"e":"La pastorizzazione HTST (alta temperatura, breve tempo) usa 72 °C per 15 secondi ed elimina i patogeni ma non tutte le spore. 135–140 °C per pochi secondi è il trattamento UHT."},{"n":16,"t":"latte","q":"Come va usato il latte crudo?","o":["Va bollito prima del consumo: la legge impone di indicarlo al consumatore","Si può usare a crudo nelle creme non cotte","Basta conservarlo a +4 °C per renderlo sicuro","È più sicuro del latte pastorizzato perché naturale"],"a":0,"e":"Il latte crudo può contenere Listeria, Salmonella, Campylobacter ed E. coli produttori di tossine. In Italia sulla vendita deve comparire l'indicazione di consumarlo solo dopo bollitura."},{"n":17,"t":"latte","q":"Quale batterio patogeno, presente in latte e formaggi, riesce a moltiplicarsi anche alle temperature del frigorifero?","o":["Clostridium perfringens","Salmonella","Listeria monocytogenes","Staphylococcus aureus"],"a":2,"e":"Listeria cresce lentamente anche a +4 °C. Per questo i prodotti pronti a base di latte devono rispettare la data di scadenza anche se tenuti in frigorifero."},{"n":18,"t":"latte","q":"Come si conserva il latte UHT?","o":["Chiuso, nel congelatore","Chiuso a temperatura ambiente fino al TMC; una volta aperto in frigorifero e usato in pochi giorni","Aperto, a temperatura ambiente per una settimana","Sempre in frigorifero, anche chiuso"],"a":1,"e":"Il trattamento UHT e la confezione asettica lo rendono stabile finché è chiuso. Dopo l'apertura si contamina come qualsiasi latte."},{"n":19,"t":"latte","q":"Il lattosio va indicato tra gli allergeni?","o":["Solo se supera il 10% della ricetta","Sì: «latte e prodotti a base di latte (incluso il lattosio)» è uno dei 14 allergeni","Solo se si usa latte crudo","No, il lattosio causa solo intolleranza e non va dichiarato"],"a":1,"e":"L'Allegato II del Reg. UE 1169/2011 cita espressamente il lattosio insieme al latte e ai suoi derivati (burro, panna, ricotta, mascarpone…)."},{"n":20,"t":"latte","q":"Qual è la gestione corretta della panna montata?","o":["Si tiene a 0/+4 °C, si monta con fruste e contenitori puliti e freddi e quella avanzata non si rimette nella confezione originale","Si può lasciare in vetrina non refrigerata fino a sera","Si conserva meglio dentro la sac à poche già usata","Si rimonta e si riusa il giorno dopo anche se è rimasta fuori dal frigo"],"a":0,"e":"La panna è ricca di acqua e proteine ed è un ottimo terreno per i batteri. Rimetterla nella confezione originale contamina tutta la panna rimasta."},{"n":21,"t":"latte","q":"Come si conserva il burro in laboratorio?","o":["Nella cella di lievitazione","Senza confezione, per farlo respirare","Sul banco a temperatura ambiente per averlo sempre morbido","In frigorifero, ben chiuso, lontano da alimenti dagli odori forti e usato secondo la rotazione delle scadenze"],"a":3,"e":"Il burro assorbe gli odori e irrancidisce con luce e calore. Si toglie dal frigo solo la quantità da lavorare."},{"n":22,"t":"latte","q":"Mascarpone e ricotta in confezione aperta:","o":["Si conservano a temperatura ambiente fino a fine giornata","Si richiudono, si tengono a 0/+4 °C e si usano in tempi brevi, secondo le indicazioni del produttore","Si possono tenere aperti in frigorifero fino alla data stampata sulla confezione chiusa","Si congelano e scongelano più volte"],"a":1,"e":"Sono latticini freschi molto deperibili. La data di scadenza vale per la confezione chiusa; una volta aperta la durata si riduce."},{"n":23,"t":"latte","q":"Cosa indica il bollo ovale (es. «IT 08 123 CE») sulle confezioni di latte e derivati?","o":["La data di produzione","Il prezzo di vendita","Che il prodotto è biologico","Lo stabilimento riconosciuto che ha prodotto o confezionato il prodotto"],"a":3,"e":"È il marchio di identificazione previsto dal Reg. CE 853/2004 per i prodotti di origine animale. Serve alla rintracciabilità."},{"n":24,"t":"latte","q":"Come si conserva il latte in polvere?","o":["In un sacchetto aperto sullo scaffale","Chiuso, in luogo fresco e asciutto; dopo l'apertura va richiuso bene perché assorbe umidità","In frigorifero aperto","Vicino al forno, così resta secco"],"a":1,"e":"Il latte in polvere è stabile perché è secco (bassa aw). Se prende umidità forma grumi e può alterarsi."},{"n":25,"t":"latte","q":"Una brocca di latte è rimasta sul banco a temperatura ambiente per tutta la mattina. Cosa fai?","o":["La rimetti in frigorifero e la usi il giorno dopo","La riversi nella bottiglia originale","La elimini","La usi subito in una crema da cuocere"],"a":2,"e":"Il latte rimasto per ore nella zona di pericolo può avere una carica batterica alta e tossine. Non si recupera."},{"n":26,"t":"latte","q":"Trovi in frigorifero una confezione di panna con la data di scadenza superata da un giorno. Cosa fai?","o":["La usi in un prodotto cotto","La monti subito e la vendi in giornata","Non la usi: la separi come prodotto non conforme e la elimini","La usi solo se ha un buon odore"],"a":2,"e":"La data «da consumarsi entro» riguarda la sicurezza. I prodotti scaduti non si usano e non si vendono."},{"n":27,"t":"lievito","q":"Come si conserva il lievito di birra fresco (compresso)?","o":["A temperatura ambiente vicino al forno","Sotto il bancone, in un sacchetto qualsiasi","In frigorifero, ben chiuso, entro la data indicata dal produttore","Aperto, nella cella di lievitazione"],"a":2,"e":"Il lievito fresco è un organismo vivo e deperibile: al caldo si esaurisce e può ammuffire o contaminarsi."},{"n":28,"t":"lievito","q":"Che cos'è il lievito di birra?","o":["Un batterio patogeno","Un enzima naturalmente presente nella farina","Un additivo chimico","Un microrganismo vivo: un fungo unicellulare (Saccharomyces cerevisiae)"],"a":3,"e":"Saccharomyces cerevisiae fermenta gli zuccheri e produce anidride carbonica (che fa lievitare) e alcol. Non è patogeno."},{"n":29,"t":"lievito","q":"Come agisce il lievito chimico per dolci?","o":["Fa lievitare grazie a batteri lattici","Fa fermentare l'impasto con lieviti vivi","Funziona solo dopo una notte in frigorifero","Libera anidride carbonica con una reazione chimica (bicarbonato + acido) attivata da umidità e calore; non contiene microrganismi"],"a":3,"e":"Si chiama anche «agente lievitante». Va tenuto chiuso e all'asciutto perché l'umidità lo attiva e lo rende inefficace."},{"n":30,"t":"lievito","q":"La cella di lievitazione lavora a circa 25–30 °C con alta umidità. Quale regola igienica vale?","o":["Ci si può mettere qualsiasi prodotto, purché coperto","Non ci si mettono prodotti farciti con creme, panna o salumi, e la cella va pulita e sanificata regolarmente","Non serve pulirla: il calore la sterilizza","Si può usare per scongelare la crema pasticcera"],"a":1,"e":"Caldo e umidità sono le condizioni ideali per batteri e muffe. In cella vanno solo gli impasti da lievitare."},{"n":31,"t":"lievito","q":"Quale pratica è corretta nella gestione del lievito madre?","o":["Togliere la muffa in superficie e continuare a usarlo","Conservarlo scoperto per farlo respirare","Rinfreschi regolari con farina e acqua potabile, contenitore pulito e coperto, eliminazione se compaiono muffe o odori anomali","Rinfrescarlo con acqua non potabile per renderlo più forte"],"a":2,"e":"L'acidità del lievito madre ostacola molti patogeni ma non le muffe. Un lievito madre ammuffito va eliminato."},{"n":32,"t":"lievito","q":"Un panetto di lievito fresco ha macchie colorate e odore sgradevole. Cosa fai?","o":["Lo usi in un impasto da cuocere ben bene","Togli la parte macchiata e usi il resto","Lo elimini e annoti la non conformità","Lo sciogli in acqua calda per sanificarlo"],"a":2,"e":"Macchie e odori anomali indicano muffe o contaminazioni. Il prodotto alterato non si usa."},{"n":33,"t":"lievito","q":"Perché il lievito non rappresenta un pericolo nel prodotto finito cotto?","o":["Perché la cottura lo inattiva: muore oltre circa 55–60 °C","Perché lo zucchero lo uccide durante l'impasto","Perché il sale lo neutralizza","Perché il lievito è sempre un pericolo, anche nel cotto"],"a":0,"e":"Con la cottura il lievito muore e la fermentazione si ferma. Anche per questo l'acqua per scioglierlo non deve essere troppo calda."},{"n":34,"t":"lievito","q":"Come si conserva il lievito di birra secco attivo?","o":["Chiuso, a temperatura ambiente all'asciutto; una volta aperto va richiuso bene e usato presto (spesso in frigorifero, secondo l'etichetta)","Sempre in congelatore, anche aperto","Sciolto in acqua e tenuto in un barattolo per una settimana","Aperto, vicino al forno"],"a":0,"e":"Il lievito secco è disidratato, quindi più stabile del fresco. L'umidità e l'aria lo riattivano e ne riducono l'efficacia."},{"n":35,"t":"lievito","q":"Una brioche con uova e burro deve lievitare a lungo. Qual è il metodo più sicuro?","o":["Metterla vicino al forno acceso","La lievitazione controllata: fase al freddo e poi lievitazione programmata in cella","Coprirla con un panno e lasciarla al sole","Lasciarla tutta la notte sul banco a temperatura ambiente"],"a":1,"e":"Gli impasti ricchi di uova e burro sono deperibili. Il fermalievita li tiene al freddo e avvia la lievitazione solo il tempo necessario."},{"n":36,"t":"lievito","q":"Il bicarbonato di ammonio («ammoniaca per dolci») è:","o":["Un lievito naturale vivo","Un conservante da aggiungere alle creme","Un detergente per le teglie","Un agente lievitante chimico usato per biscotti secchi, che si decompone in cottura"],"a":3,"e":"Si usa nei prodotti sottili e secchi perché in cottura si libera del tutto. Va conservato ben chiuso e lontano dall'umidità."},{"n":37,"t":"lievito","q":"Perché teli, cassette e telai per la lievitazione vanno lavati e asciugati regolarmente?","o":["Perché altrimenti gli impasti lievitano troppo","Perché trattengono residui di impasto e umidità, dove crescono muffe e batteri","Non serve: la farina li tiene puliti","Solo per una questione di aspetto"],"a":1,"e":"Sono superfici a contatto con gli alimenti e rientrano nel piano di pulizia."},{"n":38,"t":"lievito","q":"Il lievito di birra è uno dei 14 allergeni da dichiarare?","o":["Sì, è il quindicesimo allergene","Sì, solo quello fresco","Sì, ma solo nei prodotti senza glutine","No, non è nell'elenco; se un cliente lo chiede va comunque informato in modo corretto"],"a":3,"e":"L'Allegato II del Reg. UE 1169/2011 non comprende il lievito. Resta l'obbligo di dare informazioni corrette sugli ingredienti."},{"n":39,"t":"lievito","q":"Quale acqua si usa per sciogliere il lievito e per i rinfreschi?","o":["Acqua bollente per sanificare","Acqua di risciacquo delle attrezzature","Acqua piovana, più naturale","Acqua potabile, a temperatura tiepida e non calda"],"a":3,"e":"In un laboratorio alimentare tutta l'acqua che entra nei prodotti deve essere potabile. L'acqua troppo calda uccide il lievito."},{"n":40,"t":"sfoglia","q":"Come si scongela la pasta sfoglia surgelata?","o":["In frigorifero (0/+4 °C), oppure direttamente in cottura se lo indica il produttore","Immersa in acqua calda","Sul banco a temperatura ambiente per tutta la notte","Vicino al forno acceso"],"a":0,"e":"Lo scongelamento in frigorifero mantiene il prodotto fuori dalla zona di temperatura in cui i batteri si moltiplicano."},{"n":41,"t":"sfoglia","q":"Si può ricongelare la pasta sfoglia cruda già scongelata?","o":["Sì, basta avvolgerla nella pellicola","Sì, se la si ricongela entro una settimana","Sì, tutte le volte che serve","No: una volta scongelata va lavorata, cotta e consumata, non ricongelata da cruda"],"a":3,"e":"Durante lo scongelamento i microrganismi riprendono attività. Ricongelare il crudo moltiplica la carica batterica e peggiora la qualità."},{"n":42,"t":"sfoglia","q":"Durante la sfogliatura il burro tende ad ammorbidirsi. Cosa è corretto fare?","o":["Aggiungere farina finché non si indurisce","Lavorarlo vicino al forno per accelerare","Lasciarlo scoperto sul banco tra un giro e l'altro","Riporre l'impasto coperto in frigorifero tra un giro e l'altro, senza lasciarlo a lungo sul banco"],"a":3,"e":"Il riposo in frigorifero è utile sia per la tecnica (gli strati restano separati) sia per l'igiene (impasto con burro tenuto al freddo e protetto)."},{"n":43,"t":"sfoglia","q":"Come si conservano i cannoncini di sfoglia farciti con crema pasticcera?","o":["In frigorifero o in vetrina refrigerata a non più di +4 °C, vendendoli in tempi brevi","In vetrina non refrigerata, perché la sfoglia è cotta","In un contenitore chiuso a temperatura ambiente","Sul retrobanco fino a esaurimento"],"a":0,"e":"Conta l'ingrediente più a rischio: la crema a base di latte e uova deve restare a +4 °C anche dentro la sfoglia cotta."},{"n":44,"t":"sfoglia","q":"Come si gestiscono i rustici di sfoglia ripieni di prosciutto e formaggio venduti caldi?","o":["In vetrina calda ad almeno +60 °C, oppure raffreddati rapidamente e conservati in frigorifero","A circa +40 °C, per tenerli morbidi","Riscaldati più volte finché non vengono venduti","A temperatura ambiente tutto il giorno, perché sono cotti"],"a":0,"e":"Tra +5 e +60 °C circa i batteri si moltiplicano rapidamente. Il caldo va mantenuto sopra i 60 °C, il freddo sotto i +4 °C."},{"n":45,"t":"sfoglia","q":"Usi pasta sfoglia industriale. Come fai a sapere quali allergeni contiene?","o":["Non serve: se è industriale l'informazione non spetta al laboratorio","La sfoglia contiene sempre e solo glutine","Leggi l'etichetta o la scheda tecnica del fornitore e la conservi, così puoi informare il cliente","Lo chiedi al cliente"],"a":2,"e":"Chi vende il prodotto finito deve fornire le informazioni sugli allergeni. Le schede tecniche dei semilavorati sono la base per farlo."},{"n":46,"t":"sfoglia","q":"Prepari un impasto di sfoglia e lo metti in frigorifero. Cosa scrivi sull'etichetta interna?","o":["Solo il peso","Nome del prodotto e data di preparazione (con la scadenza interna stabilita dal piano)","Solo il nome di chi l'ha preparato","Niente: basta ricordarsi quando è stato fatto"],"a":1,"e":"L'etichetta interna permette la rotazione corretta dei semilavorati e la rintracciabilità."},{"n":47,"t":"sfoglia","q":"Una confezione di pasta sfoglia refrigerata è gonfia e ha odore acido. Cosa fai?","o":["La congeli per bloccare il problema","La cuoci più a lungo","La usi subito prima che peggiori","La scarti come non conforme, anche se non è scaduta"],"a":3,"e":"Il rigonfiamento indica una fermentazione dovuta a microrganismi, spesso per una rottura della catena del freddo."},{"n":48,"t":"sfoglia","q":"Un cliente allergico al latte chiede un dolce di sfoglia fatto «con margarina». Cosa verifichi?","o":["Che la sfoglia sia ben cotta","Solo che non ci sia panna","Niente: la margarina è sempre vegetale","La scheda tecnica: anche la margarina o la sfoglia industriale possono contenere derivati del latte"],"a":3,"e":"Alcune margarine contengono siero di latte, burro o aromi derivati dal latte. Senza scheda tecnica non si può garantire nulla."},{"n":49,"t":"sfoglia","q":"Come si gestisce l'uovo per spennellare i prodotti di sfoglia?","o":["Si prepara una ciotola grande e si tiene sul banco tutta la settimana","Il pennello si lascia immerso nell'uovo fino al giorno dopo","Si aggiunge uovo nuovo a quello avanzato del giorno prima","Preparato al bisogno, tenuto in frigorifero ed eliminato a fine lavorazione; i pennelli si lavano e sanificano"],"a":3,"e":"L'uovo sbattuto crudo è un ottimo terreno per Salmonella. Pennelli e ciotole sono punti di contaminazione."},{"n":50,"t":"sfoglia","q":"Nello stesso laboratorio si fanno sfoglie dolci e salate (con salmone, sedano, senape). Cosa è corretto?","o":["Non serve indicare nulla","Tenere separati ripieni e attrezzi e aggiornare le informazioni sugli allergeni di ogni prodotto","Indicare gli allergeni solo sui prodotti salati","Usare gli stessi coltelli senza lavarli, tanto poi si cuoce"],"a":1,"e":"Pesce, sedano e senape sono allergeni. La contaminazione crociata può portarli nei prodotti dolci."},{"n":51,"t":"sfoglia","q":"Come vanno tenute teglie e placche da forno?","o":["Si raschiano sopra i prodotti in lavorazione","Non si lavano mai, perché il forno le sterilizza","Pulite dopo l'uso, senza incrostazioni di grasso bruciato, e riposte al riparo dalla polvere","Si lasciano unte sul pavimento"],"a":2,"e":"Il grasso bruciato produce residui che si staccano e finiscono sui prodotti e attira infestanti."},{"n":52,"t":"sfoglia","q":"Come si conservano i ventagli di sfoglia zuccherati, cotti e senza farcitura?","o":["In frigorifero scoperti","In cella di lievitazione","In contenitori chiusi, al riparo dall'umidità, a temperatura ambiente","In vetrina calda"],"a":2,"e":"Sono prodotti secchi a bassa aw. Il nemico principale è l'umidità, che li rende molli e ne riduce la durata."},{"n":53,"t":"frolla","q":"Come si conserva l'impasto di pasta frolla crudo (con uova crude) prima della cottura?","o":["Avvolto in pellicola, in frigorifero a 0/+4 °C per pochi giorni (oppure congelato), etichettato con la data","Scoperto in frigorifero, così si asciuga","Nella cella di lievitazione","A temperatura ambiente fino all'uso"],"a":0,"e":"Contiene uova crude e burro, quindi è deperibile finché non viene cotto."},{"n":54,"t":"frolla","q":"Perché i biscotti di frolla cotti si possono conservare a temperatura ambiente?","o":["Perché hanno una bassa attività dell'acqua (aw), che impedisce la crescita dei batteri","Perché lo zucchero uccide tutti i batteri","Perché il burro fa da conservante","Perché la cottura li rende sterili per sempre"],"a":0,"e":"L'aw misura l'acqua disponibile per i microrganismi. Sotto circa 0,85 i batteri patogeni non crescono e i biscotti secchi sono molto al di sotto. Vanno però tenuti al riparo dall'umidità."},{"n":55,"t":"frolla","q":"Quali allergeni contiene di solito una pasta frolla classica?","o":["Solo il glutine","Glutine (frumento), uova e latte (burro); frutta a guscio se ci sono mandorle o nocciole","Sedano e senape","Nessuno, perché la frolla è cotta"],"a":1,"e":"Sono tutti allergeni dell'Allegato II del Reg. UE 1169/2011. La cottura non elimina gli allergeni."},{"n":56,"t":"frolla","q":"Che cos'è l'acrilammide e come si limita nei biscotti?","o":["Una sostanza che si forma cuocendo ad alta temperatura prodotti ricchi di amidi; si limita evitando doratura eccessiva e bruciature","Una micotossina del burro","Un batterio che si sviluppa nella frolla cruda","Un additivo da dichiarare in etichetta"],"a":0,"e":"Il Reg. UE 2017/2158 chiede ai produttori di prodotti da forno misure per ridurla: controllo di tempi e temperature e colore di cottura non troppo scuro."},{"n":57,"t":"frolla","q":"Come si conserva una crostata di frolla con crema pasticcera e frutta fresca?","o":["In frigorifero a non più di +4 °C, con frutta lavata, consumandola in tempi brevi","In vetrina calda","Nella cella di lievitazione","A temperatura ambiente come i biscotti"],"a":0,"e":"Anche se la base è secca, la crema è un alimento ad alto rischio. La frutta fresca va lavata con acqua potabile prima dell'uso."},{"n":58,"t":"frolla","q":"Un cliente allergico alla frutta a guscio chiede una crostata. In laboratorio si usa anche farina di nocciole. Cosa è corretto?","o":["Togliere le nocciole visibili","Spiegare onestamente se non si può escludere una contaminazione crociata, in mancanza di procedure di separazione verificate","Assicurare che è sicura, perché le nocciole non sono nella ricetta","Dire che la cottura distrugge gli allergeni"],"a":1,"e":"Tracce di frutta a guscio possono provocare reazioni gravi. L'informazione al cliente deve essere vera e prudente."},{"n":59,"t":"frolla","q":"Come si espongono in vendita i biscotti sfusi?","o":["In cesti aperti dove i clienti si servono con le mani","Sul bancone senza protezione","In contenitori chiusi o in vetrine protette, prelevati con pinze o palette, con le informazioni sugli allergeni disponibili","Senza alcuna informazione sugli ingredienti"],"a":2,"e":"Si protegge il prodotto da contaminazioni (mani, tosse, polvere, insetti) e si informa il cliente sugli allergeni anche per i prodotti sfusi."},{"n":60,"t":"frolla","q":"Sostituisci parte della farina della frolla con farina di mandorle. Cosa devi fare?","o":["Niente, la mandorla non è un allergene","Indicare «senza glutine»","Indicarlo solo se la mandorla è più del 50%","Aggiornare le informazioni sugli allergeni: ora il prodotto contiene frutta a guscio"],"a":3,"e":"Ogni modifica di ricetta richiede di aggiornare l'elenco allergeni e il cartello o registro per il cliente."},{"n":61,"t":"frolla","q":"Come si prepara in sicurezza la glassa reale per decorare i biscotti?","o":["Con albume crudo di uova lavate","Con albume avanzato da giorni","Con albume crudo, perché lo zucchero lo rende sicuro","Con albume pastorizzato"],"a":3,"e":"La glassa reale non viene cotta. L'albume pastorizzato elimina il rischio di Salmonella."},{"n":62,"t":"frolla","q":"Biscotti di frolla preimballati, prodotti e confezionati dal laboratorio: cosa deve riportare l'etichetta?","o":["Nulla, se venduti nel proprio negozio","Solo gli ingredienti","Denominazione, ingredienti con allergeni evidenziati, quantità, TMC, condizioni di conservazione, lotto e produttore","Solo il nome e il prezzo"],"a":2,"e":"Il Reg. UE 1169/2011 elenca le indicazioni obbligatorie per gli alimenti preimballati. Gli allergeni vanno evidenziati graficamente."},{"n":63,"t":"frolla","q":"Come si lavora la frolla quando burro e uova devono restare freddi?","o":["Si toglie tutto l'impasto dal frigo al mattino e lo si lascia sul banco","Si toglie dal frigorifero solo la quantità necessaria e la si lavora in tempi brevi","Si lascia in vetrina per tutta la giornata","Si lavora vicino al forno per ammorbidirla"],"a":1,"e":"Così si limitano i tempi a temperatura ambiente di un impasto con uova crude e burro."},{"n":64,"t":"frolla","q":"Come si prevengono i corpi estranei (carta, plastica, schegge) nei biscotti?","o":["Controllando solo a fine giornata","Togliendo gli imballi lontano dal banco, controllando l'integrità degli attrezzi, evitando il vetro e coprendo i capelli","Lavorando sempre più in fretta","Non serve: i biscotti sono piccoli"],"a":1,"e":"I pericoli fisici si prevengono con buone pratiche: rimozione degli imballi, manutenzione, divieto di vetro, abbigliamento corretto."},{"n":65,"t":"frolla","q":"I biscotti in vetrina sono diventati molli. Cosa è successo e cosa si fa?","o":["Hanno assorbito umidità: vanno conservati in contenitori ermetici e la durata va rivalutata","Bisogna spruzzarli d'acqua","Bisogna metterli nella cella di lievitazione","Sono più freschi, quindi va bene"],"a":0,"e":"Se un prodotto secco assorbe umidità la sua aw aumenta. Peggiora la qualità e può comparire la muffa."},{"n":66,"t":"creme","q":"Come si raffredda la crema pasticcera appena cotta?","o":["Bollente, in frigorifero dentro la pentola alta e chiusa","Aggiungendo zucchero perché si conservi","Sul banco a temperatura ambiente fino al giorno dopo","Rapidamente in abbattitore (da +70 a +3 °C al cuore entro circa 90 minuti), coperta con pellicola a contatto, poi in frigorifero"],"a":3,"e":"Il raffreddamento lento attraversa a lungo la zona di temperatura in cui i batteri si moltiplicano (circa +5/+60 °C). L'abbattitore riduce questo tempo."},{"n":67,"t":"creme","q":"Per tiramisù, mousse o zabaione non cotti si devono usare:","o":["Uova fresche lavate con acqua calda","Uova pastorizzate (ovoprodotti)","Uova appena deposte, purché del giorno","Uova di piccola taglia"],"a":1,"e":"Nelle preparazioni senza cottura le uova crude portano il rischio di Salmonella. Gli ovoprodotti pastorizzati lo eliminano."},{"n":68,"t":"creme","q":"Quale batterio è tipicamente associato alle uova crude?","o":["Listeria","Salmonella","Clostridium botulinum","Bacillus cereus"],"a":1,"e":"Salmonella si trova soprattutto sul guscio e a volte all'interno dell'uovo. Una cottura adeguata la elimina."},{"n":69,"t":"creme","q":"Perché Staphylococcus aureus è un pericolo per le creme?","o":["Cresce solo sotto zero","È innocuo se la crema viene poi scaldata","Arriva dalle mani, dal naso o dalle ferite degli operatori e produce una tossina resistente al calore","Arriva solo dalla farina contaminata"],"a":2,"e":"Se una crema contaminata resta a temperatura ambiente, il batterio produce una tossina che non viene distrutta dalla cottura successiva. Igiene delle mani e catena del freddo sono la prevenzione."},{"n":70,"t":"creme","q":"Nel codice stampato sul guscio delle uova (es. 1 IT 001 FE 001), cosa indica la prima cifra?","o":["Il metodo di allevamento: 0 biologico, 1 all'aperto, 2 a terra, 3 in gabbia","Il giorno di deposizione","Il numero del lotto","La categoria di peso"],"a":0,"e":"Seguono la sigla del Paese (IT), il codice ISTAT del comune, la sigla della provincia e il codice dell'allevamento."},{"n":71,"t":"creme","q":"Qual è la corretta gestione delle uova in laboratorio?","o":["Non lavarle prima di conservarle, romperle in un contenitore separato e lavarsi le mani dopo averle maneggiate","Riutilizzare i contenitori dei gusci senza lavarli","Rompere le uova direttamente sopra l'impasto","Lavarle tutte appena arrivano e poi riporle in frigorifero"],"a":0,"e":"Il lavaggio rimuove la cuticola protettiva del guscio e favorisce l'ingresso dei batteri. Il guscio sporco può contaminare mani e impasti."},{"n":72,"t":"creme","q":"Qual è l'uso corretto della sac à poche per creme e panna?","o":["Basta sciacquarla con acqua fredda","Si può ricaricare per tutto il giorno senza lavarla","Si conserva piena in frigorifero fino al giorno dopo","Preferire sacchi monouso; quelli riutilizzabili si lavano, sanificano e asciugano dopo ogni uso"],"a":3,"e":"La sac à poche è a contatto diretto con creme ad alto rischio. Le pieghe interne trattengono residui difficili da pulire."},{"n":73,"t":"creme","q":"A quale temperatura vanno esposti i pasticcini alla crema e alla panna?","o":["Non oltre +4 °C","Tra +8 e +12 °C","Temperatura ambiente se venduti in giornata","Oltre +60 °C"],"a":0,"e":"Creme a base di latte e uova e panna sono alimenti ad alto rischio. La vetrina refrigerata va controllata e la temperatura registrata."},{"n":74,"t":"creme","q":"Come si cuoce correttamente la crema pasticcera?","o":["Scaldandola appena tiepida per non rovinare le uova","Portandola a bollore mescolando di continuo, finché addensa in tutta la massa","Cuocendo solo la parte in superficie","Senza mescolare"],"a":1,"e":"La cottura completa, con la massa a bollore, elimina i batteri vegetativi come Salmonella. Dopo serve un raffreddamento rapido."},{"n":75,"t":"creme","q":"Si può usare la crema avanzata nei vassoi della vetrina del giorno prima per farcire nuovi dolci?","o":["Sì, basta mescolarla con crema nuova","No: la crema già esposta e manipolata non si riutilizza","Sì, se ha ancora un buon sapore","Sì, se la si riscalda un po'"],"a":1,"e":"La crema esposta può essere stata contaminata ed è stata a lungo fuori dal frigorifero di conservazione. Mescolarla con crema fresca contamina anche quella."},{"n":76,"t":"creme","q":"Come si conserva una ganache a base di panna e cioccolato?","o":["A temperatura ambiente per sempre, perché il cioccolato conserva","In cella di lievitazione","Coperta, in frigorifero, salvo diverse indicazioni validate nel proprio piano","Scoperta in vetrina"],"a":2,"e":"Il cioccolato non rende stabile la panna. La conservabilità della ganache dipende dalla ricetta e va stabilita nel piano HACCP."},{"n":77,"t":"creme","q":"Come si conservano gli albumi avanzati?","o":["In una ciotola scoperta sul banco","Nei gusci","In un contenitore chiuso, etichettato con la data, in frigorifero, e usati in tempi brevi","Nello stesso contenitore, aggiungendo albumi nuovi ogni giorno"],"a":2,"e":"Gli albumi crudi sono deperibili. L'etichetta con la data permette di rispettare i tempi di utilizzo."},{"n":78,"t":"creme","q":"Come si scongela una torta semifreddo o una mousse?","o":["A temperatura ambiente per una notte","In forno tiepido","Si scongela, si vende una parte e si ricongela il resto","In frigorifero; una volta scongelata non si ricongela"],"a":3,"e":"Lo scongelamento in frigorifero tiene la crema e la panna fuori dalla zona di pericolo."},{"n":79,"t":"creme","q":"Come si assaggia correttamente una crema durante la preparazione?","o":["Con lo stesso cucchiaio rimesso nella crema","Con un cucchiaino pulito ogni volta, che poi non torna nella crema","Con un dito pulito","Dalla spatola usata per mescolare"],"a":1,"e":"La saliva porta batteri come Staphylococcus aureus. Ogni assaggio richiede un utensile pulito."},{"n":80,"t":"norme","q":"Quale regolamento obbliga gli operatori alimentari ad applicare procedure di autocontrollo basate sui principi HACCP?","o":["Reg. UE 1169/2011","Reg. UE 2017/2158","Reg. CE 852/2004","Reg. CE 2073/2005"],"a":2,"e":"Il 852/2004 riguarda l'igiene dei prodotti alimentari (art. 5: procedure basate sull'HACCP). Il 1169/2011 riguarda l'etichettatura, il 2073/2005 i criteri microbiologici, il 2017/2158 l'acrilammide."},{"n":81,"t":"norme","q":"Qual è il primo dei sette principi HACCP?","o":["Analizzare i pericoli","Stabilire le azioni correttive","Tenere le registrazioni","Effettuare la verifica"],"a":0,"e":"Ordine dei principi: 1 analisi dei pericoli; 2 individuazione dei CCP; 3 limiti critici; 4 monitoraggio; 5 azioni correttive; 6 verifica; 7 documentazione e registrazioni."},{"n":82,"t":"norme","q":"Che cos'è un punto critico di controllo (CCP)?","o":["Una fase in cui si può applicare un controllo indispensabile per prevenire, eliminare o ridurre a un livello accettabile un pericolo","Qualsiasi punto del laboratorio dove c'è sporco","Il punto in cui l'ispettore ASL fa i controlli","Un macchinario che deve essere revisionato"],"a":0,"e":"Esempi in pasticceria: cottura della crema, raffreddamento in abbattitore, conservazione a +4 °C."},{"n":83,"t":"norme","q":"Il monitoraggio mostra che la vetrina delle paste alla crema è a +9 °C (limite +4 °C). Cosa si fa?","o":["Si cancella la lettura dalla scheda","Niente, basta abbassare il termostato","Si aspetta il controllo successivo","Si applica l'azione correttiva prevista (valutare e se necessario eliminare il prodotto, sistemare l'impianto) e la si registra"],"a":3,"e":"Se un limite critico viene superato servono azioni correttive sul prodotto e sulla causa, e tutto va registrato."},{"n":84,"t":"norme","q":"Qual è la zona di temperatura in cui i batteri si moltiplicano più rapidamente?","o":["Circa tra +5 e +60 °C","Sotto 0 °C","Solo tra +40 e +45 °C","Sopra 100 °C"],"a":0,"e":"La crescita è massima intorno a +37 °C. Per questo i cibi deperibili si tengono sotto +4 °C o sopra +60 °C e si raffreddano in fretta."},{"n":85,"t":"norme","q":"Qual è la sequenza corretta della sanificazione di un banco di lavoro?","o":["Rimozione dei residui, detersione, risciacquo, disinfezione, risciacquo (se richiesto), asciugatura","Solo disinfettante spruzzato sullo sporco","Solo un panno umido","Disinfezione, poi detersione"],"a":0,"e":"Sanificare significa detergere (togliere lo sporco) e poi disinfettare (ridurre i microrganismi). Il disinfettante su una superficie sporca funziona male."},{"n":86,"t":"norme","q":"Un operatore si taglia un dito. Cosa deve fare?","o":["Continuare a lavorare: è un taglio piccolo","Disinfettare la ferita, coprirla con un cerotto impermeabile ben visibile (di solito blu) e indossare un guanto monouso","Usare un cerotto color pelle","Coprirla con un fazzoletto"],"a":1,"e":"Le ferite possono ospitare Staphylococcus aureus. Il cerotto colorato si riconosce subito se cade nell'impasto."},{"n":87,"t":"norme","q":"Un pasticcere ha diarrea e vomito. Cosa deve fare?","o":["Lavorare con i guanti","Avvisare il responsabile e non lavorare a contatto con gli alimenti finché non è guarito","Lavarsi le mani più spesso e continuare","Non dire nulla per non creare problemi"],"a":1,"e":"Il Reg. CE 852/2004 (All. II, cap. VIII) vieta di manipolare alimenti a chi soffre di malattie trasmissibili con gli alimenti e impone di comunicarlo al responsabile."},{"n":88,"t":"norme","q":"Cosa richiede la rintracciabilità (Reg. CE 178/2002)?","o":["Conoscere il nome di ogni consumatore finale","Sapere da chi si è comprato ogni prodotto e a quali imprese lo si è venduto («un passo indietro, un passo avanti»)","Fotografare ogni prodotto venduto","Conservare i campioni di tutti i dolci per un anno"],"a":1,"e":"Serve a ritirare rapidamente un prodotto non sicuro. La vendita al consumatore finale non va registrata."},{"n":89,"t":"norme","q":"Qual è la differenza tra «da consumarsi entro» e «da consumarsi preferibilmente entro»?","o":["La prima riguarda solo i surgelati","La prima è la data di scadenza per prodotti molto deperibili (sicurezza); la seconda è il termine minimo di conservazione (TMC, qualità)","Sono equivalenti","La seconda indica il giorno di produzione"],"a":1,"e":"Dopo la data di scadenza il prodotto non si può usare né vendere. Dopo il TMC può perdere qualità ma non diventa necessariamente pericoloso."},{"n":90,"t":"norme","q":"Che cosa significa il criterio FEFO nella gestione del magazzino?","o":["Si usano prima i prodotti più costosi","Il primo prodotto che scade è il primo a essere usato (First Expired, First Out)","Si usano prima i prodotti più vicini alla porta","Il primo arrivato è l'ultimo a uscire"],"a":1,"e":"Il FIFO (First In, First Out) guarda l'ordine di arrivo, il FEFO la scadenza. Il FEFO è più sicuro quando le scadenze sono diverse."},{"n":91,"t":"norme","q":"Quale di questi NON è tra i 14 allergeni del Reg. UE 1169/2011?","o":["Senape","Molluschi","Pomodoro","Lupini"],"a":2,"e":"I 14 allergeni: cereali con glutine, crostacei, uova, pesce, arachidi, soia, latte, frutta a guscio, sedano, senape, sesamo, anidride solforosa e solfiti, lupini, molluschi."},{"n":92,"t":"norme","q":"Come vanno fornite le informazioni sugli allergeni per i dolci venduti sfusi?","o":["Solo sullo scontrino","Per iscritto, in modo facilmente accessibile al cliente prima dell'acquisto (cartello, registro, menu)","Non sono obbligatorie per i prodotti sfusi","Solo a voce, se il cliente chiede"],"a":1,"e":"L'informazione sugli allergeni è obbligatoria anche per i prodotti non preimballati (Reg. UE 1169/2011, art. 44; in Italia D.Lgs. 231/2017)."},{"n":93,"t":"norme","q":"Al ricevimento della merce, cosa si controlla?","o":["Niente, se il fornitore è di fiducia","Temperatura dei prodotti refrigerati e surgelati, integrità delle confezioni, etichetta e scadenza; la merce non conforme si respinge","Solo il prezzo in fattura","Solo il numero di colli"],"a":1,"e":"Il ricevimento è il primo punto di controllo. Le non conformità vanno registrate e comunicate al fornitore."},{"n":94,"t":"norme","q":"Come si gestiscono gli infestanti (roditori, insetti) in laboratorio?","o":["Spruzzando insetticida sui banchi durante la lavorazione","Con un piano di lotta integrata: barriere (zanzariere, porte chiuse), trappole numerate e monitorate, pulizia, interventi registrati","Con esche avvelenate sparse tra le materie prime","Solo quando qualcuno vede un topo"],"a":1,"e":"La prevenzione con barriere e monitoraggio è la parte principale. I prodotti chimici non devono mai contaminare alimenti e superfici di lavoro."},{"n":95,"t":"norme","q":"Per la frittura di bomboloni e krapfen, quando l'olio va sostituito?","o":["Mai, basta rabboccarlo","Quando i composti polari superano il 25% (o se fuma, scurisce, fa schiuma e odora di rancido)","Solo una volta al mese","Quando finisce"],"a":1,"e":"Il limite del 25% di composti polari è fissato dalla circolare del Ministero della Sanità n. 11/1991. Gli oli degradati producono sostanze dannose."},{"n":96,"t":"norme","q":"A quale temperatura vanno conservati i prodotti surgelati?","o":["−18 °C o meno","0 °C","+4 °C","−5 °C"],"a":0,"e":"Sono ammesse brevi oscillazioni solo durante il trasporto. Se un surgelato si è scongelato non va ricongelato."},{"n":97,"t":"norme","q":"Dove si conservano detergenti e disinfettanti?","o":["Sullo scaffale delle materie prime","In bottiglie dell'acqua minerale per comodità","In un armadio o locale separato dagli alimenti, nelle confezioni originali etichettate","Sotto il banco di lavorazione delle creme"],"a":2,"e":"Si evita la contaminazione chimica e lo scambio accidentale con un ingrediente. Le schede di sicurezza devono essere disponibili."},{"n":98,"t":"norme","q":"Chi è responsabile dell'applicazione del piano di autocontrollo HACCP?","o":["Il cliente","L'ASL","Il fornitore delle materie prime","L'operatore del settore alimentare (OSA), cioè il titolare dell'attività"],"a":3,"e":"L'OSA predispone, applica e aggiorna il piano. L'ASL svolge i controlli ufficiali."},{"n":99,"t":"norme","q":"Quando ci si lava le mani in laboratorio?","o":["Solo se non si usano i guanti","Solo a inizio turno","Solo quando sono visibilmente sporche","A inizio turno, dopo il bagno, dopo aver toccato uova crude, rifiuti, denaro, naso o capelli, e passando da crudo a cotto"],"a":3,"e":"Il lavaggio va fatto con acqua calda e sapone per almeno 20 secondi e asciugatura con carta monouso. I guanti non lo sostituiscono."},{"n":100,"t":"norme","q":"Come deve presentarsi un operatore in laboratorio?","o":["Divisa pulita e usata solo al lavoro, copricapo che raccoglie tutti i capelli, niente anelli, orologi, bracciali o smalto","Fede e orologio, purché puliti","Abiti personali con il grembiule sopra","Capelli lunghi sciolti ma puliti"],"a":0,"e":"Gioielli e orologi trattengono sporco e batteri e possono finire nei prodotti come corpi estranei."}]};
+const TOP = Object.fromEntries(D.topics);
+const L = 'ABCD';
+const PASS = 0.7;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const $ = id => document.getElementById(id);
+
+let S = null;
+
+// ---------- setup ----------
+$('chips').innerHTML = D.topics.map(([k, name]) => {
+  const n = D.qs.filter(q => q.t === k).length;
+  return `<input type="checkbox" id="t-${k}" value="${k}" checked><label for="t-${k}">${esc(name)} <span style="color:var(--muted)">${n}</span></label>`;
+}).join('');
+
+function start(qsOverride) {
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  let picked;
+  if (qsOverride) picked = qsOverride;
+  else {
+    const topics = [...document.querySelectorAll('#chips input:checked')].map(i => i.value);
+    if (!topics.length) { $('stage').innerHTML = `<div class="card"><p class="q">Scegli almeno un argomento.</p></div>`; return; }
+    const groups = topics.map(t => shuffle(D.qs.filter(q => q.t === t)));
+    const total = groups.reduce((s, g) => s + g.length, 0);
+    const v = $('count').value, n = v === 'all' ? total : Math.min(+v, total);
+    picked = [];
+    // a turno da ogni argomento, così una prova breve li copre tutti
+    for (let r = 0; picked.length < n; r++) for (const g of shuffle(groups)) if (g[r] && picked.length < n) picked.push(g[r]);
+    picked = shuffle(picked);
+  }
+  S = { mode, i: 0, done: false, confirm: false, onlyWrong: true,
+    qs: picked.map(q => ({ ...q, opts: shuffle(q.o.map((x, k) => ({ x, ok: k === q.a }))) })) };
+  S.ans = S.qs.map(() => null);
+  render();
+}
+
+$('setup').addEventListener('submit', e => { e.preventDefault(); start(); });
+
+// ---------- render ----------
+function render() {
+  if (!S) return;
+  $('stage').innerHTML = S.done ? results() : question();
+}
+
+function question() {
+  const q = S.qs[S.i], a = S.ans[S.i], n = S.qs.length;
+  const study = S.mode === 'studio', shown = study && a !== null;
+  const answered = S.ans.filter(x => x !== null).length;
+  const opts = q.opts.map((o, k) => {
+    let c = '';
+    if (shown) c = o.ok ? 'right' : (a === k ? 'wrong' : '');
+    else if (a === k) c = 'picked';
+    return `<button type="button" class="opt ${c}" data-k="${k}" aria-pressed="${a === k}" ${shown ? 'disabled' : ''}><span class="key">${L[k]}</span><span>${esc(o.x)}</span></button>`;
+  }).join('');
+  let fb = '';
+  if (shown) {
+    const ok = q.opts[a].ok, good = q.opts.findIndex(o => o.ok);
+    fb = `<div class="fb ${ok ? '' : 'no'}"><p><b>${ok ? 'Corretto.' : `Sbagliato. La risposta giusta è la ${L[good]}.`}</b></p><p>${esc(q.e)}</p></div>`;
+  }
+  const last = S.i === n - 1;
+  const nextDisabled = study && a === null ? 'disabled' : '';
+  const map = S.mode === 'esame' ? `<div class="map" aria-label="Vai alla domanda">${S.qs.map((_, j) => `<button type="button" data-go="${j}" class="${S.ans[j] !== null ? 'done' : ''} ${j === S.i ? 'cur' : ''}" aria-label="Domanda ${j + 1}${S.ans[j] !== null ? ', risposta data' : ''}">${j + 1}</button>`).join('')}</div>` : '';
+  const missing = S.ans.filter(x => x === null).length;
+  const confirm = S.confirm ? `<div class="confirm"><p>Hai ${missing} ${missing === 1 ? 'domanda' : 'domande'} senza risposta, che contano come errori.</p><button type="button" class="btn" data-act="back">Torna alle domande</button><button type="button" class="btn primary" data-act="submit">Consegna comunque</button></div>` : '';
+  return `<div class="card">
+    <div class="qhead"><span>Domanda <b>${S.i + 1}</b> di ${n} · ${answered} risposte date</span><span class="tag">${esc(TOP[q.t])}</span></div>
+    <div class="bar"><span style="width:${answered / n * 100}%"></span></div>
+    <p class="q">${esc(q.q)}</p>
+    <div class="opts" role="group" aria-label="Risposte">${opts}</div>
+    ${fb}
+    <div class="nav">
+      <button type="button" class="btn" data-act="prev" ${S.i === 0 ? 'disabled' : ''}>Indietro</button>
+      <span class="sp"></span>
+      ${last ? `<button type="button" class="btn primary" data-act="finish" ${nextDisabled}>${study ? 'Vedi il risultato' : 'Consegna'}</button>`
+             : `<button type="button" class="btn primary" data-act="next" ${nextDisabled}>Avanti</button>`}
+    </div>
+    ${confirm}${map}
+  </div>`;
+}
+
+function results() {
+  const n = S.qs.length;
+  const okArr = S.qs.map((q, j) => S.ans[j] !== null && q.opts[S.ans[j]].ok);
+  const score = okArr.filter(Boolean).length, pct = score / n;
+  const topics = D.topics.filter(([k]) => S.qs.some(q => q.t === k));
+  const bt = topics.map(([k, name]) => {
+    const idx = S.qs.map((q, j) => j).filter(j => S.qs[j].t === k);
+    const ok = idx.filter(j => okArr[j]).length;
+    return `<div class="bt"><span>${esc(name)}</span><span class="track"><span style="width:${ok / idx.length * 100}%"></span></span><span class="n">${ok}/${idx.length}</span></div>`;
+  }).join('');
+  const wrongCount = n - score;
+  const list = S.qs.map((q, j) => ({ q, j, ok: okArr[j] })).filter(r => !S.onlyWrong || !r.ok).map(({ q, j, ok }) => {
+    const a = S.ans[j], good = q.opts.findIndex(o => o.ok);
+    const yours = a === null ? '<p class="yours">Nessuna risposta.</p>' : (ok ? '' : `<p class="yours">La tua risposta: ${L[a]}) ${esc(q.opts[a].x)}</p>`);
+    return `<article class="rv ${ok ? '' : 'no'}"><h3>${j + 1}. ${esc(q.q)}</h3>${yours}<p class="good">Risposta giusta: ${L[good]}) ${esc(q.opts[good].x)}</p><p class="ex">${esc(q.e)}</p></article>`;
+  }).join('');
+  return `<div class="card">
+    <h2>Risultato</h2>
+    <div class="score"><span class="big">${score}/${n}</span><span style="font-size:1.25rem;font-weight:600">${Math.round(pct * 100)}%</span>
+      <span class="pill ${pct >= PASS ? 'ok' : 'no'}">${pct >= PASS ? 'Superata' : 'Non superata'} (soglia 70%)</span></div>
+    <div class="bytopic">${bt}</div>
+    <div class="nav">
+      <button type="button" class="btn primary" data-act="again">Nuova prova</button>
+      ${wrongCount ? `<button type="button" class="btn" data-act="retry">Rifai solo le ${wrongCount} sbagliate</button>` : ''}
+      <span class="sp"></span>
+      <button type="button" class="btn" data-act="filter" aria-pressed="${S.onlyWrong}">${S.onlyWrong ? 'Mostra tutte le risposte' : 'Mostra solo gli errori'}</button>
+    </div>
+    <div class="review">${list || '<p>Nessun errore. Ottimo lavoro.</p>'}</div>
+  </div>`;
+}
+
+function pick(k) {
+  if (!S || S.done) return;
+  if (S.mode === 'studio' && S.ans[S.i] !== null) return;
+  S.ans[S.i] = k; S.confirm = false; render();
+}
+function go(i) { if (i >= 0 && i < S.qs.length) { S.i = i; S.confirm = false; render(); } }
+function finish(force) {
+  const missing = S.ans.filter(x => x === null).length;
+  if (S.mode === 'esame' && missing && !force) { S.confirm = true; render(); return; }
+  S.done = true; S.confirm = false; render();
+  $('stage').scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+
+$('stage').addEventListener('click', e => {
+  const o = e.target.closest('.opt'); if (o && !o.disabled) return pick(+o.dataset.k);
+  const g = e.target.closest('[data-go]'); if (g) return go(+g.dataset.go);
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  if (act === 'prev') go(S.i - 1);
+  else if (act === 'next') go(S.i + 1);
+  else if (act === 'finish') finish(false);
+  else if (act === 'submit') finish(true);
+  else if (act === 'back') { S.confirm = false; render(); }
+  else if (act === 'again') start();
+  else if (act === 'retry') start(S.qs.filter((q, j) => !(S.ans[j] !== null && q.opts[S.ans[j]].ok)).map(q => D.qs.find(x => x.n === q.n)));
+  else if (act === 'filter') { S.onlyWrong = !S.onlyWrong; render(); }
+});
+
+document.addEventListener('keydown', e => {
+  if (!S || S.done || $('view-quiz').hidden || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (['SELECT', 'INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+  const k = e.key.toLowerCase();
+  const idx = 'abcd'.indexOf(k) >= 0 ? 'abcd'.indexOf(k) : '1234'.indexOf(k);
+  if (k.length === 1 && idx >= 0) { e.preventDefault(); pick(idx); return; }
+  if (e.key === 'ArrowLeft') go(S.i - 1);
+  if (e.key === 'ArrowRight') go(S.i + 1);
+  if (e.key === 'Enter' && document.activeElement?.tagName !== 'BUTTON') {
+    if (S.mode === 'studio' && S.ans[S.i] === null) return;
+    S.i === S.qs.length - 1 ? finish(false) : go(S.i + 1);
+  }
+});
+
+// ---------- soluzioni ----------
+$('sol').innerHTML = D.topics.map(([k, name]) => `<section class="sol-topic"><h2 id="sol-${k}">${esc(name)}</h2>${
+  D.qs.filter(q => q.t === k).map(q => `<div class="sq"><h3><span class="num">${q.n}.</span><span>${esc(q.q)}</span></h3><ol>${
+    q.o.map((x, j) => `<li class="${j === q.a ? 'c' : ''}"><b>${L[j]})</b><span>${esc(x)}</span></li>`).join('')
+  }</ol><p class="ex">${esc(q.e)}</p></div>`).join('')}</section>`).join('');
+$('toggle-sol').addEventListener('click', e => {
+  const on = $('sol').classList.toggle('show');
+  e.currentTarget.setAttribute('aria-pressed', on);
+  e.currentTarget.textContent = on ? 'Nascondi le risposte' : 'Mostra le risposte';
+});
+
+// ---------- viste ----------
+function route() {
+  const sol = location.hash === '#soluzioni';
+  $('view-quiz').hidden = sol; $('view-sol').hidden = !sol;
+  $('tab-quiz').toggleAttribute('aria-current', !sol); $('tab-sol').toggleAttribute('aria-current', sol);
+  if (!sol) $('tab-quiz').setAttribute('aria-current', 'page'); else $('tab-sol').setAttribute('aria-current', 'page');
+}
+addEventListener('hashchange', route);
+route();
+start();
+</script>
+</body>
+</html>

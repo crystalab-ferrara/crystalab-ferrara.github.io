@@ -483,7 +483,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* ---------- footer ---------- */
 .footer { background: var(--surface); color: var(--muted); border-top: 1px solid var(--line); }
-.footer > .wrap { padding-block: clamp(48px, 7vw, 80px) clamp(40px, 5vw, 64px); }
+.footer > .wrap { padding-block: clamp(32px, 4vw, 48px) clamp(28px, 3.5vw, 40px); }
+/* the last section before the footer needs less air below it */
+main > .section:last-child { padding-bottom: clamp(40px, 5vw, 64px); }
 .foot-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px; align-items: flex-end; }
 .foot-lead { color: var(--ink-2); font-size: var(--fs-lead); margin-bottom: 6px; }
 .footer .mail { font-size: var(--fs-h3); font-weight: 600; color: var(--ink); text-decoration: none; letter-spacing: -0.02em; overflow-wrap: anywhere; }

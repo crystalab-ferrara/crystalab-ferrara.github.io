@@ -150,7 +150,7 @@
     var pick = function (g) {
       if (sel) sel.value = g.getAttribute('data-name') + '|' + g.getAttribute('data-city');
       labs.forEach(function (l) { l.classList.toggle('on', l === g); if (l === g) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current'); });
-      var logo = card.querySelector('.lab-logo'); logo.src = g.getAttribute('data-logo'); logo.hidden = false;
+      var logo = card.querySelector('.lab-logo'), src = g.getAttribute('data-logo'); if (src) logo.src = src; logo.hidden = !src;
       card.querySelector('.lab-name').textContent = g.getAttribute('data-name');
       card.querySelector('.lab-city').textContent = '· ' + g.getAttribute('data-city');
       card.querySelector('.lab-cat').textContent = g.getAttribute('data-cat');

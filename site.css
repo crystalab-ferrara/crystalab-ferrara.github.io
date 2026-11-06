@@ -310,7 +310,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 @media (max-width: 460px) { .partner { grid-template-columns: 84px 1fr; gap: 16px; padding: 20px; } .partner .logo img { max-width: 84px; max-height: 48px; } }
 /* funders: one wide EU card (emblem + funding statement, required for EU grants), then one card per other funder */
 .funding { margin-top: clamp(56px, 7vw, 88px); }
-.funders { margin-top: 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.funders { margin-top: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .funder { background: var(--surface); border-radius: var(--radius); padding: 26px; display: flex; flex-direction: column; gap: 14px; }
 .funder > img { height: 52px; width: auto; max-width: 100%; object-fit: contain; align-self: flex-start; }
 .funder h3 { font-size: var(--fs-lead); letter-spacing: -0.005em; }
@@ -324,6 +324,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .funder dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 14px 24px; align-items: baseline; }
 .funder dt { font-weight: 600; }
 .funder dd { margin: 0; }
+.funder.infn dl { align-items: center; }
+.funder dt img.csn { display: block; height: 46px; width: auto; border-radius: 4px; }
+.partner .logo .wordmark { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.01em; color: var(--muted); text-align: center; }
 .fine { grid-column: 1 / -1; font-size: var(--fs-small); color: var(--muted); max-width: 64ch; }
 @media (max-width: 1000px) { .funders { grid-template-columns: repeat(2, 1fr); } .funder.eu { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .funders { grid-template-columns: 1fr; } .funder dl { grid-template-columns: 1fr; gap: 6px; } .funder dd { margin-bottom: 10px; } }
@@ -341,7 +344,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .labmap-figure { position: relative; background: #e3e9f1; border-radius: var(--radius); overflow: hidden; }
 .labmap-figure > img { width: 100%; height: auto; }
 .labmap-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.c-b { --c: var(--beam); } .c-x { --c: var(--accent); } .c-p { --c: var(--muted); } .c-home { --c: var(--ink); }
+.c-b { --c: var(--beam); } .c-x { --c: var(--accent); } .c-p { --c: var(--muted); } .c-c { --c: #2a9d6e; } .c-home { --c: var(--ink); }
 .labmap-svg .arcs path { fill: none; stroke: var(--c); stroke-width: 1.3; opacity: .55; }
 .labmap-svg text { font-family: var(--font); font-size: 14px; font-weight: 500; fill: var(--ink-2); paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }
 .labmap-svg .inset-label { font-size: 12px; font-weight: 400; fill: var(--muted); stroke: none; }

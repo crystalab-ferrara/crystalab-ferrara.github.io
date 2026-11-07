@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="description" content="Crystals for Mu2e, A0 poster of the Crystal Lab Ferrara, shown in 3D in a 70×100 cm black aluminium frame.">
+<title>Mu2e Poster in Frame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: the 3D room fills the screen; one quiet control strip floats at the top, a hint line at the bottom. */
+:root {
+  --panel: rgba(255, 255, 255, .86);
+  --ink: #1b1d22;
+  --muted: #5b6474;
+  --line: rgba(27, 29, 34, .14);
+  --accent: #d62b25;
+  --room: #eeeeec;
+  --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --panel: rgba(22, 24, 28, .84); --ink: #eef0f3; --muted: #a3abb8; --line: rgba(238, 240, 243, .16); color-scheme: dark } }
+:root[data-theme="dark"] { --panel: rgba(22, 24, 28, .84); --ink: #eef0f3; --muted: #a3abb8; --line: rgba(238, 240, 243, .16); color-scheme: dark }
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+body { background: var(--room); color: var(--ink); font-family: var(--sans); overflow: hidden; }
+#stage { position: fixed; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+#stage:active { cursor: grabbing; }
+.bar {
+  position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding: 10px 14px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  max-width: 980px; margin-inline: auto;
+}
+.id { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 260px; }
+.id b { font-weight: 600; font-size: 15px; letter-spacing: .01em; }
+.id b i { font-style: normal; color: var(--accent); }
+.id span { font-family: var(--mono); font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.views { display: flex; flex-wrap: wrap; gap: 6px; }
+.views button {
+  font: 600 13px var(--sans); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 7px; padding: 7px 12px; cursor: pointer;
+}
+.views button:hover { border-color: var(--ink); }
+.views button[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+.views button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hint {
+  position: fixed; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%);
+  font-size: 12.5px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; white-space: nowrap;
+  max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis;
+}
+#msg { position: fixed; inset: 0; display: grid; place-items: center; font-size: 14px; color: var(--muted); pointer-events: none; }
+</style>
+</head>
+<body>
+<canvas id="stage" aria-label="3D view of the Crystals for Mu2e poster in a black aluminium frame on a white wall"></canvas>
+<div id="msg">Caricamento della scena…</div>
+<div class="bar">
+  <div class="id">
+    <b>Crystals for Mu2e <i>·</i> Nielsen Accent 70 × 100</b>
+    <span>alluminio nero satinato · profilo 7,8 mm · A0 scalato a 70,7 × 100 cm</span>
+  </div>
+  <div class="views" role="group" aria-label="Viste">
+    <button type="button" id="v-front" data-view="front">Fronte</button>
+    <button type="button" id="v-room" data-view="room" aria-pressed="true">Stanza</button>
+    <button type="button" id="v-corner" data-view="corner">Angolo</button>
+    <button type="button" id="v-text" data-view="text">Testo</button>
+  </div>
+</div>
+<div class="hint">Trascina per ruotare · rotella o pizzico per zoomare · tasto destro o due dita per spostare</div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const canvas = document.getElementById('stage'), msg = document.getElementById('msg');
+const r = new THREE.WebGLRenderer({ canvas, antialias: true });
+// 8192 px texture on desktops (text readable at close range), 4096 px on phones and small GPUs
+const TEX = matchMedia('(pointer: coarse)').matches || r.capabilities.maxTextureSize < 8192 ? 'poster-4k.jpg' : 'poster-8k.jpg';
+r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+r.outputColorSpace = THREE.SRGBColorSpace;
+r.toneMapping = THREE.NeutralToneMapping; r.toneMappingExposure = 1.0;
+r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf2f2f0);
+const pm = new THREE.PMREMGenerator(r);
+scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.55;
+
+// units: mm. Wall = plane z = 0, floor y = 0, poster centre 1500 mm above the floor.
+const CY = 1500;
+let seed = 11; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+function noiseTex(n, amp, rep) {
+  const c = document.createElement('canvas'); c.width = c.height = n; const g = c.getContext('2d'), d = g.createImageData(n, n);
+  for (let i = 0; i < n * n; i++) { const v = 128 + (rnd() - 0.5) * amp; d.data[4 * i] = d.data[4 * i + 1] = d.data[4 * i + 2] = v; d.data[4 * i + 3] = 255; }
+  g.putImageData(d, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); return t;
+}
+// white wall, faint plaster grain
+const wall = new THREE.Mesh(new THREE.PlaneGeometry(9000, 5000),
+  new THREE.MeshStandardMaterial({ color: 0xf7f7f5, roughness: 0.95, bumpMap: noiseTex(512, 50, 18), bumpScale: 0.3 }));
+wall.position.set(0, 2500, 0); wall.receiveShadow = true; scene.add(wall);
+// pale oak floor and white skirting
+{
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 1024; const g = c.getContext('2d'); const BW = 1024 / 6;
+  for (let k = 0; k < 6; k++) {
+    let off = rnd() * 1024;
+    for (let s = 0; s < 3; s++) {
+      const L = 420 + rnd() * 500, h = 32 + rnd() * 8, l = 72 + rnd() * 6;
+      g.fillStyle = `hsl(${h},26%,${l}%)`; g.fillRect(k * BW, (off % 1024) - 1024, BW, L); g.fillRect(k * BW, off % 1024, BW, L);
+      for (let q = 0; q < 60; q++) { g.strokeStyle = `rgba(120,85,50,${0.03 + rnd() * 0.04})`; g.lineWidth = 1 + rnd() * 2; const x = k * BW + rnd() * BW; g.beginPath(); g.moveTo(x, 0); g.bezierCurveTo(x + 6 * (rnd() - .5), 300, x + 6 * (rnd() - .5), 700, x, 1024); g.stroke(); }
+      g.fillStyle = 'rgba(80,60,40,.25)'; g.fillRect(k * BW, off % 1024, BW, 2); off += L;
+    }
+    g.fillStyle = 'rgba(80,60,40,.25)'; g.fillRect(k * BW, 0, 2, 1024);
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(9000 / 1100, 4000 / 1600); t.anisotropy = 8;
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(9000, 4000), new THREE.MeshStandardMaterial({ map: t, roughness: 0.6 }));
+  floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, 2000); floor.receiveShadow = true; scene.add(floor);
+  const skirt = new THREE.Mesh(new THREE.BoxGeometry(9000, 70, 12), new THREE.MeshStandardMaterial({ color: 0xf7f7f5, roughness: 0.6 }));
+  skirt.position.set(0, 35, 6); skirt.castShadow = skirt.receiveShadow = true; scene.add(skirt);
+}
+// frame: Nielsen Accent 70×100, face 7.8 mm, depth 18 mm, lip over the print 5 mm, hangs 4 mm off the wall
+const PW = 700, PH = 1000, LIP = 5, FACE = 7.8, DEPTH = 18, GAP = 4;
+const OW = PW - 2 * LIP + 2 * FACE, OH = PH - 2 * LIP + 2 * FACE, IW = PW - 2 * LIP, IH = PH - 2 * LIP;
+const frameMat = new THREE.MeshPhysicalMaterial({ color: 0x1c1d20, metalness: 0.55, roughness: 0.42, clearcoat: 0.25, clearcoatRoughness: 0.5, bumpMap: noiseTex(256, 30, 40), bumpScale: 0.05 });
+const G = new THREE.Group(); G.position.set(0, CY, GAP); scene.add(G);
+{
+  const s = new THREE.Shape(); s.moveTo(-OW / 2, -OH / 2); s.lineTo(OW / 2, -OH / 2); s.lineTo(OW / 2, OH / 2); s.lineTo(-OW / 2, OH / 2); s.closePath();
+  const h = new THREE.Path(); h.moveTo(-IW / 2, -IH / 2); h.lineTo(-IW / 2, IH / 2); h.lineTo(IW / 2, IH / 2); h.lineTo(IW / 2, -IH / 2); h.closePath(); s.holes.push(h);
+  const geo = new THREE.ExtrudeGeometry(s, { depth: DEPTH - 1.2, bevelEnabled: true, bevelThickness: 0.6, bevelSize: 0.6, bevelSegments: 4, curveSegments: 1 });
+  const m = new THREE.Mesh(geo, frameMat); m.position.z = 0.6; m.castShadow = m.receiveShadow = true; G.add(m);
+  const seamMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+  for (const [sx, sy] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {   // mitre joints
+    const seam = new THREE.Mesh(new THREE.PlaneGeometry(Math.hypot(FACE, FACE) + 0.4, 0.25), seamMat);
+    seam.position.set(sx * (OW / 2 - FACE / 2), sy * (OH / 2 - FACE / 2), DEPTH + 0.62); seam.rotation.z = sx * sy > 0 ? Math.PI / 4 : -Math.PI / 4; G.add(seam);
+  }
+}
+const back = new THREE.Mesh(new THREE.BoxGeometry(PW, PH, DEPTH - 6), new THREE.MeshStandardMaterial({ color: 0x8a7a64, roughness: 1 }));
+back.position.z = (DEPTH - 6) / 2 - 0.5; back.castShadow = true; G.add(back);
+const glass = new THREE.Mesh(new THREE.PlaneGeometry(PW, PH), new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: 0.03, transparent: true, opacity: 0.08, envMapIntensity: 1.6, depthWrite: false }));
+glass.position.z = DEPTH - 2.5; G.add(glass);
+// light: soft key from upper left, warm-white fill
+const key = new THREE.DirectionalLight(0xfff6ea, 1.5); key.position.set(-2600, 3600, 2600); key.target.position.set(0, CY, 0); scene.add(key.target);
+key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 5; key.shadow.bias = -0.0004; key.shadow.normalBias = 0.6;
+Object.assign(key.shadow.camera, { left: -800, right: 800, top: 800, bottom: -800, near: 1000, far: 9000 }); scene.add(key);
+scene.add(new THREE.HemisphereLight(0xffffff, 0xcabba3, 0.3));
+
+// camera and controls
+const cam = new THREE.PerspectiveCamera(35, 1, 5, 20000);
+const ctl = new OrbitControls(cam, canvas);
+Object.assign(ctl, { enableDamping: true, dampingFactor: 0.08, zoomToCursor: true, minDistance: 90, maxDistance: 5200, minPolarAngle: 0.35, maxPolarAngle: 1.75, minAzimuthAngle: -1.35, maxAzimuthAngle: 1.35, screenSpacePanning: true });
+const VIEWS = {
+  front:  { pos: [0, CY, 2150],                         tgt: [0, CY, 0] },
+  room:   { pos: [1150, 1330, 2050],                     tgt: [-20, 1400, 0] },
+  corner: { pos: [OW / 2 + 230, CY + OH / 2 + 110, 300], tgt: [OW / 2 - 60, CY + OH / 2 - 80, DEPTH] },
+  text:   { pos: [-120, CY + 300, 640],                  tgt: [-120, CY + 300, DEPTH] },
+};
+const clampTarget = () => {                                // keep the pivot on the wall around the poster
+  const t = ctl.target; t.x = Math.max(-1600, Math.min(1600, t.x)); t.y = Math.max(300, Math.min(2600, t.y)); t.z = Math.max(-5, Math.min(400, t.z));
+};
+ctl.addEventListener('change', clampTarget);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let anim = null;
+function go(name, instant) {
+  const v = VIEWS[name]; if (!v) return;
+  document.querySelectorAll('.views button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === name)));
+  const p1 = new THREE.Vector3(...v.pos), t1 = new THREE.Vector3(...v.tgt);
+  if (instant || reduce) { cam.position.copy(p1); ctl.target.copy(t1); ctl.update(); anim = null; return; }
+  anim = { p0: cam.position.clone(), t0: ctl.target.clone(), p1, t1, s: performance.now(), d: 900 };
+}
+document.querySelectorAll('.views button').forEach(b => b.addEventListener('click', () => go(b.dataset.view)));
+ctl.addEventListener('start', () => { anim = null; document.querySelectorAll('.views button').forEach(b => b.setAttribute('aria-pressed', 'false')); });
+
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  r.setSize(w, h, false); cam.aspect = w / h; cam.fov = w / h < 0.9 ? 52 : 35; cam.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+
+// the print: A0 scaled to 1000 mm high, centred; the frame lip covers the edges
+const img = new Image(); img.src = TEX;
+img.decode().then(() => {
+  const tex = new THREE.Texture(img); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = r.capabilities.getMaxAnisotropy(); tex.needsUpdate = true;
+  const print = new THREE.Mesh(new THREE.PlaneGeometry(PH * img.width / img.height, PH), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, envMapIntensity: 0.5 }));
+  print.position.z = DEPTH - 5; print.receiveShadow = true; G.add(print);
+  msg.hidden = true;
+  window.__ready = true;
+}).catch(() => { msg.textContent = 'Immagine del poster non caricata: ricarica la pagina.'; });
+
+resize(); go('room', true);
+r.setAnimationLoop(now => {
+  if (anim) {
+    const k = Math.min(1, (now - anim.s) / anim.d), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+    cam.position.lerpVectors(anim.p0, anim.p1, e); ctl.target.lerpVectors(anim.t0, anim.t1, e);
+    if (k === 1) anim = null;
+  }
+  ctl.update(); r.render(scene, cam);
+});
+</script>
+</body>
+</html>

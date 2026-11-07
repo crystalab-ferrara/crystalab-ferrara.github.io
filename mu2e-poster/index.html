@@ -58,11 +58,12 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
 <div class="bar">
   <div class="id">
     <b>Crystals for Mu2e <i>·</i> Nielsen Accent 70 × 100</b>
-    <span>alluminio nero satinato · profilo 7,8 mm · A0 scalato a 70,7 × 100 cm</span>
+    <span>corridoio 30 × 3 m · alluminio nero satinato · A0 scalato a 70,7 × 100 cm</span>
   </div>
   <div class="views" role="group" aria-label="Viste">
+    <button type="button" id="v-room" data-view="room" aria-pressed="true">Corridoio</button>
+    <button type="button" id="v-near" data-view="near">Vicino</button>
     <button type="button" id="v-front" data-view="front">Fronte</button>
-    <button type="button" id="v-room" data-view="room" aria-pressed="true">Stanza</button>
     <button type="button" id="v-corner" data-view="corner">Angolo</button>
     <button type="button" id="v-text" data-view="text">Testo</button>
   </div>
@@ -87,9 +88,9 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf2f2f0);
 const pm = new THREE.PMREMGenerator(r);
 scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
-scene.environmentIntensity = 0.55;
+scene.environmentIntensity = 0.35;
 
-// units: mm. Wall = plane z = 0, floor y = 0, poster centre 1500 mm above the floor.
+// units: mm. Poster wall = plane z = 0, floor y = 0, poster centre 1500 mm above the floor.
 const CY = 1500;
 let seed = 11; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
 function noiseTex(n, amp, rep) {
@@ -97,28 +98,78 @@ function noiseTex(n, amp, rep) {
   for (let i = 0; i < n * n; i++) { const v = 128 + (rnd() - 0.5) * amp; d.data[4 * i] = d.data[4 * i + 1] = d.data[4 * i + 2] = v; d.data[4 * i + 3] = 255; }
   g.putImageData(d, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); return t;
 }
-// white wall, faint plaster grain
-const wall = new THREE.Mesh(new THREE.PlaneGeometry(9000, 5000),
-  new THREE.MeshStandardMaterial({ color: 0xf7f7f5, roughness: 0.95, bumpMap: noiseTex(512, 50, 18), bumpScale: 0.3 }));
-wall.position.set(0, 2500, 0); wall.receiveShadow = true; scene.add(wall);
-// pale oak floor and white skirting
+// Corridor 30 m × 3 m, ceiling 3 m (height assumed). Axis along x; the poster wall is z = 0 (the right-hand wall walking in
+// from the entrance at x = +6 m), the opposite wall z = 3000. Right wall: standard doors every 3 m, centred 1.5, 4.5, 7.5 … m
+// from the entrance; the poster hangs at x = 0, halfway between the 2nd and the 3rd. Left wall: fire doors every 6 m (3, 9, 15 … m).
+const XE = 6000, XF = XE - 30000, CW = 3000, CH = 3000, XM = (XE + XF) / 2;
+const white = new THREE.MeshStandardMaterial({ color: 0xf6f6f4, roughness: 0.95, bumpMap: noiseTex(512, 50, 60), bumpScale: 0.3 });
+const plane = (w, h, mat, pos, rot) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat); m.position.set(...pos); m.rotation.set(...rot); m.receiveShadow = true; scene.add(m); return m; };
+plane(30000, CH, white, [XM, CH / 2, 0], [0, 0, 0]);                       // right wall (poster)
+plane(30000, CH, white, [XM, CH / 2, CW], [0, Math.PI, 0]);                // left wall
+plane(CW, CH, white, [XE, CH / 2, CW / 2], [0, -Math.PI / 2, 0]);          // entrance end
+plane(CW, CH, white, [XF, CH / 2, CW / 2], [0, Math.PI / 2, 0]);           // far end
+plane(30000, CW, new THREE.MeshStandardMaterial({ color: 0xf8f8f6, roughness: 0.95 }), [XM, CH, CW / 2], [Math.PI / 2, 0, 0]);   // ceiling
+// grey porcelain floor, 300 mm tiles, 2 mm grout; one texture repeat = 8 × 8 tiles
 {
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 1024; const g = c.getContext('2d'); const BW = 1024 / 6;
-  for (let k = 0; k < 6; k++) {
-    let off = rnd() * 1024;
-    for (let s = 0; s < 3; s++) {
-      const L = 420 + rnd() * 500, h = 32 + rnd() * 8, l = 72 + rnd() * 6;
-      g.fillStyle = `hsl(${h},26%,${l}%)`; g.fillRect(k * BW, (off % 1024) - 1024, BW, L); g.fillRect(k * BW, off % 1024, BW, L);
-      for (let q = 0; q < 60; q++) { g.strokeStyle = `rgba(120,85,50,${0.03 + rnd() * 0.04})`; g.lineWidth = 1 + rnd() * 2; const x = k * BW + rnd() * BW; g.beginPath(); g.moveTo(x, 0); g.bezierCurveTo(x + 6 * (rnd() - .5), 300, x + 6 * (rnd() - .5), 700, x, 1024); g.stroke(); }
-      g.fillStyle = 'rgba(80,60,40,.25)'; g.fillRect(k * BW, off % 1024, BW, 2); off += L;
-    }
-    g.fillStyle = 'rgba(80,60,40,.25)'; g.fillRect(k * BW, 0, 2, 1024);
+  const N = 8, T = 128, c = document.createElement('canvas'); c.width = c.height = N * T; const g = c.getContext('2d');
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const l = 55 + (rnd() - 0.5) * 1.4; g.fillStyle = `hsl(210,3%,${l}%)`; g.fillRect(i * T, j * T, T, T);
+    for (let q = 0; q < 260; q++) { g.fillStyle = `hsla(210,4%,${l + (rnd() - 0.5) * 22}%,.5)`; g.fillRect(i * T + rnd() * T, j * T + rnd() * T, 1 + rnd() * 1.5, 1 + rnd() * 1.5); }
   }
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(9000 / 1100, 4000 / 1600); t.anisotropy = 8;
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(9000, 4000), new THREE.MeshStandardMaterial({ map: t, roughness: 0.6 }));
-  floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, 2000); floor.receiveShadow = true; scene.add(floor);
-  const skirt = new THREE.Mesh(new THREE.BoxGeometry(9000, 70, 12), new THREE.MeshStandardMaterial({ color: 0xf7f7f5, roughness: 0.6 }));
-  skirt.position.set(0, 35, 6); skirt.castShadow = skirt.receiveShadow = true; scene.add(skirt);
+  g.fillStyle = 'hsl(210,3%,42%)'; for (let k = 0; k < N; k++) { g.fillRect(k * T, 0, 1.5, N * T); g.fillRect(0, k * T, N * T, 1.5); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(30000 / 2400, CW / 2400); t.anisotropy = 16;
+  const floor = plane(30000, CW, new THREE.MeshStandardMaterial({ map: t, roughness: 0.32, envMapIntensity: 0.5 }), [XM, 0, CW / 2], [-Math.PI / 2, 0, 0]);
+  floor.material.map.offset.set(0, 0);
+}
+// doors: painted yellow steel, metal handles
+const yellow = new THREE.MeshStandardMaterial({ color: 0xf0b31a, roughness: 0.42 });
+const yellowFrame = new THREE.MeshStandardMaterial({ color: 0xe2a512, roughness: 0.5 });
+const steel = new THREE.MeshStandardMaterial({ color: 0xb8bcc2, metalness: 0.9, roughness: 0.32 });
+const darkSteel = new THREE.MeshStandardMaterial({ color: 0x4a4e55, metalness: 0.7, roughness: 0.45 });
+const box = (grp, w, h, d, mat, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; grp.add(m); return m; };
+// a door in a group whose local wall is z = 0 facing +z; returns its outer width (for the skirting)
+function door(x, z, rotY, fire) {
+  const grp = new THREE.Group(); grp.position.set(x, 0, z); grp.rotation.y = rotY; scene.add(grp);
+  const W = fire ? 1200 : 900, H = fire ? 2150 : 2100, F = fire ? 60 : 50;
+  box(grp, F, H + F, 20, yellowFrame, -W / 2 - F / 2, (H + F) / 2, 10);           // jambs and head
+  box(grp, F, H + F, 20, yellowFrame, W / 2 + F / 2, (H + F) / 2, 10);
+  box(grp, W + 2 * F, F, 20, yellowFrame, 0, H + F / 2, 10);
+  box(grp, W - 4, H - 6, fire ? 8 : 6, yellow, 0, H / 2, fire ? 4 : 3);           // leaf, nearly flush
+  if (fire) {
+    box(grp, W - 160, 40, 30, darkSteel, 0, 1000, 48);                            // panic bar on two brackets
+    box(grp, 40, 70, 40, darkSteel, -W / 2 + 100, 1000, 25); box(grp, 40, 70, 40, darkSteel, W / 2 - 100, 1000, 25);
+    box(grp, 320, 55, 55, steel, -W / 2 + 230, H - 70, 33);                       // overhead door closer
+    box(grp, 220, 12, 14, steel, -W / 2 + 330, H - 85, 66);
+    const sign = box(grp, 200, 200, 2, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 }), 0, 1650, 9);   // "keep closed" plate
+    box(grp, 170, 20, 2.5, new THREE.MeshStandardMaterial({ color: 0xc8231d, roughness: 0.6 }), 0, 1720, 9.5);
+  } else {
+    box(grp, 50, 130, 12, steel, W / 2 - 75, 1050, 11);                           // rosette, lever, key plate
+    const lever = box(grp, 130, 18, 18, steel, W / 2 - 125, 1080, 35);
+    box(grp, 18, 18, 30, steel, W / 2 - 70, 1080, 20);
+    box(grp, 120, 50, 3, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 }), W / 2 + 230, 1550, 2);   // room-number plate
+  }
+  return W + 2 * F;
+}
+const rightDoors = [...Array(10)].map((_, k) => XE - 1500 - 3000 * k);           // 4500, 1500, -1500, …
+const leftDoors = [...Array(5)].map((_, k) => XE - 3000 - 6000 * k);              // 3000, -3000, …
+rightDoors.forEach(x => door(x, 0, 0, false));
+leftDoors.forEach(x => door(x, CW, Math.PI, true));
+// skirting in grey porcelain, 80 mm, broken at the doors
+const skirtMat = new THREE.MeshStandardMaterial({ color: 0x8b8e91, roughness: 0.4 });
+function skirting(z, doors, half) {
+  const cuts = doors.map(x => [x - half, x + half]).sort((a, b) => a[0] - b[0]);
+  let x0 = XF; for (const [a, b] of [...cuts, [XE, XE]]) { if (a > x0) { const m = new THREE.Mesh(new THREE.BoxGeometry(a - x0, 80, 9), skirtMat); m.position.set((a + x0) / 2, 40, z); m.receiveShadow = true; scene.add(m); } x0 = b; }
+}
+skirting(4.5, rightDoors, 500); skirting(CW - 4.5, leftDoors, 660);
+// surface-mounted LED panels 600 × 600 on the centre line, every 3 m (aligned with the right-hand doors)
+const panelX = rightDoors;
+const lamps = [];
+for (const x of panelX) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(620, 45, 620), new THREE.MeshStandardMaterial({ color: 0xf2f2f2, roughness: 0.5 })); m.position.set(x, CH - 22, CW / 2); scene.add(m);
+  const d = new THREE.Mesh(new THREE.PlaneGeometry(590, 590), new THREE.MeshBasicMaterial({ color: 0xffffff })); d.rotation.x = Math.PI / 2; d.position.set(x, CH - 45.5, CW / 2); scene.add(d);
+  const L = new THREE.SpotLight(0xfff8f0, 6.5e6, 0, Math.PI / 2.15, 1, 2); L.position.set(x, CH - 50, CW / 2); L.target.position.set(x, 0, CW / 2); scene.add(L, L.target);
+  if (Math.abs(x) < 2000) { L.castShadow = true; L.shadow.mapSize.set(2048, 2048); L.shadow.bias = -0.0002; L.shadow.normalBias = 0.8; L.shadow.radius = 4; L.shadow.focus = 0.75; L.shadow.camera.near = 200; L.shadow.camera.far = 8000; }
+  lamps.push(L);
 }
 // frame: Nielsen Accent 70×100, face 7.8 mm, depth 18 mm, lip over the print 5 mm, hangs 4 mm off the wall
 const PW = 700, PH = 1000, LIP = 5, FACE = 7.8, DEPTH = 18, GAP = 4;
@@ -140,26 +191,25 @@ const back = new THREE.Mesh(new THREE.BoxGeometry(PW, PH, DEPTH - 6), new THREE.
 back.position.z = (DEPTH - 6) / 2 - 0.5; back.castShadow = true; G.add(back);
 const glass = new THREE.Mesh(new THREE.PlaneGeometry(PW, PH), new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: 0.03, transparent: true, opacity: 0.08, envMapIntensity: 1.6, depthWrite: false }));
 glass.position.z = DEPTH - 2.5; G.add(glass);
-// light: soft key from upper left, warm-white fill
-const key = new THREE.DirectionalLight(0xfff6ea, 1.5); key.position.set(-2600, 3600, 2600); key.target.position.set(0, CY, 0); scene.add(key.target);
-key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 5; key.shadow.bias = -0.0004; key.shadow.normalBias = 0.6;
-Object.assign(key.shadow.camera, { left: -800, right: 800, top: 800, bottom: -800, near: 1000, far: 9000 }); scene.add(key);
-scene.add(new THREE.HemisphereLight(0xffffff, 0xcabba3, 0.3));
-
+// fill: diffuse light bounced by the white walls and ceiling
+scene.add(new THREE.HemisphereLight(0xffffff, 0xd4d6d8, 0.75));
 // camera and controls
-const cam = new THREE.PerspectiveCamera(35, 1, 5, 20000);
+const cam = new THREE.PerspectiveCamera(35, 1, 5, 40000);
 const ctl = new OrbitControls(cam, canvas);
-Object.assign(ctl, { enableDamping: true, dampingFactor: 0.08, zoomToCursor: true, minDistance: 90, maxDistance: 5200, minPolarAngle: 0.35, maxPolarAngle: 1.75, minAzimuthAngle: -1.35, maxAzimuthAngle: 1.35, screenSpacePanning: true });
+Object.assign(ctl, { enableDamping: true, dampingFactor: 0.08, zoomToCursor: true, minDistance: 90, maxDistance: 26000, minPolarAngle: 0.2, maxPolarAngle: 2.2, screenSpacePanning: true });
 const VIEWS = {
-  front:  { pos: [0, CY, 2150],                         tgt: [0, CY, 0] },
-  room:   { pos: [1150, 1330, 2050],                     tgt: [-20, 1400, 0] },
+  room:   { pos: [XE - 300, 1650, 2150],                 tgt: [0, 1480, 0] },
+  near:   { pos: [1750, 1600, 2500],                     tgt: [0, 1480, 0] },
+  front:  { pos: [0, CY, 2900],                          tgt: [0, CY, 0] },
   corner: { pos: [OW / 2 + 230, CY + OH / 2 + 110, 300], tgt: [OW / 2 - 60, CY + OH / 2 - 80, DEPTH] },
   text:   { pos: [-120, CY + 300, 640],                  tgt: [-120, CY + 300, DEPTH] },
 };
-const clampTarget = () => {                                // keep the pivot on the wall around the poster
-  const t = ctl.target; t.x = Math.max(-1600, Math.min(1600, t.x)); t.y = Math.max(300, Math.min(2600, t.y)); t.z = Math.max(-5, Math.min(400, t.z));
+const clampAll = () => {                                   // pivot and camera stay inside the corridor
+  const t = ctl.target, p = cam.position;
+  t.x = Math.max(XF + 500, Math.min(XE - 500, t.x)); t.y = Math.max(200, Math.min(CH - 200, t.y)); t.z = Math.max(0, Math.min(CW - 200, t.z));
+  p.x = Math.max(XF + 150, Math.min(XE - 150, p.x)); p.y = Math.max(150, Math.min(CH - 120, p.y)); p.z = Math.max(60, Math.min(CW - 60, p.z));
 };
-ctl.addEventListener('change', clampTarget);
+ctl.addEventListener("change", clampAll);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let anim = null;
 function go(name, instant) {
@@ -174,7 +224,7 @@ ctl.addEventListener('start', () => { anim = null; document.querySelectorAll('.v
 
 function resize() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
-  r.setSize(w, h, false); cam.aspect = w / h; cam.fov = w / h < 0.9 ? 52 : 35; cam.updateProjectionMatrix();
+  r.setSize(w, h, false); cam.aspect = w / h; cam.fov = w / h < 0.9 ? 60 : 42; cam.updateProjectionMatrix();
 }
 addEventListener('resize', resize);
 

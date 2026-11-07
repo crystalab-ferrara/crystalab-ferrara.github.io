@@ -44,11 +44,35 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
 .views button:hover { border-color: var(--ink); }
 .views button[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
 .views button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hint {
-  position: fixed; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%);
-  font-size: 12.5px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; white-space: nowrap;
-  max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis;
+.pick select {
+  font: 600 13px var(--sans); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 7px; padding: 7px 10px; cursor: pointer; max-width: 230px;
 }
+.pick select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pick option { color: #1b1d22; background: #fff; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* bottom dock: hint above, poster navigator below, within thumb reach on phones */
+.dock {
+  position: fixed; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none;
+}
+.dock > * { pointer-events: auto; }
+.hint {
+  font-size: 12.5px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px;
+  max-width: 100%; text-align: center; transition: opacity .6s;
+}
+.hint.gone { opacity: 0; pointer-events: none; }
+.nav {
+  display: flex; align-items: stretch; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); max-width: 100%;
+}
+.nav button { font: 600 14px var(--sans); color: var(--ink); background: transparent; border: 0; cursor: pointer; }
+.nav #prev, .nav #next { width: 52px; font-size: 26px; line-height: 1; padding: 6px 0 9px; }
+.nav #prev { border-right: 1px solid var(--line); } .nav #next { border-left: 1px solid var(--line); }
+.nav button:hover { background: var(--line); }
+.nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.here { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 6px 16px; min-width: 0; width: 290px; max-width: calc(100vw - 32px - 106px); }
+.here span { font: 400 11px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.here b { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 #msg { position: fixed; inset: 0; display: grid; place-items: center; font-size: 14px; color: var(--muted); pointer-events: none; }
 @media (max-width: 640px) {
   .bar { gap: 8px; padding: 8px 10px; top: calc(8px + env(safe-area-inset-top, 0px)); }
@@ -57,7 +81,9 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
   .id span { display: none; }
   .views { gap: 5px; }
   .views button { padding: 7px 9px; font-size: 12.5px; }
-  .hint { white-space: normal; text-align: center; border-radius: 12px; width: max-content; font-size: 12px; }
+  .hint { border-radius: 12px; font-size: 12px; }
+  .pick select { max-width: 170px; padding: 7px 8px; font-size: 12.5px; }
+  .nav #prev, .nav #next { width: 56px; }
 }
 </style>
 </head>
@@ -71,14 +97,19 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
   </div>
   <div class="views" role="group" aria-label="Viste">
     <button type="button" id="v-room" data-view="room" aria-pressed="true">Corridoio</button>
-    <button type="button" id="v-near" data-view="near">Vicino</button>
-    <button type="button" id="v-front" data-view="front">Fronte</button>
-    <button type="button" id="v-corner" data-view="corner">Angolo</button>
-    <button type="button" id="v-text" data-view="text">Testo</button>
-    <button type="button" id="v-entry" data-view="entry">Ingresso</button>
+    <label class="pick"><span class="sr">Vai al poster</span>
+      <select id="pick" aria-label="Vai al poster"><option value="">Vai al poster…</option></select>
+    </label>
   </div>
 </div>
-<div class="hint">Trascina per ruotare · rotella o pizzico per zoomare · tasto destro o due dita per spostare</div>
+<div class="dock">
+  <div class="hint">Trascina per ruotare · rotella o pizzico per zoomare · tasto destro o due dita per spostare</div>
+  <nav class="nav" aria-label="Poster">
+    <button type="button" id="prev" aria-label="Poster precedente">‹</button>
+    <button type="button" id="here" class="here"><span id="here-n">–</span><b id="here-t">Corridoio</b></button>
+    <button type="button" id="next" aria-label="Poster successivo">›</button>
+  </nav>
+</div>
 
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script type="module">
@@ -266,26 +297,55 @@ const pos = new THREE.Vector3(), goal = new THREE.Vector3();
 let yaw = 0, pitch = 0, gYaw = 0, gPitch = 0, anim = null;
 const angles = (from, to) => { const d = to.clone().sub(from); return [Math.atan2(-d.x, -d.z), Math.atan2(d.y, Math.hypot(d.x, d.z))]; };
 const near = (a, ref) => a + 2 * Math.PI * Math.round((ref - a) / (2 * Math.PI));     // same angle, closest to ref
-const VIEWS = {
-  room:   { pos: [XE - 400, 1650, 2150],                 tgt: [0, 1480, 0] },
-  near:   { pos: [1750, 1600, 2500],                     tgt: [0, 1480, 0] },
-  front:  { pos: [0, CY, 2850],                          tgt: [0, CY, 0] },
-  corner: { pos: [OW / 2 + 230, CY + OH / 2 + 110, 300], tgt: [OW / 2 - 60, CY + OH / 2 - 80, DEPTH] },
-  text:   { pos: [-120, CY + 300, 640],                  tgt: [-120, CY + 300, DEPTH] },
-  entry:  { pos: [-6000, 1650, 1500],                    tgt: [XE, 1250, CW / 2] },
-};
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const press = name => document.querySelectorAll('.views button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === name)));
+const TITLES = { channeling: 'Channeling in crystals', mu2e: 'Crystals for Mu2e', collimation: 'Crystals for the LHC', positron: 'Crystals for positron sources',
+  gamma: 'Crystals as γ-ray sources', simulation: 'Simulating coherent interactions', interferometry: 'Optical interferometry', bullkid: 'BULLKID-DM' };
+const OVERVIEW = { pos: [XE - 400, 1650, 2150], tgt: [0, 1480, 0] };
 function flyTo(p1, look, dur = 900) {
   clampP(p1);
   let [y1, p1a] = look ? angles(p1, look) : [gYaw, gPitch];
   y1 = near(y1, yaw);
   if (reduce || dur === 0) { pos.copy(p1); goal.copy(p1); yaw = gYaw = y1; pitch = gPitch = p1a; anim = null; return; }
-  anim = { p0: pos.clone(), p1, y0: yaw, y1, q0: pitch, q1: p1a, s: performance.now(), d: dur };
+  const d = clamp(p1.distanceTo(pos) / 6, 700, 1600);                            // longer walks take a little longer
+  anim = { p0: pos.clone(), p1, y0: yaw, y1, q0: pitch, q1: p1a, s: performance.now(), d: dur === 900 ? d : dur };
 }
-function go(name, instant) { const v = VIEWS[name]; if (!v) return; press(name); flyTo(new THREE.Vector3(...v.pos), new THREE.Vector3(...v.tgt), instant ? 0 : 900); }
-document.querySelectorAll('.views button').forEach(b => b.addEventListener('click', () => go(b.dataset.view)));
-const userMoved = () => { if (anim) { goal.copy(pos); gYaw = yaw; gPitch = pitch; anim = null; } press(''); };
+// distance at which a whole framed poster fills the screen with a small margin
+function frontDist() {
+  const v = cam.fov * Math.PI / 360, h = Math.atan(Math.tan(v) * cam.aspect);
+  return Math.min(CW - 120, Math.max(OH * 0.68 / Math.tan(v), OW * 0.6 / Math.tan(h)));
+}
+let current = -1;                                                                // poster the navigator points at (-1: overview)
+function goPoster(i, instant) {
+  i = (i + POSTERS.length) % POSTERS.length; current = i; const p = POSTERS[i];
+  flyTo(new THREE.Vector3(p.x, CY, frontDist()), new THREE.Vector3(p.x, CY, 0), instant ? 0 : 900); label();
+}
+function overview(instant) { current = -1; flyTo(new THREE.Vector3(...OVERVIEW.pos), new THREE.Vector3(...OVERVIEW.tgt), instant ? 0 : 900); label(); }
+const hereN = document.getElementById('here-n'), hereT = document.getElementById('here-t'), pick = document.getElementById('pick'), roomBtn = document.getElementById('v-room');
+POSTERS.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = `${i + 1}. ${TITLES[p.id]}`; pick.append(o); });
+function label() {
+  if (current < 0) { hereN.textContent = `${POSTERS.length} poster`; hereT.textContent = 'Corridoio'; }
+  else { hereN.textContent = `${current + 1} / ${POSTERS.length}`; hereT.textContent = TITLES[POSTERS[current].id]; }
+  roomBtn.setAttribute('aria-pressed', String(current < 0));
+  pick.value = current < 0 ? '' : String(current);
+}
+// after free movement the navigator follows the poster you are closest to and facing
+function follow() {
+  if (anim) return;
+  let best = -1, bd = 1e9;
+  POSTERS.forEach((p, i) => { const d = Math.hypot(pos.x - p.x, pos.z); if (d < 2600 && d < bd) { bd = d; best = i; } });
+  if (best !== current) { current = best; label(); }
+}
+const step = k => { hideHintSoon(); if (current < 0) { const c = nearestAhead(k); goPoster(c); } else goPoster(current + k); };
+function nearestAhead(k) {                                                       // from the overview: first poster in that direction along the corridor
+  const order = POSTERS.map((p, i) => [p.x, i]).sort((a, b) => b[0] - a[0]);
+  return k > 0 ? order[0][1] : order[order.length - 1][1];
+}
+document.getElementById('prev').addEventListener('click', () => step(-1));
+document.getElementById('next').addEventListener('click', () => step(1));
+document.getElementById('here').addEventListener('click', () => { hideHintSoon(); current < 0 ? goPoster(1) : goPoster(current); });
+pick.addEventListener('change', () => { hideHintSoon(); if (pick.value !== '') goPoster(+pick.value); pick.blur(); });
+roomBtn.addEventListener('click', () => { hideHintSoon(); overview(); });
+const userMoved = () => { if (anim) { goal.copy(pos); gYaw = yaw; gPitch = pitch; anim = null; } };
 
 // what is under a screen point
 const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -300,31 +360,37 @@ function dolly(cx, cy, f) {
   const h = hitAt(cx, cy), d = h ? h.distance : 4000, dir = ray.ray.direction.clone();
   goal.addScaledVector(dir, f > 0 ? Math.min(f * d, Math.max(0, d - 70)) : f * Math.max(d, 700)); clampP(goal);
 }
-// go to the point: on the floor walk there at eye height; on the poster stand in front of it; on a wall or door stand 1.3 m off
+// click or tap: on a poster, first stand in front of it, then a closer look at the clicked spot; on the floor walk there;
+// on a wall or door stand 1.3 m off it
 function goThere(cx, cy) {
   const h = hitAt(cx, cy); if (!h) return;
   const n = h.face.normal.clone().transformDirection(h.object.matrixWorld);
-  let onPoster = false; for (let o = h.object; o; o = o.parent) if (o.userData.poster) onPoster = true;
-  press('');
+  let poster = null; for (let o = h.object; o; o = o.parent) if (o.userData.poster) poster = o;
+  if (poster) {
+    const i = POSTERS.findIndex(p => p.G === poster), p = POSTERS[i];
+    const inFront = Math.abs(pos.x - p.x) < 400 && pos.z < frontDist() + 150 && Math.abs(Math.sin(yaw)) < 0.35;
+    if (!inFront) { goPoster(i); return; }
+    current = i; label();
+    const d = clamp(h.distance * 0.45, 260, 900);
+    flyTo(new THREE.Vector3(h.point.x, h.point.y, d), new THREE.Vector3(h.point.x, h.point.y, 0)); return;
+  }
   if (n.y > 0.7) { const p = new THREE.Vector3(h.point.x, 1600, h.point.z); flyTo(p, p.clone().add(new THREE.Vector3(-Math.sin(gYaw) * 1000, 0, -Math.cos(gYaw) * 1000))); return; }
   if (n.y < -0.7) return;
-  const p = h.point.clone().addScaledVector(n, onPoster ? 700 : 1300); if (!onPoster) p.y = clamp(h.point.y, 1450, 1750);
+  const p = h.point.clone().addScaledVector(n, 1300); p.y = clamp(h.point.y, 1450, 1750);
   flyTo(p, h.point);
 }
 
-// pointer input
-const pts = new Map(); let mode = null, last = null, pinch = null, tap = null;
+// pointer input: drag = look, right/shift-drag = sidestep, pinch = move, two-finger drag = sidestep, click/tap = go
+const pts = new Map(); let mode = null, last = null, pinch = null, press0 = null;
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 canvas.addEventListener('pointerdown', e => {
   canvas.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
   hideHintSoon();
-  if (pts.size === 1) { mode = (e.button === 2 || e.shiftKey) ? 'pan' : 'look'; last = { x: e.clientX, y: e.clientY }; panScale(e.clientX, e.clientY); }
-  if (pts.size === 2) { mode = 'pinch'; pinch = pinchState(); panScale(pinch.mx, pinch.my); }
-  if (e.pointerType !== 'mouse' && pts.size === 1) {
-    const now = performance.now();
-    if (tap && now - tap.t < 320 && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 30) { tap = null; goThere(e.clientX, e.clientY); mode = null; return; }
-    tap = { t: now, x: e.clientX, y: e.clientY };
+  if (pts.size === 1) {
+    mode = (e.button === 2 || e.shiftKey) ? 'pan' : 'look'; last = { x: e.clientX, y: e.clientY }; panScale(e.clientX, e.clientY);
+    press0 = (e.button === 0) ? { x: e.clientX, y: e.clientY, t: performance.now(), moved: 0 } : null;
   }
+  if (pts.size === 2) { mode = 'pinch'; pinch = pinchState(); panScale(pinch.mx, pinch.my); press0 = null; }
 });
 let pscale = 1;
 function panScale(cx, cy) { const h = hitAt(cx, cy), d = h ? h.distance : 3000; pscale = d * 2 * Math.tan(cam.fov * Math.PI / 360) / canvas.clientHeight; }
@@ -339,7 +405,8 @@ canvas.addEventListener('pointermove', e => {
   pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (mode === 'look' || mode === 'pan') {
     const dx = e.clientX - last.x, dy = e.clientY - last.y; last = { x: e.clientX, y: e.clientY };
-    if (Math.abs(dx) + Math.abs(dy) > 2) tap = null;
+    if (press0) press0.moved += Math.abs(dx) + Math.abs(dy);
+    if (press0 && press0.moved < 8) return;                                     // still a click
     if (mode === 'pan') { pan(dx, dy); return; }
     userMoved();
     const k = cam.fov * Math.PI / 180 / canvas.clientHeight;                   // the scene follows the pointer
@@ -351,25 +418,37 @@ canvas.addEventListener('pointermove', e => {
     pinch = s;
   }
 });
-const up = e => { pts.delete(e.pointerId); if (pts.size === 1) { mode = 'look'; const [p] = pts.values(); last = { ...p }; } if (pts.size === 0) mode = null; };
+const up = e => {
+  if (!pts.has(e.pointerId)) return;
+  pts.delete(e.pointerId);
+  if (e.type === 'pointerup' && pts.size === 0 && press0 && press0.moved < 8 && performance.now() - press0.t < 450 && mode === 'look') goThere(e.clientX, e.clientY);
+  press0 = null;
+  if (pts.size === 1) { mode = 'look'; const [p] = pts.values(); last = { ...p }; }
+  if (pts.size === 0) mode = null;
+};
 canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
-canvas.addEventListener('dblclick', e => goThere(e.clientX, e.clientY));
 canvas.addEventListener('wheel', e => {
   e.preventDefault(); hideHintSoon();
   const dy = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 400 : 1);
   dolly(e.clientX, e.clientY, clamp(-dy * 0.0016, -0.45, 0.4));
 }, { passive: false });
-// keyboard walking
+// keyboard: WASD / arrows walk and turn (shift = faster); N, P, PageDown, PageUp = next / previous poster; Home = corridor
 const keys = new Set();
-addEventListener('keydown', e => { if (/^(Key[WASDQE]|Arrow\w+|ShiftLeft|ShiftRight)$/.test(e.code)) { keys.add(e.code); if (e.code.startsWith('Arrow') || e.code.startsWith('Key')) { e.preventDefault(); userMoved(); } } });
+addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest('select')) return;
+  if (e.code === 'KeyN' || e.code === 'PageDown') { e.preventDefault(); step(1); return; }
+  if (e.code === 'KeyP' || e.code === 'PageUp') { e.preventDefault(); step(-1); return; }
+  if (e.code === 'Home') { e.preventDefault(); overview(); return; }
+  if (/^(Key[WASD]|Arrow\w+|ShiftLeft|ShiftRight)$/.test(e.code)) { keys.add(e.code); if (e.code !== 'ShiftLeft' && e.code !== 'ShiftRight') { e.preventDefault(); userMoved(); hideHintSoon(); } }
+});
 addEventListener('keyup', e => keys.delete(e.code));
 addEventListener('blur', () => keys.clear());
 
 const hint = document.querySelector('.hint');
 hint.textContent = TOUCH
-  ? 'Un dito: guardati intorno · pizzica: avanza · due dita: spostati · doppio tocco: vai lì'
-  : 'Trascina: guardati intorno · rotella: avanza verso il cursore · doppio clic: vai lì · WASD o frecce: cammina';
-let hintTimer = null; function hideHintSoon() { if (!hintTimer) hintTimer = setTimeout(() => hint.hidden = true, 8000); }
+  ? 'Tocca un poster per andarci, toccalo ancora per avvicinarti · un dito: guardati intorno · pizzica: avanza · ‹ › poster vicino'
+  : 'Clic su un poster per andarci, ancora per avvicinarti · trascina: guardati intorno · rotella: avanza verso il cursore · WASD o frecce: cammina · N/P: poster';
+let hintTimer = null; function hideHintSoon() { if (!hintTimer) hintTimer = setTimeout(() => hint.classList.add('gone'), 9000); }
 
 function resize() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
@@ -378,7 +457,7 @@ function resize() {
 addEventListener('resize', resize);
 
 
-resize(); go('room', true);
+resize(); overview(true);
 let lastT = performance.now(), lodT = 1;
 const fwd = new THREE.Vector3(), side = new THREE.Vector3();
 r.setAnimationLoop(now => {
@@ -403,7 +482,7 @@ r.setAnimationLoop(now => {
     pos.lerp(goal, a); yaw += (gYaw - yaw) * a; pitch += (gPitch - pitch) * a;
   }
   cam.position.copy(pos); cam.rotation.set(pitch, yaw, 0);
-  if ((lodT += dt) > 0.3) { lodT = 0; levelOfDetail(); }
+  if ((lodT += dt) > 0.3) { lodT = 0; levelOfDetail(); follow(); }
   r.render(scene, cam);
 });
 </script>

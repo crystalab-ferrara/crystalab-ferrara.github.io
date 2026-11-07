@@ -44,6 +44,11 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
 .views button:hover { border-color: var(--ink); }
 .views button[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
 .views button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.id b em { font-style: normal; }
+.seg { display: inline-flex; }
+.views .seg button { border-radius: 0; }
+.views .seg button:first-child { border-radius: 7px 0 0 7px; }
+.views .seg button:last-child { border-radius: 0 7px 7px 0; margin-left: -1px; }
 .pick select {
   font: 600 13px var(--sans); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 7px; padding: 7px 10px; cursor: pointer; max-width: 230px;
 }
@@ -82,7 +87,7 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
   .views { gap: 5px; }
   .views button { padding: 7px 9px; font-size: 12.5px; }
   .hint { border-radius: 12px; font-size: 12px; }
-  .pick select { max-width: 170px; padding: 7px 8px; font-size: 12.5px; }
+  .pick select { max-width: 140px; padding: 7px 8px; font-size: 12.5px; }
   .nav #prev, .nav #next { width: 56px; }
 }
 </style>
@@ -92,11 +97,15 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
 <div id="msg">Caricamento della scena…</div>
 <div class="bar">
   <div class="id">
-    <b>Crystal Lab posters <i>·</i> Nielsen Accent 70 × 100</b>
-    <span>corridoio 30 × 2,4 m · alluminio nero satinato · A0 scalato a 70,7 × 100 cm</span>
+    <b>Crystal Lab posters <i>·</i> <em id="size-t">Nielsen Accent 70 × 100</em></b>
+    <span id="size-s">corridoio 30 × 2,4 m · cornice 70 × 100 cm · A0 scalato a 70,7 × 100 cm</span>
   </div>
   <div class="views" role="group" aria-label="Viste">
     <button type="button" id="v-room" data-view="room" aria-pressed="true">Corridoio</button>
+    <div class="seg" role="group" aria-label="Formato dei poster">
+      <button type="button" id="s-f70" aria-pressed="true" title="Cornice Nielsen 70 × 100, poster scalato">70 × 100</button>
+      <button type="button" id="s-a0" aria-pressed="false" title="Poster A0 a grandezza reale, 84,1 × 118,9 cm">A0</button>
+    </div>
     <label class="pick"><span class="sr">Vai al poster</span>
       <select id="pick" aria-label="Vai al poster"><option value="">Vai al poster…</option></select>
     </label>
@@ -227,38 +236,53 @@ for (const x of rightDoors) {
   const d = new THREE.Mesh(new THREE.PlaneGeometry(590, 590), new THREE.MeshBasicMaterial({ color: 0xffffff })); d.rotation.x = Math.PI / 2; d.position.set(x, CH - 45.5, CW / 2); scene.add(d);
   const S = new THREE.SpotLight(0xfff8f0, 6.5e6, 0, Math.PI / 2.15, 1, 2); S.position.set(x, CH - 50, CW / 2); S.target.position.set(x, 0, CW / 2); scene.add(S, S.target);
 }
-// frames: Nielsen Accent 70×100, face 7.8 mm, depth 18 mm, lip over the print 5 mm, hangs 4 mm off the wall
-const PW = 700, PH = 1000, LIP = 5, FACE = 7.8, DEPTH = 18, GAP = 4;
-const OW = PW - 2 * LIP + 2 * FACE, OH = PH - 2 * LIP + 2 * FACE, IW = PW - 2 * LIP, IH = PH - 2 * LIP;
+// frames: black satin aluminium, face 7.8 mm (Nielsen Accent profile), depth 18 mm, lip over the print 5 mm, 4 mm off the wall.
+// Two sizes, switched from the menu: the Nielsen Accent 70×100 (A0 print scaled to 100 cm high) or a frame for the A0 print at full size.
+const LIP = 5, FACE = 7.8, DEPTH = 18, GAP = 4;
+const SIZES = {
+  f70: { PW: 700, PH: 1000, title: 'Nielsen Accent 70 × 100', sub: 'cornice 70 × 100 cm · A0 scalato a 70,7 × 100 cm' },
+  a0:  { PW: 841, PH: 1189, title: 'formato A0 84,1 × 118,9', sub: 'poster A0 a grandezza reale · stesso profilo nero 7,8 mm' },
+};
 const frameMat = new THREE.MeshPhysicalMaterial({ color: 0x1c1d20, metalness: 0.55, roughness: 0.42, clearcoat: 0.25, clearcoatRoughness: 0.5, bumpMap: noiseTex(256, 30, 40), bumpScale: 0.05 });
-const frameGeo = (() => {
-  const s = new THREE.Shape(); s.moveTo(-OW / 2, -OH / 2); s.lineTo(OW / 2, -OH / 2); s.lineTo(OW / 2, OH / 2); s.lineTo(-OW / 2, OH / 2); s.closePath();
-  const h = new THREE.Path(); h.moveTo(-IW / 2, -IH / 2); h.lineTo(-IW / 2, IH / 2); h.lineTo(IW / 2, IH / 2); h.lineTo(IW / 2, -IH / 2); h.closePath(); s.holes.push(h);
-  return new THREE.ExtrudeGeometry(s, { depth: DEPTH - 1.2, bevelEnabled: true, bevelThickness: 0.6, bevelSize: 0.6, bevelSegments: 4, curveSegments: 1 });
-})();
 const seamMat = new THREE.MeshBasicMaterial({ color: 0x050505 }), seamGeo = new THREE.PlaneGeometry(Math.hypot(FACE, FACE) + 0.4, 0.25);
-const backMat = new THREE.MeshStandardMaterial({ color: 0x8a7a64, roughness: 1 }), backGeo = new THREE.BoxGeometry(PW, PH, DEPTH - 6);
+const backMat = new THREE.MeshStandardMaterial({ color: 0x8a7a64, roughness: 1 });
 const glassMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: 0.03, transparent: true, opacity: 0.08, envMapIntensity: 1.6, depthWrite: false });
-const glassGeo = new THREE.PlaneGeometry(PW, PH), printGeo = new THREE.PlaneGeometry(PH * 0.7071, PH);
 // soft shadow of the frame on the wall (light from the ceiling panels): a blurred dark rectangle, drawn once
 const shadowTex = (() => {
   const c = document.createElement('canvas'); c.width = 256; c.height = 352; const g = c.getContext('2d');
   g.filter = 'blur(9px)'; g.fillStyle = 'rgba(0,0,0,0.55)'; g.fillRect(24, 30, 208, 300);
-  const t = new THREE.CanvasTexture(c); return t;
+  return new THREE.CanvasTexture(c);
 })();
-const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, opacity: 0.55 }), shadowGeo = new THREE.PlaneGeometry(OW * 256 / 208, OH * 352 / 300);
+const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, opacity: 0.55 });
+for (const S of Object.values(SIZES)) {
+  const { PW, PH } = S, OW = PW - 2 * LIP + 2 * FACE, OH = PH - 2 * LIP + 2 * FACE, IW = PW - 2 * LIP, IH = PH - 2 * LIP;
+  const s = new THREE.Shape(); s.moveTo(-OW / 2, -OH / 2); s.lineTo(OW / 2, -OH / 2); s.lineTo(OW / 2, OH / 2); s.lineTo(-OW / 2, OH / 2); s.closePath();
+  const h = new THREE.Path(); h.moveTo(-IW / 2, -IH / 2); h.lineTo(-IW / 2, IH / 2); h.lineTo(IW / 2, IH / 2); h.lineTo(IW / 2, -IH / 2); h.closePath(); s.holes.push(h);
+  Object.assign(S, { OW, OH,
+    frame: new THREE.ExtrudeGeometry(s, { depth: DEPTH - 1.2, bevelEnabled: true, bevelThickness: 0.6, bevelSize: 0.6, bevelSegments: 4, curveSegments: 1 }),
+    back: new THREE.BoxGeometry(PW, PH, DEPTH - 6), glass: new THREE.PlaneGeometry(PW, PH),
+    print: new THREE.PlaneGeometry(PH * 0.7071, PH),                              // A0 proportions; the lip hides 5 mm on each side
+    shadow: new THREE.PlaneGeometry(OW * 256 / 208, OH * 352 / 300) });
+}
+let SIZE = 'f70'; try { if (localStorage.getItem('poster-size') === 'a0') SIZE = 'a0'; } catch (e) {}
+let OW = SIZES[SIZE].OW, OH = SIZES[SIZE].OH;
 function framedPoster(x) {
   const G = new THREE.Group(); G.position.set(x, CY, GAP); G.userData.poster = true; scene.add(G);
-  const m = new THREE.Mesh(frameGeo, frameMat); m.position.z = 0.6; G.add(m);
-  for (const [sx, sy] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {                // mitre joints
-    const seam = new THREE.Mesh(seamGeo, seamMat); seam.position.set(sx * (OW / 2 - FACE / 2), sy * (OH / 2 - FACE / 2), DEPTH + 0.62); seam.rotation.z = sx * sy > 0 ? Math.PI / 4 : -Math.PI / 4; G.add(seam);
-  }
-  const back = new THREE.Mesh(backGeo, backMat); back.position.z = (DEPTH - 6) / 2 - 0.5; G.add(back);
-  const glass = new THREE.Mesh(glassGeo, glassMat); glass.position.z = DEPTH - 2.5; G.add(glass);
-  const sh = new THREE.Mesh(shadowGeo, shadowMat); sh.position.set(0, -14, -GAP + 0.5); G.add(sh);
   const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8, envMapIntensity: 0.5 });
-  const print = new THREE.Mesh(printGeo, mat); print.position.z = DEPTH - 5; G.add(print);
-  return { G, mat };
+  const sub = {};
+  for (const [k, S] of Object.entries(SIZES)) {
+    const g = new THREE.Group(); sub[k] = g;
+    const m = new THREE.Mesh(S.frame, frameMat); m.position.z = 0.6; g.add(m);
+    for (const [sx, sy] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {              // mitre joints
+      const seam = new THREE.Mesh(seamGeo, seamMat); seam.position.set(sx * (S.OW / 2 - FACE / 2), sy * (S.OH / 2 - FACE / 2), DEPTH + 0.62); seam.rotation.z = sx * sy > 0 ? Math.PI / 4 : -Math.PI / 4; g.add(seam);
+    }
+    const back = new THREE.Mesh(S.back, backMat); back.position.z = (DEPTH - 6) / 2 - 0.5; g.add(back);
+    const glass = new THREE.Mesh(S.glass, glassMat); glass.position.z = DEPTH - 2.5; g.add(glass);
+    const sh = new THREE.Mesh(S.shadow, shadowMat); sh.position.set(0, -14, -GAP + 0.5); g.add(sh);
+    const print = new THREE.Mesh(S.print, mat); print.position.z = DEPTH - 5; g.add(print);
+  }
+  G.add(sub[SIZE]);
+  return { G, mat, sub };
 }
 // the group's posters, one between each pair of doors on the right wall; Mu2e between the 2nd and 3rd door (x = 0)
 const POSTERS = [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000]]
@@ -345,6 +369,19 @@ document.getElementById('next').addEventListener('click', () => step(1));
 document.getElementById('here').addEventListener('click', () => { hideHintSoon(); current < 0 ? goPoster(1) : goPoster(current); });
 pick.addEventListener('change', () => { hideHintSoon(); if (pick.value !== '') goPoster(+pick.value); pick.blur(); });
 roomBtn.addEventListener('click', () => { hideHintSoon(); overview(); });
+// poster format: Nielsen 70×100 (scaled print) or A0 at full size
+function setSize(k, keepView) {
+  if (!SIZES[k]) return; SIZE = k; OW = SIZES[k].OW; OH = SIZES[k].OH;
+  for (const p of POSTERS) { for (const g of Object.values(p.sub)) p.G.remove(g); p.G.add(p.sub[k]); }
+  document.getElementById('size-t').textContent = SIZES[k].title;
+  document.getElementById('size-s').textContent = 'corridoio 30 × 2,4 m · ' + SIZES[k].sub;
+  for (const id of ['f70', 'a0']) document.getElementById('s-' + id).setAttribute('aria-pressed', String(id === k));
+  try { localStorage.setItem('poster-size', k); } catch (e) {}
+  if (keepView && current >= 0) goPoster(current);
+}
+document.getElementById('s-f70').addEventListener('click', () => setSize('f70', true));
+document.getElementById('s-a0').addEventListener('click', () => setSize('a0', true));
+setSize(SIZE);
 const userMoved = () => { if (anim) { goal.copy(pos); gYaw = yaw; gPitch = pitch; anim = null; } };
 
 // what is under a screen point

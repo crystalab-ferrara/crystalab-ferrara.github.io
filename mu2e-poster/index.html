@@ -106,6 +106,10 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
       <button type="button" id="s-f70" aria-pressed="true" title="Cornice Nielsen 70 × 100, poster scalato">70 × 100</button>
       <button type="button" id="s-a0" aria-pressed="false" title="Poster A0 a grandezza reale, 84,1 × 118,9 cm">A0</button>
     </div>
+    <div class="seg" role="group" aria-label="Disposizione dei poster">
+      <button type="button" id="l-all" aria-pressed="true" title="Tutti gli 11 poster, uno tra ogni coppia di porte">Tutti</button>
+      <button type="button" id="l-real" aria-pressed="false" title="BULLKID, simulazioni, Mu2e, tre posti vuoti, collimazione, OTELLO">Allestimento</button>
+    </div>
     <label class="pick"><span class="sr">Vai al poster</span>
       <select id="pick" aria-label="Vai al poster"><option value="">Vai al poster…</option></select>
     </label>
@@ -284,13 +288,20 @@ function framedPoster(x) {
   G.add(sub[SIZE]);
   return { G, mat, sub };
 }
-// the group's posters, one between each pair of doors on the right wall; Mu2e between the 2nd and 3rd door (x = 0)
-const POSTERS = [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000], ['oreo', -27000]]
+// the group's posters on the right wall, at most one between each pair of doors (slots at x = 3000, 0, −3000 …).
+// Two layouts from the menu: all of them, or the real hanging: BULLKID, simulation, Mu2e, three empty slots, collimation, OTELLO.
+const LAYOUTS = {
+  all: [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000], ['oreo', -27000]],
+  real: [['bullkid', 3000], ['simulation', 0], ['mu2e', -3000], ['collimation', -15000], ['otello', -18000]],
+};
+let LAYOUT = 'all'; try { if (localStorage.getItem('poster-layout') === 'real') LAYOUT = 'real'; } catch (e) {}
+const ALL = [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000], ['oreo', -27000]]
   .map(([id, x]) => ({ id, x, ...framedPoster(x), lo: null, hi: null, busy: false }));
+let POSTERS = ALL;                                                               // the ones hanging in the current layout, in corridor order
 const HI = TOUCH || r.capabilities.maxTextureSize < 8192 ? '4k' : '8k';
 const loadImg = url => new Promise((res, rej) => { const im = new Image(); im.src = url; im.decode().then(() => res(im), rej); });
 const texOf = im => { const t = new THREE.Texture(im); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = r.capabilities.getMaxAnisotropy(); t.needsUpdate = true; return t; };
-POSTERS.forEach(p => loadImg(`${p.id}-2k.jpg`).then(im => {
+ALL.forEach(p => loadImg(`${p.id}-2k.jpg`).then(im => {
   p.lo = texOf(im); if (!p.hi) { p.mat.map = p.lo; p.mat.needsUpdate = true; }
   if (p.id === 'mu2e') msg.hidden = true;
 }).catch(() => { if (p.id === 'mu2e') msg.textContent = 'Immagine del poster non caricata: ricarica la pagina.'; }));
@@ -347,7 +358,6 @@ function goPoster(i, instant) {
 }
 function overview(instant) { current = -1; flyTo(new THREE.Vector3(...OVERVIEW.pos), new THREE.Vector3(...OVERVIEW.tgt), instant ? 0 : 900); label(); }
 const hereN = document.getElementById('here-n'), hereT = document.getElementById('here-t'), pick = document.getElementById('pick'), roomBtn = document.getElementById('v-room');
-POSTERS.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = `${i + 1}. ${TITLES[p.id]}`; pick.append(o); });
 function label() {
   if (current < 0) { hereN.textContent = `${POSTERS.length} poster`; hereT.textContent = 'Corridoio'; }
   else { hereN.textContent = `${current + 1} / ${POSTERS.length}`; hereT.textContent = TITLES[POSTERS[current].id]; }
@@ -374,7 +384,7 @@ roomBtn.addEventListener('click', () => { hideHintSoon(); overview(); });
 // poster format: Nielsen 70×100 (scaled print) or A0 at full size
 function setSize(k, keepView) {
   if (!SIZES[k]) return; SIZE = k; OW = SIZES[k].OW; OH = SIZES[k].OH;
-  for (const p of POSTERS) { for (const g of Object.values(p.sub)) p.G.remove(g); p.G.add(p.sub[k]); }
+  for (const p of ALL) { for (const g of Object.values(p.sub)) p.G.remove(g); p.G.add(p.sub[k]); }
   document.getElementById('size-t').textContent = SIZES[k].title;
   document.getElementById('size-s').textContent = 'corridoio 35,4 × 2,4 m · ' + SIZES[k].sub;
   for (const id of ['f70', 'a0']) document.getElementById('s-' + id).setAttribute('aria-pressed', String(id === k));
@@ -384,6 +394,22 @@ function setSize(k, keepView) {
 document.getElementById('s-f70').addEventListener('click', () => setSize('f70', true));
 document.getElementById('s-a0').addEventListener('click', () => setSize('a0', true));
 setSize(SIZE);
+// layout: which posters hang and where; the view stays on the poster you were looking at if it is still there
+function setLayout(k, keepView) {
+  if (!LAYOUTS[k]) return; LAYOUT = k;
+  const was = current >= 0 ? POSTERS[current] : null;
+  for (const p of ALL) scene.remove(p.G);
+  POSTERS = LAYOUTS[k].map(([id, x]) => { const p = ALL.find(q => q.id === id); p.x = x; p.G.position.x = x; scene.add(p.G); return p; });
+  pick.length = 1;
+  POSTERS.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = `${i + 1}. ${TITLES[p.id]}`; pick.append(o); });
+  for (const id of ['all', 'real']) document.getElementById('l-' + id).setAttribute('aria-pressed', String(id === k));
+  try { localStorage.setItem('poster-layout', k); } catch (e) {}
+  current = was ? POSTERS.indexOf(was) : -1;
+  if (keepView && current >= 0) goPoster(current); else label();
+}
+document.getElementById('l-all').addEventListener('click', () => { hideHintSoon(); setLayout('all', true); });
+document.getElementById('l-real').addEventListener('click', () => { hideHintSoon(); setLayout('real', true); });
+setLayout(LAYOUT);
 const userMoved = () => { if (anim) { goal.copy(pos); gYaw = yaw; gPitch = pitch; anim = null; } };
 
 // what is under a screen point

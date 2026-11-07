@@ -248,8 +248,9 @@ const PASS = [PX(400), PX(372)];                                               /
 const nordLeft = [{ c: PX(536), t: 'stair', label: 'Scala' }, { c: PX(500), t: 'lab', label: '112' }, { c: PX(420), t: 'lab', label: '112' },
   { c: PX(355), t: 'std', label: '113' }, { c: PX(320), t: 'std', label: '114' }, { c: PX(265), t: 'lab', label: '115' }, { c: PX(190), t: 'lab', label: '116' }];
 // hub east side doors share the z = 0 wall with the Ala Nord right wall
-const eastHub = [{ c: (EX0 + EX1) / 2, t: 'std', label: '100', dir: '+z' }, { c: PX(135), t: 'std', label: '', dir: '+z' }];
-wallX(0, -1, 150, XN, XE, [...nordRight, ...eastHub].map(d => ({ c: d.c, ...H(d.t) })));
+const eastHub = [{ c: (EX0 + EX1) / 2, t: 'std', label: '100', dir: '+z' }];
+const GL = [-33826 + 50, XF];                                                    // open bay between 100 and 111, glazed facade
+wallX(0, -1, 150, XN, XE, [...[...nordRight, ...eastHub].map(d => ({ c: d.c, ...H(d.t) })), { c: (GL[0] + GL[1]) / 2, w: GL[1] - GL[0], h: CH }]);
 nordRight.forEach(d => door(d.c, 0, '+z', d.t, { label: d.label }));
 eastHub.forEach(d => door(d.c, 0, '+z', d.t, { label: d.label }));
 wallX(CW, 1, 150, XF, XE, [...nordLeft.map(d => ({ c: d.c, ...H(d.t) })), { c: (PASS[0] + PASS[1]) / 2, w: PASS[1] - PASS[0] - 150, h: 2400 }]);
@@ -261,7 +262,26 @@ door(XF, CW / 2, '+x', 'end', { open: true });
 for (let n = 0; n < 10; n++) wallZ(2300 - 3000 * n - 50, 1, 100, NR, -150);     // office partitions
 for (const p of [PX(515), PX(336), PX(300), PX(228)]) wallZ(p - 50, 1, 100, CW + 150, ZO);
 wallZ(PASS[0], -1, 150, CW + 150, ZO); wallZ(PASS[1], 1, 150, CW + 150, ZO);           // side passage walls
-wallX(NR, -1, 300, XN - 300, XE + 200);                                           // outer walls
+wallX(NR, -1, 300, XN - 300, XE + 200, [{ c: (GL[0] + GL[1]) / 2, w: GL[1] - GL[0], h: CH }]);
+// the glazing: floor-to-ceiling panes in thin dark frames; outside a lawn with trees
+{
+  const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.05, transparent: true, opacity: 0.12, envMapIntensity: 1.5, depthWrite: false });
+  const mul = new THREE.MeshStandardMaterial({ color: 0x3a3d42, metalness: 0.6, roughness: 0.4 });
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(GL[1] - GL[0], CH), glass); g.position.set((GL[0] + GL[1]) / 2, CH / 2, NR - 150); scene.add(g);
+  const np = Math.round((GL[1] - GL[0]) / 1500);
+  for (let i = 0; i <= np; i++) box(scene, 60, CH, 120, mul, GL[0] + (GL[1] - GL[0]) * i / np, CH / 2, NR - 150);
+  for (const y of [30, 1000, CH - 30]) box(scene, GL[1] - GL[0], 60, 120, mul, (GL[0] + GL[1]) / 2, y, NR - 150);
+  const lawn = new THREE.MeshStandardMaterial({ color: 0x6f9a4a, roughness: 1 });
+  const L = new THREE.Mesh(new THREE.PlaneGeometry(90000, 60000), lawn); L.rotation.x = -Math.PI / 2; L.position.set(-15000, -40, NR - 300 - 30000); scene.add(L);
+  const bark = new THREE.MeshStandardMaterial({ color: 0x5a4636, roughness: 1 });
+  const leaves = [0x4c7a35, 0x3f6d2e, 0x5a8a3c].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 1, flatShading: true }));
+  const trunk = new THREE.CylinderGeometry(160, 230, 1, 8), crown = new THREE.IcosahedronGeometry(1, 1);
+  for (let i = 0; i < 26; i++) {
+    const x = -45000 + rnd() * 50000, z = NR - 7000 - rnd() * 30000, h = 3500 + rnd() * 3500, r = 2200 + rnd() * 1800;
+    const t = new THREE.Mesh(trunk, bark); t.scale.y = h; t.position.set(x, h / 2, z); scene.add(t);
+    const c = new THREE.Mesh(crown, leaves[i % 3]); c.scale.set(r, r * 1.15, r); c.position.set(x, h + r * 0.7, z); scene.add(c);
+  }
+}                                           // outer walls
 wallX(ZO, 1, 300, EX1, XE + 200, [{ c: (PASS[0] + PASS[1]) / 2, ...H('end') }]);   // west outer wall, exit door at the passage
 door((PASS[0] + PASS[1]) / 2, ZO, '-z', 'end');
 // small vestibule beyond the open entrance door
@@ -283,7 +303,7 @@ wallX(ZL, 1, 150, EX1, XL);                                                     
 wallZ(XL, -1, 150, ZL, ZW);                                                       // lift shafts: hall B side
 wallX((lifts[0] + lifts[1]) / 2 - 50, 1, 100, EX1 + 150, XL);                     // between the two shafts
 wallX(ZW, 1, 150, EX1, XF);                                                       // stair / lifts west wall towards hall B
-for (const x of [-33826, PX(125)]) wallZ(x - 50, 1, 100, NR, -150);               // 000 | room | room partitions
+wallZ(-33826 - 50, 1, 100, NR, -150);               // 000 | room | room partitions
 // stairs up to the first floor (22 risers of 165 mm = 3.63 m): a flight from the entry side, a half landing, a flight back,
 // the first-floor slab over the entry. along = axis the flights run on; a0 = entry end, a1 = far end; b0/b1 = the two sides
 const stairMat = new THREE.MeshStandardMaterial({ color: 0xbfc2c4, roughness: 0.6 }), slabMat = new THREE.MeshStandardMaterial({ color: 0xd9dad8, roughness: 0.8 });
@@ -328,7 +348,7 @@ for (const x of [35, 108, 180, 252, 360]) wallX(PZ(x), 1, 100, EX1 + 150, ER);
 // walkable areas [x0, x1, z0, z1]: also the tiled floor and the ceiling
 const AREAS = {
   nord: [XF, XE, 0, CW], vest: [XE, XE + 2400, 0, CW], hallB: [XL, XF, 0, ZW], strip: [EX1, XL, 0, ZL],
-  hallA: [EX0, EX1, 0, EZ0], pass: [PASS[0], PASS[1], CW, ZO], landing: [EX1, XS, ZW, ZO], est: [EX0, EX1, EZ0, EZ1],
+  hallA: [EX0, EX1, 0, EZ0], bay: [GL[0], GL[1], NR, 0], pass: [PASS[0], PASS[1], CW, ZO], landing: [EX1, XS, ZW, ZO], est: [EX0, EX1, EZ0, EZ1],
 };
 const tileTex = (() => {
   const N = 8, T = 128, c = document.createElement('canvas'); c.width = c.height = N * T; const g = c.getContext('2d');
@@ -354,7 +374,7 @@ slab(XN - 300, XE + 200, NR - 300, ZO + 300, -2, roomFloor); slab(XN - 300, ER +
 const PANELS = [
   ...nordRight.map(d => [d.c, CW / 2]),
   ...[...Array(11)].map((_, k) => [(EX0 + EX1) / 2, EZ0 + 1600 + 3000 * k]),
-  [(EX0 + EX1) / 2, 1500], [(EX0 + EX1) / 2, 4500], [(EX0 + EX1) / 2, 7500], [(EX1 + XL) / 2, 1100], [(XL + XF) / 2, 1300], [(XL + XF) / 2, 4000], [(EX1 + XS) / 2, 7000],
+  [(EX0 + EX1) / 2, 1500], [(EX0 + EX1) / 2, 4500], [(EX0 + EX1) / 2, 7500], [(EX1 + XL) / 2, 1100], [(XL + XF) / 2, 1300], [(XL + XF) / 2, 4000], [(GL[0] + GL[1]) / 2, NR / 2], [(EX1 + XS) / 2, 7000],
 ];
 const panelBox = new THREE.BoxGeometry(620, 45, 620), panelMat = new THREE.MeshStandardMaterial({ color: 0xf2f2f2, roughness: 0.5 }), panelLit = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const diffGeo = new THREE.PlaneGeometry(590, 590);
@@ -471,6 +491,7 @@ const hemi = new THREE.HemisphereLight(0xffffff, 0xd4d6d8, 0.75); scene.add(hemi
 const cam = new THREE.PerspectiveCamera(42, 1, 5, 200000); cam.rotation.order = 'YXZ';
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const M = 150, WALK = [
+  [GL[0] + M, GL[1] - M, NR + 300, 400],
   [PASS[0] + M, PASS[1] - M, CW - 400, ZO - M],
   [XF - 400, XE + 1800, M, CW - M], [XL + M, XF - M, M, ZW - M], [EX1 - 400, XL + 400, M, ZL - M], [EX0 + M, EX1 - M, M, EZ0 + 400],
   [EX1 - 400, XS - M, ZW + M, ZO - M], [EX0 + M, EX1 - M, EZ0 - 400, EZ1 - M]];

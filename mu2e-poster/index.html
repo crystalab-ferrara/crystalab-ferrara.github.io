@@ -98,7 +98,7 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
 <div class="bar">
   <div class="id">
     <b>Crystal Lab posters <i>·</i> <em id="size-t">Nielsen Accent 70 × 100</em></b>
-    <span id="size-s">corridoio 33 × 2,4 m · cornice 70 × 100 cm · A0 scalato a 70,7 × 100 cm</span>
+    <span id="size-s">corridoio 36 × 2,4 m · cornice 70 × 100 cm · A0 scalato a 70,7 × 100 cm</span>
   </div>
   <div class="views" role="group" aria-label="Viste">
     <button type="button" id="v-room" data-view="room" aria-pressed="true">Corridoio</button>
@@ -146,11 +146,11 @@ function noiseTex(n, amp, rep) {
   for (let i = 0; i < n * n; i++) { const v = 128 + (rnd() - 0.5) * amp; d.data[4 * i] = d.data[4 * i + 1] = d.data[4 * i + 2] = v; d.data[4 * i + 3] = 255; }
   g.putImageData(d, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); return t;
 }
-// Corridor 33 m × 2.4 m, ceiling 3 m (height assumed). Axis along x; the poster wall is z = 0 (the right-hand wall walking in
+// Corridor 36 m × 2.4 m, ceiling 3 m (height assumed). Axis along x; the poster wall is z = 0 (the right-hand wall walking in
 // from the entrance at x = +6 m), the opposite wall z = 3000. Right wall: standard doors every 3 m, centred 1.5, 4.5, 7.5 … m
 // from the entrance; the poster hangs at x = 0, halfway between the 2nd and the 3rd. Left wall: fire doors every 6 m (3, 9, 15 … m).
 // Far end: a double-leaf fire door. All doors sit 100 mm back in the wall, in grey steel frames; leaves are yellow.
-const LEN = 33000, XE = 6000, XF = XE - LEN, CW = 2400, CH = 3000, XM = (XE + XF) / 2, REC = 100;
+const LEN = 36000, XE = 6000, XF = XE - LEN, CW = 2400, CH = 3000, XM = (XE + XF) / 2, REC = 100;
 const rightDoors = [...Array(LEN / 3000)].map((_, k) => XE - 1500 - 3000 * k);           // 4500, 1500, -1500, …
 const leftDoors = [...Array(Math.ceil((LEN - 3000) / 6000))].map((_, k) => XE - 3000 - 6000 * k);            // 3000, -3000, …
 const DOOR = { std: { W: 900, H: 2100, F: 50, leaves: 1 }, fire: { W: 1200, H: 2150, F: 60, leaves: 1 }, end: { W: 1800, H: 2150, F: 60, leaves: 2 } };
@@ -285,7 +285,7 @@ function framedPoster(x) {
   return { G, mat, sub };
 }
 // the group's posters, one between each pair of doors on the right wall; Mu2e between the 2nd and 3rd door (x = 0)
-const POSTERS = [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000]]
+const POSTERS = [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000], ['oreo', -27000]]
   .map(([id, x]) => ({ id, x, ...framedPoster(x), lo: null, hi: null, busy: false }));
 const HI = TOUCH || r.capabilities.maxTextureSize < 8192 ? '4k' : '8k';
 const loadImg = url => new Promise((res, rej) => { const im = new Image(); im.src = url; im.decode().then(() => res(im), rej); });
@@ -324,7 +324,8 @@ const near = (a, ref) => a + 2 * Math.PI * Math.round((ref - a) / (2 * Math.PI))
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const TITLES = { channeling: 'Channeling in crystals', mu2e: 'Crystals for Mu2e', collimation: 'Crystals for the LHC', positron: 'Crystals for positron sources',
   gamma: 'Crystals as γ-ray sources', simulation: 'Simulating coherent interactions', interferometry: 'Optical interferometry', bullkid: 'BULLKID-DM',
-  otello: 'OTELLO, a Laue lens for γ rays', et: 'Birefringence for the Einstein Telescope' };
+  otello: 'OTELLO, a Laue lens for γ rays', et: 'Birefringence for the Einstein Telescope',
+  oreo: 'OREO, an oriented calorimeter' };
 const OVERVIEW = { pos: [XE - 400, 1650, CW - 250], tgt: [0, 1480, 0] };
 function flyTo(p1, look, dur = 900) {
   clampP(p1);
@@ -375,7 +376,7 @@ function setSize(k, keepView) {
   if (!SIZES[k]) return; SIZE = k; OW = SIZES[k].OW; OH = SIZES[k].OH;
   for (const p of POSTERS) { for (const g of Object.values(p.sub)) p.G.remove(g); p.G.add(p.sub[k]); }
   document.getElementById('size-t').textContent = SIZES[k].title;
-  document.getElementById('size-s').textContent = 'corridoio 33 × 2,4 m · ' + SIZES[k].sub;
+  document.getElementById('size-s').textContent = 'corridoio 36 × 2,4 m · ' + SIZES[k].sub;
   for (const id of ['f70', 'a0']) document.getElementById('s-' + id).setAttribute('aria-pressed', String(id === k));
   try { localStorage.setItem('poster-size', k); } catch (e) {}
   if (keepView && current >= 0) goPoster(current);

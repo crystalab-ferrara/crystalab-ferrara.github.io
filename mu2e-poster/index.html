@@ -284,7 +284,7 @@ for (const x of [-33826, PX(125)]) wallZ(x - 50, 1, 100, NR, -150);             
   box(st, 40, 900, 40, steel, XS + 300, 1450, ZO - w - 60);
 }
 // hall A north wall (also Ala Est north wall) and room 000
-const estNorth = [[23, '030'], [61.5, '029'], [96.5, '028'], [132.5, '027'], [168.5, '026'], [204.5, '025'], [241, '024'], [277.5, '023'], [313.5, '022'], [333, '021a'], [385.5, '021b']].map(([x, l]) => ({ c: PZ(x), t: 'std', label: l }));
+const estNorth = [[23, '030'], [61.5, '029'], [96.5, '028'], [132.5, '027'], [168.5, '026'], [204.5, '025'], [241, '024'], [277.5, '023'], [313.5, '022'], [349.8, '021a'], [385.5, '021b']].map(([x, l]) => ({ c: PZ(x), t: 'std', label: l }));
 const hubNorth = [{ c: PZ(418), t: 'std', label: 'WC' }, { c: 1100, t: 'std', label: '' }];
 wallZ(EX0, -1, 150, 0, EZ1, [...estNorth, ...hubNorth].map(d => ({ c: d.c, ...H(d.t) })));
 [...estNorth, ...hubNorth].forEach(d => door(EX0, d.c, '+x', d.t, { label: d.label }));
@@ -359,7 +359,8 @@ const RL = { bg: null, fg: '#30343a', size: 0.7 };
 nordRight.forEach(d => floorLabel(d.label, d.c - 700, -1950, 1500, 650, RL));
 [['012', -700], ['013', -6700], ['014', -12700], ['015', -18700], ['016', -24600]].forEach(([l, x]) => floorLabel(l, x, 5400, 1800, 900, RL));
 floorLabel('000', -37300, -1900, 1600, 800, RL);
-estNorth.forEach(d => floorLabel(d.label, (XN + EX0) / 2, d.c + (d.label === '021a' ? 1300 : d.label === '021b' ? -1300 : 0), 1500, 650, RL));
+const ROOMS_N = [5, 33, 70, 106, 142, 178, 215, 251, 288, 323, 360, 397];                // Est north partitions (plan px), rooms 030 … 021b
+estNorth.forEach((d, i) => floorLabel(d.label, (XN + EX0) / 2, PZ((ROOMS_N[i] + ROOMS_N[i + 1]) / 2), 1100, 480, RL));
 [['020', PZ(107)], ['019', PZ(214)], ['018', PZ(287)], ['017', PZ(360)]].forEach(([l, z]) => floorLabel(l, (EX1 + ER) / 2, z, 1800, 900, RL));
 const WL = { bg: null, fg: '#d62b25', size: 0.62 };
 floorLabel('Ala Nord', -11000, CW / 2, 2200, 560, WL); floorLabel('Ala Est', (EX0 + EX1) / 2, 26000, 3000, 900, WL);

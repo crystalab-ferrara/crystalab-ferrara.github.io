@@ -112,7 +112,7 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
     </div>
     <div class="seg" role="group" aria-label="Disposizione dei poster">
       <button type="button" id="l-all" aria-pressed="true" title="Tutti gli 11 poster, uno tra ogni coppia di porte">Tutti</button>
-      <button type="button" id="l-real" aria-pressed="false" title="BULLKID, simulazioni, Mu2e, tre posti vuoti, collimazione, OTELLO">Allestimento</button>
+      <button type="button" id="l-real" aria-pressed="false" title="Ogni poster accanto alla sua stanza: 111 OREO; 116 radiazione e sorgente di positroni; 117 ET, 118 simulazioni, 119 Mu2e, 123 collimazione LHC, 124 BULLKID">Allestimento</button>
     </div>
     <label class="pick"><span class="sr">Vai al poster</span>
       <select id="pick" aria-label="Vai al poster"><option value="">Vai al poster…</option></select>
@@ -216,7 +216,7 @@ function wallZ(f, s, t, z0, z1, holes = []) {
 
 // a door; dir = direction from the wall towards the side it is seen from ('+z', '-z', '+x', '-x'); open: leaves swung back 85°
 const ROT = { '+z': 0, '-z': Math.PI, '+x': Math.PI / 2, '-x': -Math.PI / 2 };
-function door(x, z, dir, type, { open = false, label = '' } = {}) {
+function door(x, z, dir, type, { open = false, label = '', side = 1 } = {}) {
   const { W, H, F, leaves, fire, lift } = DOOR[type], OWd = W + 2 * F, OHd = H + F;
   const grp = new THREE.Group(); grp.position.set(x, 0, z); grp.rotation.y = ROT[dir]; scene.add(grp);
   box(grp, 4, OHd, REC, grey, -OWd / 2 + 2, OHd / 2, -REC / 2); box(grp, 4, OHd, REC, grey, OWd / 2 - 2, OHd / 2, -REC / 2);   // reveal
@@ -242,7 +242,7 @@ function door(x, z, dir, type, { open = false, label = '' } = {}) {
   }
   if (label) {                                                                     // room plate on the wall beside the door
     const m = new THREE.Mesh(new THREE.PlaneGeometry(170, 80), new THREE.MeshStandardMaterial({ map: textTex(label, 256, 120), roughness: 0.5 }));
-    m.position.set(OWd / 2 + 190, 1550, 2); grp.add(m);
+    m.position.set(side * (OWd / 2 + 190), 1550, 2); grp.add(m);
   }
   return grp;
 }
@@ -251,12 +251,12 @@ const H = t => ({ w: opening(t).w, h: opening(t).h });
 // ---------- Ala Nord ----------
 const nordRight = [...Array(11)].map((_, k) => ({ c: 4500 - 3000 * k, t: 'std', label: String(101 + k) }));
 const PASS = [X(373.5), X(397.5)];                                              // side passage to the outside stair, between 112 and 113
-const nordLeft = [[172, 'lab', '116'], [217, 'lab', '116'], [235.5, 'lab', '115'], [289.5, 'lab', '115'], [308, 'std', '114'], [362, 'std', '113'],
-  [455, 'lab', '112'], [527, 'stair', 'Scala']].map(([v, t, label]) => ({ c: X(v), t, label }));
+const nordLeft = [[172, 'lab', '116'], [217, 'lab', '116'], [235.5, 'lab', '115', -1], [289.5, 'lab', '115'], [308, 'std', '114'], [362, 'std', '113'],
+  [455, 'lab', '112'], [527, 'stair', 'Scala']].map(([v, t, label, side = 1]) => ({ c: X(v), t, label, side }));
 wallX(0, -1, 150, XF, XE, nordRight.map(d => ({ c: d.c, ...H(d.t) })));
 nordRight.forEach(d => door(d.c, 0, '+z', d.t, { label: d.label }));
 wallX(CW, 1, 150, XF, XE, [...nordLeft.map(d => ({ c: d.c, ...H(d.t) })), { c: (PASS[0] + PASS[1]) / 2, w: PASS[1] - PASS[0] - 150, h: 2400 }]);
-nordLeft.forEach(d => door(d.c, CW, '-z', d.t, { label: d.label, open: d.t === 'stair' }));
+nordLeft.forEach(d => door(d.c, CW, '-z', d.t, { label: d.label, side: d.side, open: d.t === 'stair' }));
 for (let n = 0; n < 10; n++) wallZ(2300 - 3000 * n - 50, 1, 100, NR, -150);   // office partitions, east side
 for (const v of [226.5, 298.5, 335]) wallZ(X(v) - 50, 1, 100, CW + 150, ZO);     // west side
 wallZ(PASS[0], -1, 150, CW + 150, ZO); wallZ(PASS[1], 1, 150, CW + 150, ZO);       // side passage walls
@@ -536,15 +536,24 @@ function framedPoster(x) {
   G.add(sub[SIZE]);
   return { G, mat, sub };
 }
-// the group's posters on the right wall, at most one between each pair of doors (slots at x = 3000, 0, −3000 …).
-// Two layouts from the menu: all of them, or the real hanging: BULLKID, simulation, Mu2e, three empty slots, collimation, OTELLO.
+// Two layouts from the menu. "Tutti": all of them on the Ala Nord right wall, one between each pair of doors.
+// "Allestimento": the real hanging, each poster on the corridor wall of its room, beside the door
+// (111 OREO; 116, between its two doors: radiation, positron source; Ala Est 117 ET, 118 simulation, 119 Mu2e, 123 LHC collimation, 124 BULLKID).
+// Entries: [id, position along the wall, wall]; N = Ala Nord right wall (z = 0), L = Ala Nord left wall (z = CW), E = Ala Est north wall (x = EX0).
+const WALLS = { N: a => [a, 0, 0, 1], L: a => [a, CW, 0, -1], E: a => [EX0, a, 1, 0] };
 const LAYOUTS = {
   all: [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000], ['oreo', -26750]],
-  real: [['bullkid', 3000], ['simulation', 0], ['mu2e', -3000], ['collimation', -15000], ['otello', -18000]],
+  real: [['oreo', -26900], ['gamma', -22150, 'L'], ['positron', -20950, 'L'], ['et', Z(370.7), 'E'], ['simulation', Z(334.7), 'E'], ['mu2e', Z(298.7), 'E'],
+    ['collimation', Z(153.7), 'E'], ['bullkid', Z(117.7), 'E']],
 };
-let LAYOUT = 'all'; try { if (localStorage.getItem('poster-layout') === 'real') LAYOUT = 'real'; } catch (e) {}
+let LAYOUT = 'real'; try { if (localStorage.getItem('poster-layout-2') === 'all') LAYOUT = 'all'; } catch (e) {}
+// hang a poster: p.x, p.z = the point on the wall, p.nx, p.nz = the wall normal towards the corridor
+function place(p, a, wall = 'N') {
+  const [x, z, nx, nz] = WALLS[wall](a); Object.assign(p, { x, z, nx, nz });
+  p.G.position.set(x + nx * GAP, CY, z + nz * GAP); p.G.rotation.y = Math.atan2(nx, nz);
+}
 const ALL = [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000], ['oreo', -26750]]
-  .map(([id, x]) => ({ id, x, ...framedPoster(x), lo: null, hi: null, busy: false }));
+  .map(([id, x]) => { const p = { id, ...framedPoster(x), lo: null, hi: null, busy: false }; place(p, x); return p; });
 let POSTERS = ALL;                                                               // the ones hanging in the current layout, in corridor order
 const HI = TOUCH || r.capabilities.maxTextureSize < 8192 ? '4k' : '8k';
 const loadImg = url => new Promise((res, rej) => { const im = new Image(); im.src = url; im.decode().then(() => res(im), rej); });
@@ -556,7 +565,7 @@ ALL.forEach(p => loadImg(`${p.id}-2k.jpg`).then(im => {
 // sharp print when you come close (< 2.6 m), back to the light one when you walk away (> 5 m)
 function levelOfDetail() {
   for (const p of POSTERS) {
-    const d = Math.hypot(pos.x - p.x, pos.y - CY, pos.z);
+    const d = Math.hypot(pos.x - p.x, pos.y - CY, pos.z - p.z);
     if (d < 2600 && !p.hi && !p.busy) {
       p.busy = true;
       loadImg(`${p.id}-${HI}.jpg`).then(im => { p.hi = texOf(im); p.mat.map = p.hi; p.mat.needsUpdate = true; }).catch(() => {}).finally(() => { p.busy = false; });
@@ -629,7 +638,7 @@ function frontDist() {
 let current = -1;                                                                // poster the navigator points at (-1: overview)
 function goPoster(i, instant) {
   setPlan(false); i = (i + POSTERS.length) % POSTERS.length; current = i; const p = POSTERS[i];
-  flyTo(new THREE.Vector3(p.x, CY, frontDist()), new THREE.Vector3(p.x, CY, 0), instant ? 0 : 900); label();
+  const f = frontDist(); flyTo(new THREE.Vector3(p.x + p.nx * f, CY, p.z + p.nz * f), new THREE.Vector3(p.x, CY, p.z), instant ? 0 : 900); label();
 }
 const planBtn = document.getElementById('v-plan'), marker = new THREE.Group(); scene.add(marker); marker.visible = false;
 { const m = new THREE.Mesh(new THREE.CircleGeometry(420, 40), new THREE.MeshBasicMaterial({ color: 0xd62b25 })); m.rotation.x = -Math.PI / 2; marker.add(m);
@@ -663,13 +672,12 @@ function label() {
 function follow() {
   if (anim || plan) return;
   let best = -1, bd = 1e9;
-  POSTERS.forEach((p, i) => { const d = Math.hypot(pos.x - p.x, pos.z); if (d < 2600 && d < bd) { bd = d; best = i; } });
+  POSTERS.forEach((p, i) => { const d = Math.hypot(pos.x - p.x, pos.z - p.z); if (d < 2600 && d < bd) { bd = d; best = i; } });
   if (best !== current) { current = best; label(); }
 }
 const step = k => { hideHintSoon(); if (current < 0) { const c = nearestAhead(k); goPoster(c); } else goPoster(current + k); };
 function nearestAhead(k) {                                                       // from the overview: first poster in that direction along the corridor
-  const order = POSTERS.map((p, i) => [p.x, i]).sort((a, b) => b[0] - a[0]);
-  return k > 0 ? order[0][1] : order[order.length - 1][1];
+  return k > 0 ? 0 : POSTERS.length - 1;                                          // the list runs from the Ala Nord entrance onwards
 }
 document.getElementById('prev').addEventListener('click', () => step(-1));
 document.getElementById('next').addEventListener('click', () => step(1));
@@ -694,11 +702,11 @@ function setLayout(k, keepView) {
   if (!LAYOUTS[k]) return; LAYOUT = k;
   const was = current >= 0 ? POSTERS[current] : null;
   for (const p of ALL) scene.remove(p.G);
-  POSTERS = LAYOUTS[k].map(([id, x]) => { const p = ALL.find(q => q.id === id); p.x = x; p.G.position.x = x; scene.add(p.G); return p; });
+  POSTERS = LAYOUTS[k].map(([id, a, wall]) => { const p = ALL.find(q => q.id === id); place(p, a, wall); scene.add(p.G); return p; });
   pick.length = 1;
   POSTERS.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = `${i + 1}. ${TITLES[p.id]}`; pick.append(o); });
   for (const id of ['all', 'real']) document.getElementById('l-' + id).setAttribute('aria-pressed', String(id === k));
-  try { localStorage.setItem('poster-layout', k); } catch (e) {}
+  try { localStorage.setItem('poster-layout-2', k); } catch (e) {}
   current = was ? POSTERS.indexOf(was) : -1;
   if (keepView && current >= 0) goPoster(current); else label();
 }
@@ -733,11 +741,12 @@ function goThere(cx, cy) {
   let poster = null; for (let o = h.object; o; o = o.parent) if (o.userData.poster) poster = o;
   if (poster) {
     const i = POSTERS.findIndex(p => p.G === poster), p = POSTERS[i];
-    const inFront = Math.abs(pos.x - p.x) < 400 && pos.z < frontDist() + 150 && Math.abs(Math.sin(yaw)) < 0.35;
+    const dn = (pos.x - p.x) * p.nx + (pos.z - p.z) * p.nz, lat = Math.abs((pos.x - p.x) * p.nz - (pos.z - p.z) * p.nx);
+    const inFront = lat < 400 && dn > 0 && dn < frontDist() + 150 && (Math.sin(yaw) * p.nx + Math.cos(yaw) * p.nz) > 0.94;
     if (!inFront) { goPoster(i); return; }
     current = i; label();
     const d = clamp(h.distance * 0.45, 260, 900);
-    flyTo(new THREE.Vector3(h.point.x, h.point.y, d), new THREE.Vector3(h.point.x, h.point.y, 0)); return;
+    flyTo(new THREE.Vector3(h.point.x + p.nx * d, h.point.y, h.point.z + p.nz * d), h.point.clone()); return;
   }
   if (n.y > 0.7) { const p = new THREE.Vector3(h.point.x, 1600, h.point.z); flyTo(p, p.clone().add(new THREE.Vector3(-Math.sin(gYaw) * 1000, 0, -Math.cos(gYaw) * 1000))); return; }
   if (n.y < -0.7) return;

@@ -333,12 +333,13 @@ const GL = [X(81), XF];
 {
   const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.05, transparent: true, opacity: 0.12, envMapIntensity: 1.5, depthWrite: false });
   const mul = new THREE.MeshStandardMaterial({ color: 0x3a3d42, metalness: 0.6, roughness: 0.4 });
-  const g = new THREE.Mesh(new THREE.PlaneGeometry(GL[1] - GL[0], CH), glass); g.position.set((GL[0] + GL[1]) / 2, CH / 2, ZG); scene.add(g);
-  const np = Math.round((GL[1] - GL[0]) / 1500);
-  for (let i = 0; i <= np; i++) box(scene, 60, CH, 120, mul, GL[0] + (GL[1] - GL[0]) * i / np, CH / 2, ZG);
-  for (const y of [30, 1000, CH - 30]) box(scene, GL[1] - GL[0], 60, 120, mul, (GL[0] + GL[1]) / 2, y, ZG);
+  const G0 = GL[0], G1 = GL[1] - 150;                                             // the opening between the wall faces (the C1N wall stands 150 into it)
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(G1 - G0, CH), glass); g.position.set((G0 + G1) / 2, CH / 2, ZG); scene.add(g);
+  const np = Math.round((G1 - G0) / 1500);
+  for (let i = 0; i <= np; i++) box(scene, 60, CH, 120, mul, G0 + 30 + (G1 - G0 - 60) * i / np, CH / 2, ZG);   // end posts against the walls
+  for (const y of [30, 1000, CH - 30]) box(scene, G1 - G0, 60, 120, mul, (G0 + G1) / 2, y, ZG);
   const panel = new THREE.MeshStandardMaterial({ color: 0x8b8e92, roughness: 0.55 });              // below the transom: grey panels, the floor's colour
-  box(scene, GL[1] - GL[0], 940, 40, panel, (GL[0] + GL[1]) / 2, 30 + 470, ZG);
+  box(scene, G1 - G0, 940, 40, panel, (G0 + G1) / 2, 30 + 470, ZG);
   box(scene, GL[1] - GL[0] + 300, FL - 40, 300, white, (GL[0] + GL[1]) / 2, -(FL + 40) / 2, ZG + 150);          // the facade below, around the recess
   box(scene, 300, FL - 40, ZG - Z(556), white, GL[0] - 150, -(FL + 40) / 2, (ZG + Z(556)) / 2);
   box(scene, 300, FL - 40, ZG - NR, white, GL[1] + 150, -(FL + 40) / 2, (ZG + NR) / 2);

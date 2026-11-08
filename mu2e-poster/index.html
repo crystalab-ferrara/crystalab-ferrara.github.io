@@ -273,13 +273,27 @@ windowAt(XE - 1, CW / 2, -Math.PI / 2, 1200);
 // ---------- hub (plan u 399-556, v 5-154) ----------
 wallZ(XH, -1, 300, NR - 300, EZ0 + 150);                                        // north outer wall
 // WC block (v 5-52, u 399-487), two doors on C1E
-const wc = [{ c: Z(428), t: 'std', label: 'WC' }, { c: Z(466), t: 'std', label: 'WC' }];
-wallZ(X(52), -1, 150, CW, EZ0, wc.map(d => ({ c: d.c, ...H(d.t) })));
-wc.forEach(d => door(X(52), d.c, '+x', d.t, { label: d.label }));
-wallX(Z(446) - 50, 1, 100, XH, X(52) - 150);
+// as drawn: the WC (anteroom off C1E, two cubicles), a short hall open on C1E (u 448-467) with two rooms on its left and one at
+// its end, which leads to two more rooms on the right; a cabinet opening on the corridor
+wallZ(X(52), -1, 150, Z(447.6), EZ0, [{ c: Z(421), ...H('std') }]);              // C1E north wall: WC door, then the open hall
+door(X(52), Z(421), '+x', 'std', { label: 'WC' });
+wallZ(X(52), -1, 150, CW, Z(467));                                               // cabinet front on C1E
+wallX(Z(428) - 50, 1, 100, XH, X(52) - 150);                                     // WC | rooms
+wallZ(X(20.6), 1, 100, Z(428), EZ0, [{ c: Z(409), w: 760, h: 2000 }, { c: Z(421.5), w: 760, h: 2000 }]);   // cubicles
+wallX(Z(415.3), 1, 80, XH, X(20.6));
+wallZ(X(27.5), 1, 100, Z(447.6), Z(428));                                         // the two rooms left of the hall
+wallX(Z(447.6), 1, 100, XH, X(52), [{ c: X(21), ...H('std') }, { c: X(38), ...H('std') }]);
+door(X(21), Z(447.6), '-z', 'std'); door(X(38), Z(447.6), '-z', 'std');
+wallZ(X(31), -1, 100, Z(467), Z(447.6), [{ c: Z(460), ...H('std') }]);            // room at the end of the hall
+door(X(31), Z(460), '+x', 'std');
+wallX(Z(467), -1, 100, XH, X(52), [{ c: X(13), ...H('std') }]);                  // the rooms on the right, and the cabinet
+door(X(13), Z(467), '+z', 'std');
+wallZ(X(19), 1, 100, CW, Z(467), [{ c: Z(477), w: 900, h: 2100 }]);
+wallZ(X(38), 1, 100, CW, Z(467));
 wallX(EZ0, 1, 150, XH, EX0);                                                     // WC block | room 117
 // the Ala Nord corridor carries on through the hub up to the north wall: room 100 on its right, the WC block and lifts on its left
-wallX(CW, 1, 150, XH, X(113), [{ c: X(59), ...H('std') }]);
+wallX(CW, 1, 150, XH, X(113), [{ c: X(45), ...H('std') }, { c: X(59), ...H('std') }]);
+door(X(45), CW, '-z', 'std');                                                    // cabinet
 door(X(59), CW, '-z', 'std', { open: true });                                    // C1E to the corridor
 wallX(0, -1, 150, XH, X(81), [{ c: X(10), ...H('std') }]);
 door(X(10), 0, '+z', 'std', { label: '100' });
@@ -353,7 +367,7 @@ windowAt((EX0 + EX1) / 2, EZ1 - 1, Math.PI, 1300);
 // ---------- floors, ceilings, lights ----------
 // walkable floors [x0, x1, z0, z1, pad]: tiled floor (slipped `pad` under the walls) and ceiling; stair landings have no ceiling
 const AREAS = [
-  [XF, XE, 0, CW], [XH, XF, 0, CW], [X(52), EX1, CW, EZ0], [X(113), XF, ZG, Z(476)], [X(81), X(113), ZG, 0], [PASS[0], PASS[1], CW, ZO], [EX0, EX1, EZ0, EZ1],
+  [XF, XE, 0, CW], [XH, XF, 0, CW], [X(52), EX1, CW, EZ0], [X(31), X(52), Z(467), Z(447.6)], [X(113), XF, ZG, Z(476)], [X(81), X(113), ZG, 0], [PASS[0], PASS[1], CW, ZO], [EX0, EX1, EZ0, EZ1],
 ];
 const LANDINGS = [[EX1, X(95), Z(445), Z(412)], [X(515.5), X(552), CW, Z(463)], [EX1, X(104), Z(33.5), EZ1]];
 const tileTex = (() => {
@@ -467,7 +481,7 @@ const RL = { bg: null, fg: '#30343a', size: 0.7 };
 nordRight.forEach(d => floorLabel(d.label, d.c - 700, NR / 2, 1500, 650, RL));
 [['112', 457], ['113', 354.5], ['114', 317], ['115', 262.5], ['116', 190.5]].forEach(([l, v]) => floorLabel(l, X(v), (CW + ZO) / 2, 1800, 900, RL));
 floorLabel('100', X(43), Z(531), 1600, 800, RL);
-floorLabel('WC', X(28), Z(428), 1000, 500, RL); floorLabel('WC', X(28), Z(466), 1000, 500, RL);
+floorLabel('WC', X(38), Z(414), 1000, 500, RL);
 const ROOMS_N = [6, 33.5, 71.5, 107.5, 143.5, 179.5, 216, 252.5, 288.5, 324.5, 360.5, 398];       // Est north partitions (plan px), rooms 127 … 117
 estNorth.forEach((d, i) => floorLabel(d.label, (XN + EX0) / 2, Z((ROOMS_N[i] + ROOMS_N[i + 1]) / 2), 1100, 480, RL));
 [['132', 71], ['131', 143.5], ['130', 216], ['129', 306.5], ['128', 379]].forEach(([l, u]) => floorLabel(l, (EX1 + ER) / 2, Z(u), 1800, 900, RL));
@@ -563,7 +577,7 @@ const cam = new THREE.PerspectiveCamera(42, 1, 5, 200000); cam.rotation.order = 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const M = 150, WALK = [
   [XH + M, XE - M, M, CW - M],                                                   // Ala Nord corridor and its run through the hub
-  [X(52) + M, EX1 - M, CW + M, EZ0 + 400], [X(59) - 350, X(59) + 350, CW - 400, CW + 400],   // C1E, its door to the corridor
+  [X(52) + M, EX1 - M, CW + M, EZ0 + 400], [X(31) + M, X(52) + 400, Z(467) + M, Z(447.6) - M], [X(59) - 350, X(59) + 350, CW - 400, CW + 400],   // C1E, its door to the corridor
   [EX0 + M, EX1 - M, EZ0 - 400, EZ1 - M],                                        // Ala Est
   [EX1 - 400, X(95) - M, Z(445) + M, Z(412) - M],                                // hub stair landing
   [X(113) + M, XF - M, ZG + M, Z(476) - M], [X(81) + M, X(113) + M, ZG + M, M + 50],   // C1N, by the glazing

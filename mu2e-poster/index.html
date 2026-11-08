@@ -265,8 +265,8 @@ wallX(ZO, 1, 300, XF - 150, X(515.5), [{ c: (PASS[0] + PASS[1]) / 2, ...H('end')
 door((PASS[0] + PASS[1]) / 2, ZO, '-z', 'end');
 wallZ(XE, 1, 300, NR - 300, CW + 150);                                          // south end of the corridor, with a window
 function windowAt(x, z, rotY, w) {
-  const win = new THREE.Mesh(new THREE.PlaneGeometry(w, 1500), new THREE.MeshBasicMaterial({ color: 0xe8f0f6 })); win.position.set(x, 1650, z); win.rotation.y = rotY; scene.add(win);
-  const fr = new THREE.Mesh(new THREE.PlaneGeometry(w + 80, 1580), grey); fr.rotation.y = rotY; fr.position.set(x, 1650, z); fr.translateZ(-0.5); scene.add(fr);
+  const win = new THREE.Mesh(new THREE.PlaneGeometry(w, 1500), new THREE.MeshBasicMaterial({ color: 0xe8f0f6 })); win.position.set(x, 1650, z); win.rotation.y = rotY; win.translateZ(30); scene.add(win);
+  const fr = new THREE.Mesh(new THREE.PlaneGeometry(w + 80, 1580), grey); fr.rotation.y = rotY; fr.position.set(x, 1650, z); fr.translateZ(15); scene.add(fr);
 }
 windowAt(XE - 1, CW / 2, -Math.PI / 2, 1200);
 

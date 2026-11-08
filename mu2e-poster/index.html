@@ -337,6 +337,8 @@ const GL = [X(81), XF];
   const np = Math.round((GL[1] - GL[0]) / 1500);
   for (let i = 0; i <= np; i++) box(scene, 60, CH, 120, mul, GL[0] + (GL[1] - GL[0]) * i / np, CH / 2, ZG);
   for (const y of [30, 1000, CH - 30]) box(scene, GL[1] - GL[0], 60, 120, mul, (GL[0] + GL[1]) / 2, y, ZG);
+  const panel = new THREE.MeshStandardMaterial({ color: 0x8b8e92, roughness: 0.55 });              // below the transom: grey panels, the floor's colour
+  box(scene, GL[1] - GL[0], 940, 40, panel, (GL[0] + GL[1]) / 2, 30 + 470, ZG);
   box(scene, GL[1] - GL[0] + 300, FL - 40, 300, white, (GL[0] + GL[1]) / 2, -(FL + 40) / 2, ZG + 150);          // the facade below, around the recess
   box(scene, 300, FL - 40, ZG - Z(556), white, GL[0] - 150, -(FL + 40) / 2, (ZG + Z(556)) / 2);
   box(scene, 300, FL - 40, ZG - NR, white, GL[1] + 150, -(FL + 40) / 2, (ZG + NR) / 2);

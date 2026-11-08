@@ -175,6 +175,7 @@ const DOOR = {
   std:  { W: 900, H: 2100, F: 50, leaves: 1, fire: false },
   lab:  { W: 900, H: 2150, F: 60, leaves: 1, fire: true },
   fire: { W: 1200, H: 2150, F: 60, leaves: 1, fire: true },
+  double:{ W: 1400, H: 2150, F: 60, leaves: 2, fire: false },
   stair:{ W: 1400, H: 2150, F: 60, leaves: 2, fire: true },
   end:  { W: 1800, H: 2150, F: 60, leaves: 2, fire: true },
   wide: { W: 1060, H: 2100, F: 50, leaves: 1, fire: false },
@@ -241,9 +242,9 @@ function door(x, z, dir, type, { open = false, label = '', side = 1 } = {}) {
       box(P, 130, 18, 18, steel, o - hinge * (lw / 2 - 125), 1080, 35);
     }
   }
-  if (label) {                                                                     // room plate on the wall beside the door
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(170, 80), new THREE.MeshStandardMaterial({ map: textTex(label, 256, 120), roughness: 0.5 }));
-    m.position.set(side * (OWd / 2 + 190), 1550, 2); grp.add(m);
+  if (label) {                                                                     // room number: black on a white label on the jamb, at eye height
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(110, 55), new THREE.MeshStandardMaterial({ map: textTex(label, 256, 128, { size: 0.7, font: 700 }), roughness: 0.5 }));
+    m.position.set(side * (OWd / 2 + 62), 1600, 1.5); grp.add(m);
   }
   return grp;
 }
@@ -252,12 +253,12 @@ const H = t => ({ w: opening(t).w, h: opening(t).h });
 // ---------- Ala Nord ----------
 const nordRight = [...Array(11)].map((_, k) => ({ c: 4500 - 3000 * k, t: 'std', label: String(101 + k) }));
 const PASS = [X(373.5), X(397.5)];                                              // side passage to the outside stair, between 112 and 113
-const nordLeft = [[172, 'lab', '116'], [217, 'lab', '116'], [235.5, 'lab', '115', -1], [289.5, 'lab', '115'], [308, 'std', '114'], [362, 'std', '113'],
-  [455, 'lab', '112'], [527, 'stair', 'Scala']].map(([v, t, label, side = 1]) => ({ c: X(v), t, label, side }));
+const nordLeft = [[172, 'std', '116'], [217, 'std', '116'], [235.5, 'std', '115', -1], [289.5, 'std', '115'], [308, 'std', '114'], [362, 'std', '113'],
+  [455, 'std', '112'], [527, 'double', 'Scala']].map(([v, t, label, side = 1]) => ({ c: X(v), t, label, side }));
 wallX(0, -1, 150, XF, XE, nordRight.map(d => ({ c: d.c, ...H(d.t) })));
 nordRight.forEach(d => door(d.c, 0, '+z', d.t, { label: d.label }));
 wallX(CW, 1, 150, XF, XE, [...nordLeft.map(d => ({ c: d.c, ...H(d.t) })), { c: (PASS[0] + PASS[1]) / 2, w: PASS[1] - PASS[0] - 150, h: 2400 }]);
-nordLeft.forEach(d => door(d.c, CW, '-z', d.t, { label: d.label, side: d.side, open: d.t === 'stair' }));
+nordLeft.forEach(d => door(d.c, CW, '-z', d.t, { label: d.label, side: d.side, open: d.t === 'double' }));
 for (let n = 0; n < 10; n++) wallZ(2300 - 3000 * n - 50, 1, 100, NR, -150);   // office partitions, east side
 for (const v of [226.5, 298.5, 335]) wallZ(X(v) - 50, 1, 100, CW + 150, ZO);     // west side
 wallZ(PASS[0], -1, 150, CW + 150, ZO); wallZ(PASS[1], 1, 150, CW + 150, ZO);       // side passage walls
@@ -316,8 +317,8 @@ wallZ(X(113), 1, 150, CW, Z(445));
 wallX(Z(476), 1, 150, X(113), XF, [{ c: X(119), ...H('std') }]);
 door(X(119), Z(476), '-z', 'std');
 // C1N: open door to the Ala Nord corridor; the same line closes room 111 and room 116
-wallZ(XF, -1, 150, NR, Z(445), [{ c: CW / 2, ...H('stair') }]);
-door(XF, CW / 2, '+x', 'stair', { open: true });
+wallZ(XF, -1, 150, NR, Z(445), [{ c: CW / 2, ...H('double') }]);
+door(XF, CW / 2, '+x', 'double', { open: true });
 wallZ(XF, -1, 150, Z(412), ZO + 300);
 // duct beside the stair (u 399-412)
 wallZ(EX1, 1, 150, Z(412), EZ0); wallZ(ER, 1, 300, Z(412), EZ0);
@@ -334,9 +335,9 @@ const GL = [X(81), XF];
   const np = Math.round((GL[1] - GL[0]) / 1500);
   for (let i = 0; i <= np; i++) box(scene, 60, CH, 120, mul, GL[0] + (GL[1] - GL[0]) * i / np, CH / 2, ZG);
   for (const y of [30, 1000, CH - 30]) box(scene, GL[1] - GL[0], 60, 120, mul, (GL[0] + GL[1]) / 2, y, ZG);
-  box(scene, GL[1] - GL[0] + 300, FL, 300, white, (GL[0] + GL[1]) / 2, -FL / 2, ZG + 150);          // the facade below, around the recess
-  box(scene, 300, FL, ZG - Z(556), white, GL[0] - 150, -FL / 2, (ZG + Z(556)) / 2);
-  box(scene, 300, FL, ZG - NR, white, GL[1] + 150, -FL / 2, (ZG + NR) / 2);
+  box(scene, GL[1] - GL[0] + 300, FL - 40, 300, white, (GL[0] + GL[1]) / 2, -(FL + 40) / 2, ZG + 150);          // the facade below, around the recess
+  box(scene, 300, FL - 40, ZG - Z(556), white, GL[0] - 150, -(FL + 40) / 2, (ZG + Z(556)) / 2);
+  box(scene, 300, FL - 40, ZG - NR, white, GL[1] + 150, -(FL + 40) / 2, (ZG + NR) / 2);
   const lawn = new THREE.MeshStandardMaterial({ color: 0x6f9a4a, roughness: 1 });
   const L = new THREE.Mesh(new THREE.PlaneGeometry(100000, 70000), lawn); L.rotation.x = -Math.PI / 2; L.position.set(-15000, -FL, ZG - 35000); scene.add(L);
   const bark = new THREE.MeshStandardMaterial({ color: 0x5a4636, roughness: 1 });
@@ -415,7 +416,7 @@ function shaft(x0, x1, z0, z1, open, mid) {
   const t = 150, W = { x0: [x0 - t / 2, (z0 + z1) / 2, t, z1 - z0 + 2 * t], x1: [x1 + t / 2, (z0 + z1) / 2, t, z1 - z0 + 2 * t],
     z0: [(x0 + x1) / 2, z0 - t / 2, x1 - x0, t], z1: [(x0 + x1) / 2, z1 + t / 2, x1 - x0, t] };
   for (const [k, [x, z, w, d]] of Object.entries(W)) {
-    box(scene, w, FL, d, white, x, -FL / 2, z); box(ceilGrp, w, FL, d, white, x, CH + FL / 2, z);
+    box(scene, w, FL - 40, d, white, x, -(FL + 40) / 2, z); box(ceilGrp, w, FL - 40, d, white, x, CH + (FL + 40) / 2, z);
     if (k !== open && mid.includes(k)) box(scene, w, CH, d, wallMats, x, CH / 2, z);
   }
   slab(x0, x1, z0, z1, -FL, lowFloor); slab(x0, x1, z0, z1, FL + CH, ceilMat, ceilGrp);

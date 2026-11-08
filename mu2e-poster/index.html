@@ -177,6 +177,7 @@ const DOOR = {
   fire: { W: 1200, H: 2150, F: 60, leaves: 1, fire: true },
   stair:{ W: 1400, H: 2150, F: 60, leaves: 2, fire: true },
   end:  { W: 1800, H: 2150, F: 60, leaves: 2, fire: true },
+  wide: { W: 1060, H: 2100, F: 50, leaves: 1, fire: false },
   lift: { W: 900, H: 2100, F: 60, leaves: 2, fire: false, lift: true },
 };
 const opening = t => ({ w: DOOR[t].W + 2 * DOOR[t].F, h: DOOR[t].H + DOOR[t].F });
@@ -265,7 +266,7 @@ wallX(ZO, 1, 300, XF - 150, X(515.5), [{ c: (PASS[0] + PASS[1]) / 2, ...H('end')
 door((PASS[0] + PASS[1]) / 2, ZO, '-z', 'end');
 wallZ(XE, 1, 300, NR - 300, CW + 150);                                          // south end of the corridor, with a window
 function windowAt(x, z, rotY, w) {
-  const win = new THREE.Mesh(new THREE.PlaneGeometry(w, 1500), new THREE.MeshBasicMaterial({ color: 0xe8f0f6 })); win.position.set(x, 1650, z); win.rotation.y = rotY; win.translateZ(30); scene.add(win);
+  const win = new THREE.Mesh(new THREE.PlaneGeometry(w, 1500), new THREE.MeshBasicMaterial({ color: 0xe8f0f6 })); win.position.set(x, 1650, z); win.rotation.y = rotY; win.translateZ(60); scene.add(win);
   const fr = new THREE.Mesh(new THREE.PlaneGeometry(w + 80, 1580), grey); fr.rotation.y = rotY; fr.position.set(x, 1650, z); fr.translateZ(15); scene.add(fr);
 }
 windowAt(XE - 1, CW / 2, -Math.PI / 2, 1200);
@@ -274,7 +275,7 @@ windowAt(XE - 1, CW / 2, -Math.PI / 2, 1200);
 wallZ(XH, -1, 300, NR - 300, EZ0 + 150);                                        // north outer wall
 // WC block (v 5-52, u 399-487), two doors on C1E
 // as drawn: the WC (anteroom off C1E, two cubicles), a short hall open on C1E (u 448-467) with two rooms on its left and one at
-// its end, which leads to two more rooms on the right; a cabinet opening on the corridor
+// its end, which leads to two more rooms on the right; a closed cabinet
 wallZ(X(52), -1, 150, Z(447.6), EZ0, [{ c: Z(421), ...H('std') }]);              // C1E north wall: WC door, then the open hall
 door(X(52), Z(421), '+x', 'std', { label: 'WC' });
 wallZ(X(52), -1, 150, CW, Z(467));                                               // cabinet front on C1E
@@ -292,9 +293,8 @@ wallZ(X(19), 1, 100, CW, Z(467), [{ c: Z(477), w: 900, h: 2100 }]);
 wallZ(X(38), 1, 100, CW, Z(467));
 wallX(EZ0, 1, 150, XH, EX0);                                                     // WC block | room 117
 // the Ala Nord corridor carries on through the hub up to the north wall: room 100 on its right, the WC block and lifts on its left
-wallX(CW, 1, 150, XH, X(113), [{ c: X(45), ...H('std') }, { c: X(59), ...H('std') }]);
-door(X(45), CW, '-z', 'std');                                                    // cabinet
-door(X(59), CW, '-z', 'std', { open: true });                                    // C1E to the corridor
+wallX(CW, 1, 150, XH, X(113), [{ c: X(59), ...H('wide') }]);
+door(X(59), CW, '-z', 'wide', { open: true });                                    // C1E to the corridor
 wallX(0, -1, 150, XH, X(81), [{ c: X(10), ...H('std') }]);
 door(X(10), 0, '+z', 'std', { label: '100' });
 wallZ(X(81), -1, 150, Z(556), 0, [{ c: Z(517), ...H('std') }]);                  // room 100, south wall
@@ -394,7 +394,7 @@ const STAIRS = [[EX1, ER, Z(445), Z(412)], [X(515.5), X(552), CW + 150, Z(402)],
 function holedFloor(x0, x1, z0, z1, holes) {
   const sh = new THREE.Shape(); sh.moveTo(x0, -z0); sh.lineTo(x1, -z0); sh.lineTo(x1, -z1); sh.lineTo(x0, -z1); sh.closePath();
   for (const [a, b, c, d] of holes) { const h = new THREE.Path(); h.moveTo(a, -c); h.lineTo(a, -d); h.lineTo(b, -d); h.lineTo(b, -c); h.closePath(); sh.holes.push(h); }
-  const g = new THREE.ShapeGeometry(sh); g.rotateX(-Math.PI / 2); g.translate(0, -2, 0); scene.add(new THREE.Mesh(g, roomFloor));
+  const g = new THREE.ShapeGeometry(sh); g.rotateX(-Math.PI / 2); g.translate(0, -30, 0); scene.add(new THREE.Mesh(g, roomFloor));
 }
 holedFloor(XH - 300, XE + 400, NR - 300, Z(400) + 300, [STAIRS[0], STAIRS[1], [GL[0], GL[1], NR - 400, ZG]]);
 holedFloor(XN - 300, ER + 300, EZ0, EZ1 + 300, [STAIRS[2]]);
@@ -464,7 +464,7 @@ const panelBox = new THREE.BoxGeometry(620, 45, 620), panelMat = new THREE.MeshS
 const diffGeo = new THREE.PlaneGeometry(590, 590);
 for (const [x, z] of PANELS) {
   const m = new THREE.Mesh(panelBox, panelMat); m.position.set(x, CH - 22, z); ceilGrp.add(m);
-  const d = new THREE.Mesh(diffGeo, panelLit); d.rotation.x = Math.PI / 2; d.position.set(x, CH - 45.5, z); ceilGrp.add(d);
+  const d = new THREE.Mesh(diffGeo, panelLit); d.rotation.x = Math.PI / 2; d.position.set(x, CH - 52, z); ceilGrp.add(d);
 }
 // a pool of 12 spotlights moves to the panels nearest to you (no shader rebuilds, light cost stays flat)
 const SPOTS = [...Array(12)].map(() => { const S = new THREE.SpotLight(0xfff8f0, 6.5e6, 0, Math.PI / 2.15, 1, 2); scene.add(S, S.target); return S; });
@@ -543,7 +543,7 @@ function framedPoster(x) {
 const WALLS = { N: a => [a, 0, 0, 1], L: a => [a, CW, 0, -1], E: a => [EX0, a, 1, 0] };
 const LAYOUTS = {
   all: [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000], ['oreo', -26750]],
-  real: [['oreo', -26900], ['gamma', -22150, 'L'], ['positron', -20950, 'L'], ['et', Z(370.7), 'E'], ['simulation', Z(334.7), 'E'], ['mu2e', Z(298.7), 'E'],
+  real: [['oreo', -26900], ['gamma', -25050, 'L'], ['positron', -23900, 'L'], ['et', Z(370.7), 'E'], ['simulation', Z(334.7), 'E'], ['mu2e', Z(298.7), 'E'],
     ['collimation', Z(153.7), 'E'], ['bullkid', Z(117.7), 'E']],
 };
 let LAYOUT = 'real'; try { if (localStorage.getItem('poster-layout-2') === 'all') LAYOUT = 'all'; } catch (e) {}
@@ -582,11 +582,11 @@ const hemi = new THREE.HemisphereLight(0xffffff, 0xd4d6d8, 0.75); scene.add(hemi
 //   mouse: drag = look around · wheel = move towards / away from the point under the cursor · double-click = go there
 //          right-drag or shift-drag = sidestep / up-down · WASD or arrows = walk (shift = faster)
 //   touch: one finger = look around · pinch = move towards / away from the fingers · two-finger drag = sidestep · double-tap = go there
-const cam = new THREE.PerspectiveCamera(42, 1, 5, 200000); cam.rotation.order = 'YXZ';
+const cam = new THREE.PerspectiveCamera(42, 1, 40, 200000); cam.rotation.order = 'YXZ';
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const M = 150, WALK = [
   [XH + M, XE - M, M, CW - M],                                                   // Ala Nord corridor and its run through the hub
-  [X(52) + M, EX1 - M, CW + M, EZ0 + 400], [X(31) + M, X(52) + 400, Z(467) + M, Z(447.6) - M], [X(59) - 350, X(59) + 350, CW - 400, CW + 400],   // C1E, its door to the corridor
+  [X(52) + M, EX1 - M, CW + M, EZ0 + 400], [X(31) + M, X(52) + 400, Z(467) + M, Z(447.6) - M], [X(59) - 430, X(59) + 430, CW - 400, CW + 400],   // C1E, its door to the corridor
   [EX0 + M, EX1 - M, EZ0 - 400, EZ1 - M],                                        // Ala Est
   [EX1 - 400, X(95) - M, Z(445) + M, Z(412) - M],                                // hub stair landing
   [X(113) + M, XF - M, ZG + M, Z(476) - M], [X(81) + M, X(113) + M, ZG + M, M + 50],   // C1N, by the glazing

@@ -219,7 +219,7 @@ function wallZ(f, s, t, z0, z1, holes = []) {
 // a door; dir = direction from the wall towards the side it is seen from ('+z', '-z', '+x', '-x'); open: leaves swung back 85°,
 // away from that side (swing = 1) or towards it (swing = -1: the leaf opens into the side it is seen from, the push side is the other one)
 const ROT = { '+z': 0, '-z': Math.PI, '+x': Math.PI / 2, '-x': -Math.PI / 2 };
-function door(x, z, dir, type, { open = false, label = '', side = 1, swing = 1 } = {}) {
+function door(x, z, dir, type, { open = false, label = '', side = 1, swing = 1, hand = 1 } = {}) {
   const { W, H, F, leaves, fire, lift } = DOOR[type], OWd = W + 2 * F, OHd = H + F;
   const grp = new THREE.Group(); grp.position.set(x, 0, z); grp.rotation.y = ROT[dir]; scene.add(grp);
   box(grp, 4, OHd, REC, grey, -OWd / 2 + 2, OHd / 2, -REC / 2); box(grp, 4, OHd, REC, grey, OWd / 2 - 2, OHd / 2, -REC / 2);   // reveal
@@ -229,7 +229,7 @@ function door(x, z, dir, type, { open = false, label = '', side = 1, swing = 1 }
   box(L, F, OHd, 20, fm, -W / 2 - F / 2, OHd / 2, 10); box(L, F, OHd, 20, fm, W / 2 + F / 2, OHd / 2, 10); box(L, W + 2 * F, F, 20, fm, 0, H + F / 2, 10);
   const lw = W / leaves;
   for (let k = 0; k < leaves; k++) {
-    const cx = -W / 2 + lw * (k + 0.5), hinge = leaves === 2 ? (k === 0 ? -1 : 1) : -1;
+    const cx = -W / 2 + lw * (k + 0.5), hinge = leaves === 2 ? (k === 0 ? -1 : 1) : -hand;   // hand = -1: single leaf hinged on the other jamb
     const P = new THREE.Group(); P.position.x = cx + hinge * lw / 2; L.add(P);     // pivot on the hinge edge
     if (swing < 0) P.scale.z = -1;                                                   // mirrored leaf: fittings on the other face
     if (open && !lift) P.rotation.y = -hinge * swing * 1.48;
@@ -297,7 +297,7 @@ wallZ(X(38), 1, 100, CW, Z(467));
 wallX(EZ0, 1, 150, XH, EX0);                                                     // WC block | room 117
 // the Ala Nord corridor carries on through the hub up to the north wall: room 100 on its right, the WC block and lifts on its left
 wallX(CW, 1, 150, XH, X(113), [{ c: X(59), ...H('wide') }]);
-door(X(59), CW, '-z', 'wide', { open: true });                                    // C1E to the corridor
+door(X(59), CW, '-z', 'wide', { open: true, hand: -1 });                      // hinged on the cabinet side, opens into C1E (as drawn)                                    // C1E to the corridor
 wallX(0, -1, 150, XH, X(81), [{ c: X(10), ...H('std') }]);
 door(X(10), 0, '+z', 'std', { label: '100' });
 wallZ(X(81), -1, 150, Z(556), 0, [{ c: Z(517), ...H('std') }]);                  // room 100, south wall

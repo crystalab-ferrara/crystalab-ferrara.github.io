@@ -112,7 +112,7 @@ body { background: var(--room); color: var(--ink); font-family: var(--sans); ove
     </div>
     <div class="seg" role="group" aria-label="Disposizione dei poster">
       <button type="button" id="l-all" aria-pressed="true" title="Tutti gli 11 poster, uno tra ogni coppia di porte">Tutti</button>
-      <button type="button" id="l-real" aria-pressed="false" title="Ogni poster accanto alla sua stanza: 111 OREO; 116 radiazione e sorgente di positroni; 117 ET, 118 simulazioni, 119 Mu2e, 123 collimazione LHC, 124 BULLKID">Allestimento</button>
+      <button type="button" id="l-real" aria-pressed="false" title="Ogni poster accanto alla sua stanza: 111 OREO; 116 radiazione e sorgente di positroni; 117 ET, 118 simulazioni, 119 Mu2e, 123 collimazione LHC, 124 BULLKID. Nell’atrio: OTELLO, interferometria, channeling">Allestimento</button>
     </div>
     <label class="pick"><span class="sr">Vai al poster</span>
       <select id="pick" aria-label="Vai al poster"><option value="">Vai al poster…</option></select>
@@ -541,12 +541,15 @@ function framedPoster(x) {
 }
 // Two layouts from the menu. "Tutti": all of them on the Ala Nord right wall, one between each pair of doors.
 // "Allestimento": the real hanging, each poster on the corridor wall of its room, beside the door
-// (111 OREO; 116, between its two doors: radiation, positron source; Ala Est 117 ET, 118 simulation, 119 Mu2e, 123 LHC collimation, 124 BULLKID).
+// (111 OREO; 116, between its two doors: radiation, positron source; Ala Est 117 ET, 118 simulation, 119 Mu2e, 123 LHC collimation, 124 BULLKID),
+// and in the hub, away from offices: OTELLO in C1N facing the glazing, interferometry on the run to room 100, channeling in C1E by the lifts.
 // Entries: [id, position along the wall, wall]; N = Ala Nord right wall (z = 0), L = Ala Nord left wall (z = CW), E = Ala Est north wall (x = EX0).
-const WALLS = { N: a => [a, 0, 0, 1], L: a => [a, CW, 0, -1], E: a => [EX0, a, 1, 0] };
+// C = C1E north wall (x = X(52)), S = wall of the service room under the lifts, facing the glazing (z = Z(476)); the run of the corridor through
+// the hub, lifts side, is the L wall carried on (z = CW).
+const WALLS = { N: a => [a, 0, 0, 1], L: a => [a, CW, 0, -1], E: a => [EX0, a, 1, 0], C: a => [X(52), a, 1, 0], S: a => [a, Z(476), 0, -1] };
 const LAYOUTS = {
   all: [['channeling', 3000], ['mu2e', 0], ['collimation', -3000], ['positron', -6000], ['gamma', -9000], ['simulation', -12000], ['interferometry', -15000], ['bullkid', -18000], ['otello', -21000], ['et', -24000], ['oreo', -26750]],
-  real: [['oreo', -26900], ['gamma', -25050, 'L'], ['positron', -23900, 'L'], ['et', Z(370.7), 'E'], ['simulation', Z(334.7), 'E'], ['mu2e', Z(298.7), 'E'],
+  real: [['oreo', -26900], ['gamma', -25050, 'L'], ['positron', -23900, 'L'], ['otello', -28950, 'S'], ['interferometry', -33100, 'L'], ['channeling', 5867, 'C'], ['et', Z(370.7), 'E'], ['simulation', Z(334.7), 'E'], ['mu2e', Z(298.7), 'E'],
     ['collimation', Z(153.7), 'E'], ['bullkid', Z(117.7), 'E']],
 };
 let LAYOUT = 'real'; try { if (localStorage.getItem('poster-layout-2') === 'all') LAYOUT = 'all'; } catch (e) {}

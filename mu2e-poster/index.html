@@ -143,7 +143,13 @@ r.toneMapping = THREE.NeutralToneMapping; r.toneMappingExposure = 1.0;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf2f2f0);
 const pm = new THREE.PMREMGenerator(r);
-scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+// reflected light: a sky dome the same all round the vertical, so the two corridors (one along x, one along z) look alike
+const envScene = new THREE.Scene();
+{ const g = new THREE.SphereGeometry(10, 48, 24), p = g.attributes.position, col = [];
+  for (let i = 0; i < p.count; i++) { const y = p.getY(i) / 10, v = y > 0 ? 0.62 + 0.38 * y : 0.62 + 0.3 * y; col.push(v, v, v * 0.99); }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  envScene.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide }))); }
+scene.environment = pm.fromScene(envScene, 0.04).texture;
 scene.environmentIntensity = 0.35;
 
 // units: mm. Poster wall = plane z = 0, floor y = 0, poster centre 1500 mm above the floor.
@@ -162,7 +168,7 @@ const K = 83, CH = 3000, REC = 100, FL = 3630;                                  
 const X = v => 4500 + (v - 542.5) * K, Z = u => (508 - u) * K;
 const CW = Z(486.5);                                                            // Ala Nord corridor width
 const XE = X(551), XF = X(154), XH = X(5);                                      // Nord south end, C1N, hub north wall
-const EX0 = X(58), EX1 = X(78), EZ0 = Z(399), EZ1 = Z(6);                        // Ala Est corridor: x from EX0 to EX1, z from C1E to the west end
+const EX0 = X(58), EX1 = EX0 + CW, EZ0 = Z(399), EZ1 = Z(6);                        // Ala Est corridor: x from EX0 to EX1, z from C1E to the west end
 const XN = X(14), ER = X(152), NR = Z(553.5), ZO = Z(415), ZG = Z(525.5);         // Est north and south facades, Nord east and west facades, glazing
 const XM = (XE + XF) / 2;
 const DOOR = {

@@ -216,9 +216,10 @@ function wallZ(f, s, t, z0, z1, holes = []) {
   run(z0, z1, holes, (a, b, y0, y1) => { if (b - a < 1 || y1 - y0 < 1) return; const m = new THREE.Mesh(new THREE.BoxGeometry(t, y1 - y0, b - a), wallMats); m.position.set(f + s * t / 2, (y0 + y1) / 2, (a + b) / 2); scene.add(m); });
 }
 
-// a door; dir = direction from the wall towards the side it is seen from ('+z', '-z', '+x', '-x'); open: leaves swung back 85°
+// a door; dir = direction from the wall towards the side it is seen from ('+z', '-z', '+x', '-x'); open: leaves swung back 85°,
+// away from that side (swing = 1) or towards it (swing = -1: the leaf opens into the side it is seen from, the push side is the other one)
 const ROT = { '+z': 0, '-z': Math.PI, '+x': Math.PI / 2, '-x': -Math.PI / 2 };
-function door(x, z, dir, type, { open = false, label = '', side = 1 } = {}) {
+function door(x, z, dir, type, { open = false, label = '', side = 1, swing = 1 } = {}) {
   const { W, H, F, leaves, fire, lift } = DOOR[type], OWd = W + 2 * F, OHd = H + F;
   const grp = new THREE.Group(); grp.position.set(x, 0, z); grp.rotation.y = ROT[dir]; scene.add(grp);
   box(grp, 4, OHd, REC, grey, -OWd / 2 + 2, OHd / 2, -REC / 2); box(grp, 4, OHd, REC, grey, OWd / 2 - 2, OHd / 2, -REC / 2);   // reveal
@@ -230,7 +231,8 @@ function door(x, z, dir, type, { open = false, label = '', side = 1 } = {}) {
   for (let k = 0; k < leaves; k++) {
     const cx = -W / 2 + lw * (k + 0.5), hinge = leaves === 2 ? (k === 0 ? -1 : 1) : -1;
     const P = new THREE.Group(); P.position.x = cx + hinge * lw / 2; L.add(P);     // pivot on the hinge edge
-    if (open && !lift) P.rotation.y = -hinge * 1.48;
+    if (swing < 0) P.scale.z = -1;                                                   // mirrored leaf: fittings on the other face
+    if (open && !lift) P.rotation.y = -hinge * swing * 1.48;
     const o = -hinge * lw / 2;                                                     // leaf centre relative to the pivot
     box(P, lw - 4, H - 6, fire ? 8 : 6, lift ? steel : yellow, o, H / 2, fire ? 4 : 3);
     if (fire) {
@@ -324,7 +326,7 @@ wallZ(XF, -1, 150, Z(412), ZO + 300);
 wallZ(EX1, 1, 150, Z(412), EZ0); wallZ(ER, 1, 300, Z(412), EZ0);
 // C1E: open door to the Ala Est corridor
 wallX(EZ0, 1, 150, EX0, EX1, [{ c: (EX0 + EX1) / 2, ...H('stair') }]);
-door((EX0 + EX1) / 2, EZ0, '-z', 'stair', { open: true });
+door((EX0 + EX1) / 2, EZ0, '-z', 'stair', { open: true, swing: -1 });          // opens into the hub, closes towards the corridor
 wallX(EZ0, 1, 150, EX1, ER);
 // glazing between 100 and 111: floor-to-ceiling panes in thin dark frames; outside, a storey down, a lawn with trees
 const GL = [X(81), XF];

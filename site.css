@@ -479,6 +479,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .person.you .ph { aspect-ratio: 4 / 5; border-radius: var(--radius); background: #e6eef8; color: var(--ink); display: flex; flex-direction: column; justify-content: flex-end; padding: 22px; position: relative; overflow: hidden; }
 .person.you .ph::before { content: ""; position: absolute; left: -10%; right: -10%; top: 46%; height: 3px; background: var(--beam); transform: rotate(-8deg); }
 .person.you .ph b { font-size: var(--fs-h2); position: relative; }
+.person .ph.nophoto { aspect-ratio: 4 / 5; border-radius: var(--radius); background: var(--line); color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.person .ph.nophoto b { font-size: var(--fs-h1); font-weight: 600; letter-spacing: 0.02em; }
 .person.you a { font-weight: 600; }
 
 /* ---------- footer ---------- */

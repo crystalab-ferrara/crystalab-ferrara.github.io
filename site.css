@@ -649,6 +649,11 @@ main > .section:last-child { padding-bottom: clamp(40px, 5vw, 64px); }
 .line-summary { max-width: 54ch; margin-top: 18px; color: var(--ink-2); font-size: var(--fs-body); }
 /* the language link at the end of the menu: set apart from the pages */
 
+/* a lab photo among the physics paragraphs of a research line */
+.phys-photo { margin: 28px 0 0; }
+.phys-photo img { width: 100%; height: auto; border-radius: var(--radius); display: block; }
+.phys-photo figcaption { margin-top: 10px; font-size: var(--fs-small); color: var(--muted); }
+
 /* ---------- stats.html: visit counts ---------- */
 .stats .h3 { margin: 48px 0 16px; }
 .stats-note { color: var(--muted); margin-top: 10px; max-width: 54ch; }

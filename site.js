@@ -295,9 +295,6 @@ var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
   try { region = new Intl.DisplayNames(['en'], { type: 'region' }); } catch (e) {}
   var lang = null;
   try { lang = new Intl.DisplayNames(['en'], { type: 'language' }); } catch (e) {}
-  var ignored = false;
-  try { ignored = localStorage.getItem('crystalab-ignore') === '1'; } catch (e) {}
-  var note = ignored ? 'This browser is excluded from the counts.' : '';
 
   var table = function (title, rows, label) {
     if (!rows || !rows.length) return '';
@@ -339,15 +336,19 @@ var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
     try { manual = localStorage.getItem('crystalab-ignore-manual'); } catch (e) {}
     if (manual !== '0') setIgnore(true);
     showToggle();
+    say('');
   };
 
-  // one link that switches this browser in and out of the counts (as on the DICEFLOW statistics page)
+  // one link, always shown under the title, that switches this browser in and out of the counts
+  // (as on the DICEFLOW statistics page); it works with or without the key
+  var cnt = document.createElement('p');
+  cnt.className = 'stats-count';
+  box.querySelector('.stats-note').insertAdjacentElement('afterend', cnt);
   var showToggle = function () {
     var off = false;
     try { off = localStorage.getItem('crystalab-ignore') === '1'; } catch (e) {}
-    msg.innerHTML = (off ? 'Your visits from this browser are <b>not counted</b>. ' : 'Your visits from this browser <b>are counted</b>. ') +
+    cnt.innerHTML = (off ? 'Your visits from this browser are <b>not counted</b>. ' : 'Your visits from this browser <b>are counted</b>. ') +
       '<a href="#" id="st-toggle">' + (off ? 'Count them' : 'Stop counting them') + '</a>';
-    msg.hidden = false;
     $('st-toggle').addEventListener('click', function (e) {
       e.preventDefault();
       setIgnore(!off);
@@ -378,5 +379,6 @@ var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
   });
   var saved = '';
   try { saved = localStorage.getItem('crystalab-stats-key') || ''; } catch (e) {}
-  if (saved) load(saved); else { form.hidden = false; say(note); }
+  showToggle();
+  if (saved) load(saved); else form.hidden = false;
 })();

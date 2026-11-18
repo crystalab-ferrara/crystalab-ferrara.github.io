@@ -261,6 +261,23 @@
   }
 })();
 
+// Home: three cards out of the pool, different at each visit. Cards shown last time come last in the draw,
+// so a returning visitor sees new photos first. Without script the first three stay.
+(function () {
+  var trio = document.getElementById('trio');
+  if (!trio) return;
+  var cards = [].slice.call(trio.children);
+  if (cards.length <= 3) return;
+  var last = [];
+  try { last = JSON.parse(localStorage.getItem('crystalab-cards') || '[]'); } catch (e) {}
+  var order = cards.map(function (c, i) { return { c: c, i: i, k: (last.indexOf(i) >= 0 ? 1 : 0) + Math.random() }; })
+    .sort(function (a, b) { return a.k - b.k; });
+  var pick = order.slice(0, 3);
+  cards.forEach(function (c) { c.hidden = true; });
+  pick.forEach(function (p) { p.c.hidden = false; trio.appendChild(p.c); });
+  try { localStorage.setItem('crystalab-cards', JSON.stringify(pick.map(function (p) { return p.i; }))); } catch (e) {}
+})();
+
 // Anonymous visit counter: our Cloudflare Worker (crystalab-web/counter-worker/), no cookies, no personal data.
 // One beacon per page view, only on the public domain: local previews and the github.io copy stay out.
 // The owner's browsers are left out: a browser that opens stats.html with the key is no longer counted

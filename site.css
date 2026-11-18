@@ -212,6 +212,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .trio p { margin-top: 8px; color: var(--ink-2); }
 @media (max-width: 860px) { .trio { grid-template-columns: 1fr; } }
 @media (min-width: 601px) and (max-width: 860px) { .trio figure { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 22px; align-items: center; } .trio h3 { margin-top: 0; } }
+/* the home shows three cards of a larger pool; site.js picks them at each visit */
+.trio figure[hidden] { display: none; }
+.trio a { color: inherit; text-decoration: none; }
+.trio a img { transition: opacity .2s ease; }
+.trio a:hover img { opacity: .9; }
+.trio h3 a:hover { color: var(--accent); }
 
 .head-row { display: flex; align-items: end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 32px; }
 .papers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }

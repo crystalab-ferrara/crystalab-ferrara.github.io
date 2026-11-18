@@ -260,3 +260,110 @@
     fromScroll();
   }
 })();
+
+// Anonymous visit counter: our Cloudflare Worker (crystalab-web/counter-worker/), no cookies, no personal data.
+// One beacon per page view, only on the public domain: local previews and the github.io copy stay out.
+// The owner's browsers are left out: a browser that opens stats.html with the key is no longer counted
+// (as in the DICEFLOW counters). stats.html?ignore=0 counts it again, ?ignore=1 leaves it out without the key.
+var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
+(function () {
+  var ignore = false;
+  try { ignore = localStorage.getItem('crystalab-ignore') === '1'; } catch (e) {}
+  if (!COUNTER_URL || location.hostname !== 'crystalab.unife.it' || navigator.webdriver || ignore || location.pathname === '/stats.html') return;
+  // one path per page: /index.html counts as /, the query string (filters, search) is left out
+  var p = location.pathname === '/index.html' ? '/' : location.pathname;
+  var body = JSON.stringify({ p: p, r: document.referrer, s: [screen.width, screen.height, window.devicePixelRatio || 1].join(',') });
+  var url = COUNTER_URL + '/hit';
+  if (!(navigator.sendBeacon && navigator.sendBeacon(url, body))) fetch(url, { method: 'POST', body: body, keepalive: true, mode: 'no-cors' }).catch(function () {});
+})();
+
+// stats.html: asks the Worker for the counts (with the statistics key, typed once and kept by this browser) and draws them.
+(function () {
+  var box = document.getElementById('stats');
+  if (!box) return;
+  var q = new URLSearchParams(location.search);
+  // ?ignore=0 / ?ignore=1 decide by hand; otherwise opening the statistics with the key leaves this browser out
+  var choice = q.get('ignore');
+  var setIgnore = function (on) { try { if (on) localStorage.setItem('crystalab-ignore', '1'); else localStorage.removeItem('crystalab-ignore'); } catch (e) {} };
+  if (choice === '0' || choice === '1') { setIgnore(choice === '1'); try { localStorage.setItem('crystalab-ignore-manual', choice); } catch (e) {} }
+  var $ = function (id) { return document.getElementById(id); };
+  var msg = $('st-msg'), form = $('st-key'), out = $('st-out');
+  var say = function (t) { msg.textContent = t; msg.hidden = !t; };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var fmt = function (n) { return Number(n || 0).toLocaleString('en-GB'); };
+  var region = null;
+  try { region = new Intl.DisplayNames(['en'], { type: 'region' }); } catch (e) {}
+  var lang = null;
+  try { lang = new Intl.DisplayNames(['en'], { type: 'language' }); } catch (e) {}
+  var ignored = false;
+  try { ignored = localStorage.getItem('crystalab-ignore') === '1'; } catch (e) {}
+  var note = ignored ? 'This browser is excluded from the counts.' : '';
+
+  var table = function (title, rows, label) {
+    if (!rows || !rows.length) return '';
+    return '<div class="stats-card"><h3>' + esc(title) + '</h3><table class="stats-table"><thead><tr><th></th><th>Visitors</th><th>Views</th></tr></thead><tbody>' +
+      rows.map(function (r) { return '<tr><td>' + label(r.k) + '</td><td>' + fmt(r.visitors) + '</td><td>' + fmt(r.views) + '</td></tr>'; }).join('') +
+      '</tbody></table></div>';
+  };
+  var page = function (k) { return '<a href="' + (k === '/' ? './' : esc(k.slice(1))) + '">' + esc(k === '/' ? 'home' : k.slice(1).replace(/\.html$/, '')) + '</a>'; };
+  var source = function (k) { return k === 'direct' ? 'Direct or bookmark' : esc(k); };
+  var country = function (k) { if (k === '??') return 'Unknown'; try { return esc(region ? region.of(k) : k); } catch (e) { return esc(k); } };
+  var language = function (k) { if (k === '??') return 'Unknown'; try { return esc(lang ? lang.of(k) : k); } catch (e) { return esc(k); } };
+  var plain = function (k) { return esc(k); };
+
+  var draw = function (s) {
+    $('st-total').textContent = fmt(s.total.views);
+    $('st-total-l').textContent = 'page views since ' + (s.total.first || 'the start');
+    $('st-30').textContent = fmt(s.range.visitors);
+    $('st-30v').textContent = fmt(s.range.views);
+    $('st-7').textContent = fmt(s.week.visitors);
+    // one bar per day, days without visits included
+    var byDay = {}; s.perDay.forEach(function (d) { byDay[d.day] = d; });
+    var days = [], max = 1;
+    for (var i = s.days - 1; i >= 0; i--) {
+      var d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+      var v = byDay[d] ? byDay[d].views : 0, u = byDay[d] ? byDay[d].visitors : 0;
+      days.push([d, v, u]); if (v > max) max = v;
+    }
+    $('st-days').innerHTML = days.map(function (d) {
+      return '<span style="--h:' + (100 * d[1] / max).toFixed(1) + '%" title="' + d[0] + ': ' + d[1] + ' views, ' + d[2] + ' visitors"></span>';
+    }).join('');
+    $('st-tables').innerHTML = [
+      table('Pages', s.pages, page), table('Where visitors come from', s.sources, source),
+      table('Countries', s.countries, country), table('Devices', s.devices, plain),
+      table('Browsers', s.browsers, plain), table('Systems', s.os, plain), table('Languages', s.languages, language),
+    ].join('') || '<p>No visits counted yet.</p>';
+    out.hidden = false; form.hidden = true;
+    // whoever reads the statistics is the owner: this browser stops counting, unless ?ignore=0 was chosen here
+    var manual = null;
+    try { manual = localStorage.getItem('crystalab-ignore-manual'); } catch (e) {}
+    if (manual !== '0') setIgnore(true);
+    var off = false;
+    try { off = localStorage.getItem('crystalab-ignore') === '1'; } catch (e) {}
+    say(off ? 'Your visits from this browser are not counted (stats.html?ignore=0 to count them again).' : '');
+  };
+
+  var load = function (key) {
+    if (!COUNTER_URL) { say('The counter is not connected yet.'); return; }
+    say('Loading…');
+    fetch(COUNTER_URL + '/stats?days=30', { headers: { 'X-Stats-Key': key } }).then(function (r) {
+      if (r.status === 403) {
+        try { localStorage.removeItem('crystalab-stats-key'); } catch (e) {}
+        form.hidden = false; out.hidden = true; say('Wrong key.'); return null;
+      }
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }).then(function (s) { if (s) draw(s); }).catch(function () { say('The counts could not be read. Try again later.'); });
+  };
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var key = form.elements.key.value.trim();
+    if (!key) return;
+    try { localStorage.setItem('crystalab-stats-key', key); } catch (err) {}
+    load(key);
+  });
+  var saved = '';
+  try { saved = localStorage.getItem('crystalab-stats-key') || ''; } catch (e) {}
+  if (saved) load(saved); else { form.hidden = false; say(note); }
+})();

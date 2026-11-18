@@ -338,9 +338,22 @@ var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
     var manual = null;
     try { manual = localStorage.getItem('crystalab-ignore-manual'); } catch (e) {}
     if (manual !== '0') setIgnore(true);
+    showToggle();
+  };
+
+  // one link that switches this browser in and out of the counts (as on the DICEFLOW statistics page)
+  var showToggle = function () {
     var off = false;
     try { off = localStorage.getItem('crystalab-ignore') === '1'; } catch (e) {}
-    say(off ? 'Your visits from this browser are not counted (stats.html?ignore=0 to count them again).' : '');
+    msg.innerHTML = (off ? 'Your visits from this browser are <b>not counted</b>. ' : 'Your visits from this browser <b>are counted</b>. ') +
+      '<a href="#" id="st-toggle">' + (off ? 'Count them' : 'Stop counting them') + '</a>';
+    msg.hidden = false;
+    $('st-toggle').addEventListener('click', function (e) {
+      e.preventDefault();
+      setIgnore(!off);
+      try { localStorage.setItem('crystalab-ignore-manual', off ? '0' : '1'); } catch (err) {}
+      showToggle();
+    });
   };
 
   var load = function (key) {

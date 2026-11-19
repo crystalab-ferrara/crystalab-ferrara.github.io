@@ -325,23 +325,55 @@ var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
   var language = function (k) { if (k === '??') return 'Unknown'; try { return esc(lang ? lang.of(k) : k); } catch (e) { return esc(k); } };
   var plain = function (k) { return esc(k); };
 
+  // dates come from the counter in UTC, as YYYY-MM-DD
+  var dayOf = function (n) { return new Date(Date.now() - n * 86400000).toISOString().slice(0, 10); };
+  var short = function (d) { return d.slice(8, 10) + '/' + d.slice(5, 7); };
+  var long = function (d) {
+    try { return new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) { return d; }
+  };
+  var kpi = function (label, x) {
+    return '<div><b>' + fmt(x ? x.visitors : 0) + '</b><span>visitors ' + label + '</span><small>' + fmt(x ? x.views : 0) + ' page views</small></div>';
+  };
+  // two bars per day, visitors in front and page views behind, on a scale with gridlines; every day has its slot
+  // drawn at the width of its box (redrawn on resize), so the labels keep their size on a phone
+  var chart = function (days) {
+    var W = Math.max(300, $('st-chart').clientWidth - 32), H = window.innerWidth < 560 ? 200 : 240, L = 44, B = 26, T = 10, n = days.length;
+    var max = Math.max.apply(null, days.map(function (d) { return d.views; }).concat([1]));
+    var step = Math.pow(10, Math.floor(Math.log10(max))), top = Math.ceil(max / step) * step;
+    if (top / step > 5) { step *= 2; top = Math.ceil(max / step) * step; }
+    var y = function (v) { return T + (H - T - B) * (1 - v / top); };
+    var slot = (W - L) / n, bw = Math.max(1, slot * 0.7);
+    var g = '';
+    for (var t = 0; t <= top; t += step) g += '<line x1="' + L + '" x2="' + W + '" y1="' + y(t).toFixed(1) + '" y2="' + y(t).toFixed(1) + '"/><text x="' + (L - 8) + '" y="' + (y(t) + 4).toFixed(1) + '" text-anchor="end">' + fmt(t) + '</text>';
+    var every = Math.ceil(n / 10), bars = '', labels = '';
+    days.forEach(function (d, i) {
+      var x = L + i * slot + (slot - bw) / 2;
+      bars += '<g><title>' + long(d.day) + ': ' + d.visitors + ' visitors, ' + d.views + ' page views</title>' +
+        '<rect class="p" x="' + x.toFixed(1) + '" y="' + y(d.views).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + (y(0) - y(d.views)).toFixed(1) + '"/>' +
+        '<rect class="v" x="' + (x + bw * 0.2).toFixed(1) + '" y="' + y(d.visitors).toFixed(1) + '" width="' + (bw * 0.6).toFixed(1) + '" height="' + (y(0) - y(d.visitors)).toFixed(1) + '"/></g>';
+      if ((n - 1 - i) % every === 0) labels += '<text x="' + (L + i * slot + slot / 2).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle">' + short(d.day) + '</text>';
+    });
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true"><g class="grid">' + g + '</g>' + bars + '<g class="xl">' + labels + '</g></svg>';
+  };
+
+  var lastDays = null, resizeT = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(function () { if (lastDays) $('st-chart').innerHTML = chart(lastDays); }, 150);
+  });
   var draw = function (s) {
-    $('st-total').textContent = fmt(s.total.views);
-    $('st-total-l').textContent = 'page views since ' + (s.total.first || 'the start');
-    $('st-30').textContent = fmt(s.range.visitors);
-    $('st-30v').textContent = fmt(s.range.views);
-    $('st-7').textContent = fmt(s.week.visitors);
-    // one bar per day, days without visits included
     var byDay = {}; s.perDay.forEach(function (d) { byDay[d.day] = d; });
-    var days = [], max = 1;
-    for (var i = s.days - 1; i >= 0; i--) {
-      var d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
-      var v = byDay[d] ? byDay[d].views : 0, u = byDay[d] ? byDay[d].visitors : 0;
-      days.push([d, v, u]); if (v > max) max = v;
-    }
-    $('st-days').innerHTML = days.map(function (d) {
-      return '<span style="--h:' + (100 * d[1] / max).toFixed(1) + '%" title="' + d[0] + ': ' + d[1] + ' views, ' + d[2] + ' visitors"></span>';
+    var days = [];
+    for (var i = s.days - 1; i >= 0; i--) { var d = dayOf(i); days.push({ day: d, visitors: byDay[d] ? byDay[d].visitors : 0, views: byDay[d] ? byDay[d].views : 0 }); }
+    var period = { 7: 'in the last 7 days', 30: 'in the last 30 days', 90: 'in the last 90 days', 365: 'in the last 12 months' }[s.days] || 'in the period';
+    $('st-kpis').innerHTML = kpi('today', byDay[dayOf(0)]) + kpi('yesterday', byDay[dayOf(1)]) + kpi('in the last 7 days', s.week) + kpi(period, s.range);
+    out.hidden = false;
+    $('st-chart').innerHTML = chart(days);
+    lastDays = days;
+    $('st-daily').innerHTML = days.slice().reverse().map(function (d) {
+      return '<tr' + (d.visitors ? '' : ' class="zero"') + '><td title="' + d.day + '">' + long(d.day).replace(/ \d{4}$/, '') + '</td><td>' + fmt(d.visitors) + '</td><td>' + fmt(d.views) + '</td></tr>';
     }).join('');
+    $('st-total').textContent = 'Since ' + (s.total.first ? long(s.total.first) : 'the start') + ': ' + fmt(s.total.visitors) + ' visitors and ' + fmt(s.total.views) + ' page views. A visitor is counted once per day.';
     $('st-tables').innerHTML = [
       table('Pages', s.pages, page), table('Where visitors come from', s.sources, source),
       table('Countries', s.countries, country), table('Devices', s.devices, plain),
@@ -374,10 +406,18 @@ var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
     });
   };
 
+  var range = $('st-range');
+  try { var keep = localStorage.getItem('crystalab-stats-days'); if (keep) range.value = keep; } catch (e) {}
+  range.addEventListener('change', function () {
+    try { localStorage.setItem('crystalab-stats-days', range.value); } catch (e) {}
+    var k = ''; try { k = localStorage.getItem('crystalab-stats-key') || ''; } catch (e) {}
+    if (k) load(k);
+  });
+
   var load = function (key) {
     if (!COUNTER_URL) { say('The counter is not connected yet.'); return; }
     say('Loading…');
-    fetch(COUNTER_URL + '/stats?days=30', { headers: { 'X-Stats-Key': key } }).then(function (r) {
+    fetch(COUNTER_URL + '/stats?days=' + (range.value || 30), { headers: { 'X-Stats-Key': key } }).then(function (r) {
       if (r.status === 403) {
         try { localStorage.removeItem('crystalab-stats-key'); } catch (e) {}
         form.hidden = false; out.hidden = true; say('Wrong key.'); return null;

@@ -439,3 +439,26 @@ var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
   showToggle();
   if (saved) load(saved); else form.hidden = false;
 })();
+
+// Entrance: as each part of a section comes into view, its heading, text and pictures rise into place one after another.
+// Only this script hides them, so without it everything is simply there; with reduced motion nothing moves.
+(function () {
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var SEL = 'h2, h3, .lead, .prose > p, .line-summary, .family-lead, figure, .fact, .family, .family-photo, .latest li, .line-row, .eq-card, .eq-rows li, .result, .person, .partner, .funder, .row > div, .group, .steps li, .eq-intro > *, .eq-specs-top, .phys-text > p, .line-fig, .eq-text, .eq-uses li, .eq-more img, .eq-side, .year-block h2, .glossary, .labmap, .stats-kpis div, .band-in > *';
+  var items = [].slice.call(document.querySelectorAll('main > section:not(.hero):not(.page-hero) :is(' + SEL + ')'));
+  var set = new Set(items);
+  // a part inside another moving part moves with it
+  items = items.filter(function (el) { for (var p = el.parentElement; p; p = p.parentElement) if (set.has(p)) return false; return true; });
+  var io = new IntersectionObserver(function (es) {
+    var k = 0;
+    es.filter(function (e) { return e.isIntersecting; }).forEach(function (e) {
+      var el = e.target;
+      io.unobserve(el);
+      el.style.setProperty('--d', Math.min(k++, 7) * 80 + 'ms');
+      el.classList.add('rv-in');
+      // once in place, the element goes back to its own transitions (hover lifts and the like)
+      setTimeout(function () { el.classList.remove('rv', 'rv-in'); el.style.removeProperty('--d'); }, 1600);
+    });
+  }, { rootMargin: '0px 0px -8% 0px' });
+  items.forEach(function (el) { el.classList.add('rv'); io.observe(el); });
+})();

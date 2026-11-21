@@ -5,8 +5,8 @@
 .ray { stroke: #0a5fb0; }
 .ray2 { stroke: #f39a2e; }
 .photon { stroke: #6b7686; stroke-width: 1.6; }
-.ref { fill: none; stroke: #5b6474; stroke-width: 1; stroke-dasharray: 4 4; }
-.dim { stroke: #5b6474; stroke-width: 1; }
+.ref { fill: none; stroke: #4b5463; stroke-width: 1; stroke-dasharray: 4 4; }
+.dim { stroke: #4b5463; stroke-width: 1; }
 .tip { fill: #0a5fb0; }
 .tip2 { fill: #f39a2e; }
 .block { fill: #f3f5f8; stroke: #aab4c2; }
@@ -15,7 +15,7 @@
 .tile { fill: #0a5fb0; }
 .det, .sample { fill: #2f3744; }
 .lbl { fill: #2f3744; font-size: 16px; }
-.note { fill: #5b6474; font-size: 14px; }
+.note { fill: #4b5463; font-size: 14px; }
 .strong { fill: #0d1117; font-weight: 600; }
 .blue { fill: #0a5fb0; font-weight: 600; }
 .orange { fill: #b45f0c; font-weight: 600; }

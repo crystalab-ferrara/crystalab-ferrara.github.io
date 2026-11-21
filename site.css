@@ -173,7 +173,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 @media (max-width: 760px) { .hero-logos { left: 0; right: 0; justify-content: center; bottom: calc(max(24px, env(safe-area-inset-bottom, 0px)) + 54px); } .hero-logos img { height: 46px; } .hero-ctrl { left: 0; right: 0; justify-content: center; } .hero-in { padding-bottom: 170px; } }
 
 /* ---------- inner page hero ---------- */
-.page-hero { position: relative; color: #fff; background: var(--band); overflow: hidden; }
+/* the band has one height on every page, so the title and the content below it sit at the same place from page to page */
+.page-hero { position: relative; color: #fff; background: var(--band); overflow: hidden; min-height: 470px; }
+@media (max-width: 860px) { .page-hero { min-height: 460px; } }
+@media (max-width: 600px) { .page-hero { min-height: 500px; } }
+@media (max-width: 450px) { .page-hero { min-height: 525px; } }
+@media (max-width: 380px) { .page-hero { min-height: 565px; } }
 .page-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: settle 7s cubic-bezier(.2,.7,.2,1) both; }
 @keyframes settle { from { transform: scale(1.08); } to { transform: none; } }
 .page-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,12,18,.82), rgba(8,12,18,.35) 70%, rgba(8,12,18,.15)); } /* taste-skill-ignore: scrim over the photo */

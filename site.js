@@ -9,7 +9,10 @@
 
   var nav = document.querySelector('.nav');
   if (nav) {
-    var onScroll = function () { nav.classList.toggle('solid', window.scrollY > 24); };
+    // the bar is clear while it sits over the photo that opens the page, and night blue everywhere else
+    var first = document.querySelector('main > section');
+    var overPhoto = !!first && (first.classList.contains('hero') || first.classList.contains('page-hero'));
+    var onScroll = function () { var top = window.scrollY <= 24; nav.classList.toggle('solid', !top); nav.classList.toggle('over', overPhoto && top); };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     var btn = nav.querySelector('.menu-btn');

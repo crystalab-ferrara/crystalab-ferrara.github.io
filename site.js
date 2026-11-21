@@ -447,7 +447,7 @@ var COUNTER_URL = 'https://crystalab-counter.bond-counter.workers.dev';
 // Only this script hides them, so without it everything is simply there; with reduced motion nothing moves.
 (function () {
   if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var SEL = 'h2, h3, .lead, .prose > p, .line-summary, .family-lead, figure, .fact, .family, .family-photo, .latest li, .line-row, .eq-card, .eq-rows li, .result, .person, .partner, .funder, .row > div, .group, .steps li, .eq-intro > *, .eq-specs-top, .phys-text > p, .line-fig, .eq-text, .eq-uses li, .eq-more img, .eq-side, .year-block h2, .glossary, .labmap, .stats-kpis div, .band-in > *';
+  var SEL = 'h2, h3, .lead, .prose > p, .line-summary, .family-lead, figure, .fact, .family, .family-photo, .latest li, .line-row, .eq-card, .eq-rows li, .result, .person, .partner, .funder, .eq-head > p, .topics > li, .thesis-side > p, .thesis-side img, .steps li, .eq-intro > *, .eq-specs-top, .phys-text > p, .line-fig, .eq-text, .eq-uses li, .eq-more img, .eq-side, .year-block h2, .glossary, .labmap, .stats-kpis div, .band-in > *';
   var items = [].slice.call(document.querySelectorAll('main > section:not(.hero):not(.page-hero) :is(' + SEL + ')'));
   var set = new Set(items);
   // a part inside another moving part moves with it

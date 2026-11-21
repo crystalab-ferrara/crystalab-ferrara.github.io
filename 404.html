@@ -9,7 +9,7 @@
 <meta name="description" content="This page does not exist on the Crystal Lab Ferrara website.">
 <link rel="icon" href="img/logo-48.png">
 <link rel="preload" href="fonts/ibm-plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=cdc7b319">
+<link rel="stylesheet" href="site.css?v=44b3c575">
 <meta name="robots" content="noindex">
 </head>
 <body>
@@ -23,7 +23,6 @@
         <li><a href="./">Home</a></li>
         <li><a href="research.html">Research</a></li>
         <li><a href="technologies.html">Technologies</a></li>
-        <li><a href="equipment.html">Equipment</a></li>
         <li><a href="collaborations.html">Collaborations</a></li>
         <li><a href="publications.html">Publications</a></li>
         <li><a href="theses.html">Theses</a></li>
@@ -36,7 +35,7 @@
 
 <script>
 (function () {
-  var map = {"home":"./","research-lines":"research.html","technologies":"technologies.html","collaborations":"collaborations.html","publications":"publications.html","thesis-opportunities":"theses.html","meet-the-team":"team.html","particle-steering-using-bent-crystals":"beam-steering.html","intense-positron-sources":"positron-source.html"};
+  var map = {"home":"./","equipment":"technologies.html","research-lines":"research.html","technologies":"technologies.html","collaborations":"collaborations.html","publications":"publications.html","thesis-opportunities":"theses.html","meet-the-team":"team.html","particle-steering-using-bent-crystals":"beam-steering.html","intense-positron-sources":"positron-source.html"};
   var seg = location.pathname.split('/').filter(Boolean);
   for (var i = seg.length - 1; i >= 0; i--) { var k = seg[i].toLowerCase().replace(/.html?$/, ''); if (map.hasOwnProperty(k)) { location.replace('/' + map[k].replace('./', '')); return; } }
 })();
@@ -54,8 +53,7 @@
     <div class="lines-grid">
       <a href="./"><b>Home.</b><span>The lab in one page</span></a>
       <a href="research.html"><b>Research.</b><span>Eleven research lines, from LHC beams to dark matter</span></a>
-      <a href="technologies.html"><b>Technologies.</b><span>Cleanroom fabrication and metrology</span></a>
-      <a href="equipment.html"><b>Equipment.</b><span>Instruments open to collaborations</span></a>
+      <a href="technologies.html"><b>Technologies.</b><span>Cleanroom fabrication, metrology and every instrument</span></a>
       <a href="collaborations.html"><b>Collaborations.</b><span>Facilities, partners and funding</span></a>
       <a href="publications.html"><b>Publications.</b><span>All 183 papers, searchable</span></a>
       <a href="theses.html"><b>Theses.</b><span>Bachelor, master and PhD topics</span></a>
@@ -85,6 +83,6 @@
     </div>
   </div>
 </footer>
-<script src="site.js?v=e5414ab1" defer onerror="document.documentElement.classList.replace('js', 'no-js')"></script>
+<script src="site.js?v=f0d39571" defer onerror="document.documentElement.classList.replace('js', 'no-js')"></script>
 </body>
 </html>

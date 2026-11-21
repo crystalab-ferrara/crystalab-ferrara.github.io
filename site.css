@@ -197,8 +197,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .prose { max-width: 66ch; color: var(--ink-2); }
 .prose p + p { margin-top: 1em; }
 /* running text is justified; English hyphenation keeps the word spacing even in narrow columns */
-.line-summary, .row p, .statement .lead, .phys-text p:not(.formula) { text-align: justify; -webkit-hyphens: auto; hyphens: auto; }
-@media (max-width: 68.749em) { .line-summary, .row p, .statement .lead, .phys-text p:not(.formula) { text-align: start; } }
+.line-summary, .statement .lead, .phys-text p:not(.formula) { text-align: justify; -webkit-hyphens: auto; hyphens: auto; }
+@media (max-width: 68.749em) { .line-summary, .statement .lead, .phys-text p:not(.formula) { text-align: start; } }
 .nw { white-space: nowrap; }
 
 .statement { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(32px, 6vw, 88px); align-items: start; }
@@ -308,20 +308,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .chips { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; }
 .chips li { font-size: var(--fs-small); font-weight: 500; padding: 4px 10px; border-radius: 4px; background: var(--surface); color: var(--ink-2); }
 .papers { margin-top: 12px; font-size: var(--fs-small); font-weight: 500; }
-
-/* ---------- technologies ---------- */
-.rows { display: flex; flex-direction: column; gap: clamp(48px, 7vw, 96px); }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
-.row:nth-child(even) .row-img { order: 2; }
-.row-img figure { margin: 0; }
-.row-img img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
-.row-img figcaption { margin-top: 10px; font-size: var(--fs-small); color: var(--muted); }
-.row h2 { font-size: var(--fs-h2); }
-.row p { max-width: 54ch; margin-top: 16px; color: var(--ink-2); font-size: var(--fs-body); }
-.row .specs { margin-top: 20px; display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; font-size: var(--fs-small); }
-.row .specs dt { color: var(--muted); }
-.row .specs dd { text-wrap: pretty; margin: 0; color: var(--ink); font-weight: 500; }
-@media (max-width: 860px) { .row { grid-template-columns: 1fr; } .row:nth-child(even) .row-img { order: 0; } }
 
 /* ---------- collaborations ---------- */
 .partners { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -449,7 +435,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* ---------- theses ---------- */
 .steps { list-style: none; counter-reset: step; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.steps li { counter-increment: step; padding-top: 18px; border-top: 3px solid var(--beam); }
+.steps li { counter-increment: step; }
 .steps li::before { content: counter(step); display: block; font-size: var(--fs-h2); font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 10px; }
 .glossary { margin-top: 24px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 24px; max-width: 900px; }
 .glossary dt { font-weight: 600; }
@@ -458,24 +444,27 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .steps b { font-size: var(--fs-lead); }
 .steps p { margin-top: 6px; color: var(--ink-2); }
 @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
-.groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; align-items: start; }
-.group { background: var(--surface); border-radius: var(--radius); padding: 28px; }
-.group h2 { font-size: var(--fs-h3); }
-.group h2 span { color: var(--ink); }
-.topics { list-style: none; padding: 0; margin: 20px 0 0; display: flex; flex-direction: column; gap: 6px; }
-.topics li { padding: 14px 16px; margin-inline: -16px; border-radius: var(--radius); }
-.topics li:nth-child(odd) { background: var(--ground); }
-.topics b { display: block; font-weight: 600; line-height: 1.4; }
-.topics .meta + .meta { margin-top: 2px; }
-.topics .meta { margin-top: 4px; font-size: var(--fs-small); color: var(--muted); }
-.topics .meta a { white-space: nowrap; padding-block: 8px; }
-.topics .meta a:not(.who) { color: inherit; text-decoration: underline dotted; text-decoration-color: var(--muted); text-underline-offset: 3px; }
-.topics .meta a:not(.who):hover { color: var(--accent); }
-.topics li { scroll-margin-top: calc(var(--nav-h) + 16px); }
+/* thesis topics: the group on the left, its topics on the right, as on Research; one white row per topic */
+.thesis-groups { display: grid; gap: clamp(56px, 7vw, 96px); }
+.thesis-group { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 28px clamp(32px, 5vw, 72px); align-items: start; }
+.thesis-side { position: sticky; top: calc(var(--nav-h) + 28px); }
+.thesis-side h2 { font-size: var(--fs-h2); }
+.thesis-side p { margin-top: 12px; font-size: var(--fs-lead); color: var(--ink-2); max-width: 40ch; }
+.thesis-side p a { font-weight: 600; }
+.thesis-side img { margin-top: 24px; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
+.topics { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.topics li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 28px; align-items: start; padding: 22px 24px; background: var(--surface); border-radius: var(--radius); scroll-margin-top: calc(var(--nav-h) + 16px); }
+.topics h3 { font-size: var(--fs-lead); line-height: 1.3; letter-spacing: -0.005em; font-weight: 600; }
+.topics .meta { margin-top: 8px; font-size: var(--fs-small); color: var(--muted); }
+.topics .meta a { white-space: nowrap; padding-block: 8px; color: inherit; text-decoration: underline dotted; text-decoration-color: var(--muted); text-underline-offset: 3px; }
+.topics .meta a:hover { color: var(--accent); }
+.who-col { display: grid; justify-items: start; min-width: 200px; font-size: var(--fs-small); }
+.who-col > span { color: var(--muted); margin-bottom: 4px; }
+.who-col .who { padding-block: 8px; }
+@media (max-width: 960px) { .thesis-group { grid-template-columns: 1fr; } .thesis-side { position: static; } .thesis-side p { max-width: 60ch; } .thesis-side img { aspect-ratio: 16 / 9; } }
+@media (max-width: 600px) { .topics li { grid-template-columns: 1fr; padding: 18px; } .who-col { display: flex; flex-wrap: wrap; align-items: center; gap: 0 16px; min-width: 0; } .who-col > span { margin: 0; flex-basis: 100%; } }
 .topics li:target { background: #e6eef8; }
 .who-row, .who-list { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
-.topics .who-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 10px; align-items: start; }
-.topics .who-row > span:first-child { line-height: 28px; padding-block: 8px; }
 .who { display: inline-flex; align-items: center; gap: 7px; }
 .who img, .who .ini { width: 28px; height: 28px; border-radius: 50%; flex: none; }
 .who .ini { display: inline-grid; place-items: center; background: var(--ground); color: var(--ink-2); font-size: 11px; font-weight: 600; letter-spacing: .02em; }
@@ -489,7 +478,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .other-lines li > a { font-weight: 600; }
 .other-lines .sub { color: var(--muted); font-size: var(--fs-small); }
 .other-lines .who-row { margin-top: 6px; font-size: var(--fs-small); }
-@media (max-width: 860px) { .groups { grid-template-columns: 1fr; } }
 
 /* ---------- team ---------- */
 @media (max-width: 600px) { .layer .team { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 14px; } .person b { font-size: var(--fs-body); } .person .links { font-size: var(--fs-small); } }
@@ -542,9 +530,13 @@ main > .section:last-child { padding-bottom: clamp(40px, 5vw, 64px); }
 }
 
 /* ---------- equipment: index grouped by step, one data sheet per instrument ---------- */
-.eq-groupbox { display: grid; gap: 18px; }
-.eq-groupbox + .eq-groupbox { margin-top: 56px; }
-.eq-group { font-size: var(--fs-h3); }
+/* Technologies: each step of the chain opens with its name and what it does, then shows its instruments */
+.eq-groupbox { display: grid; gap: 28px; scroll-margin-top: calc(var(--nav-h) + 24px); }
+.eq-groupbox + .eq-groupbox { margin-top: clamp(64px, 8vw, 104px); }
+.eq-head { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 12px clamp(32px, 5vw, 72px); align-items: start; }
+.eq-head p { color: var(--ink-2); max-width: 62ch; }
+.eq-group { font-size: var(--fs-h2); }
+@media (max-width: 860px) { .eq-head { grid-template-columns: 1fr; } }
 .eq-rows { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
 .eq-rows a { display: block; background: var(--surface); border-radius: var(--radius); color: var(--ink); text-decoration: none; transition: transform .2s ease; }
 .eq-rows a:hover { transform: translateY(-2px); }
@@ -570,7 +562,6 @@ main > .section:last-child { padding-bottom: clamp(40px, 5vw, 64px); }
 .eq-sum { color: var(--ink-2); margin-top: 4px; line-height: 1.5; }
 .eq-card:hover .eq-model { text-decoration: underline; }
 .eq-note { margin-top: 48px; color: var(--ink-2); max-width: 54ch; }
-.tech-more { font-weight: 600; font-size: var(--fs-body); }
 
 .eq-sheet { padding-block: calc(var(--nav-h) + 48px) 56px; }
 .eq-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
@@ -761,19 +752,3 @@ main > .section:last-child { padding-bottom: clamp(40px, 5vw, 64px); }
 .step-photos { margin-top: 40px; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; }
 .step-photos img { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
 @media (max-width: 760px) { .step-photos { grid-template-columns: 1fr 1fr; } .step-photos > :first-child, .step-photos > picture:first-child img { grid-column: 1 / -1; } }
-/* theses: the Crystal BOND group leads, across the full width on a night-blue ground, with its photos */
-.group.featured { grid-column: 1 / -1; background: var(--band); color: #fff; padding: clamp(24px, 4vw, 44px); }
-.group.featured h2 { font-size: var(--fs-h2); color: #fff; }
-.group-intro { margin-top: 12px; max-width: 70ch; font-size: var(--fs-lead); color: rgba(255,255,255,.86); }
-.group-intro a { color: #fff; font-weight: 600; white-space: nowrap; }
-.group-intro a:hover { color: var(--beam); }
-.group-photos { margin-top: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.group-photos img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
-.group.featured .topics { margin-top: 28px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.group.featured .topics li { margin: 0; background: var(--surface); color: var(--ink); }
-.group.featured :focus-visible { outline-color: var(--accent-soft); }
-.group.featured .topics :focus-visible { outline-color: var(--accent); }
-@media (max-width: 860px) { .group.featured .topics { grid-template-columns: 1fr; } }
-@media (max-width: 560px) { .group-photos { grid-template-columns: 1fr 1fr; } .group-photos > :first-child, .group-photos > picture:first-child img { grid-column: 1 / -1; } }
-/* after the featured group, a last group left alone in its row takes the full width, its topics side by side */
-@media (min-width: 861px) { .groups > .group.featured ~ .group:last-child:nth-child(even) { grid-column: 1 / -1; } .groups > .group.featured ~ .group:last-child:nth-child(even) .topics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 32px; } .groups > .group.featured ~ .group:last-child:nth-child(even) .topics li { background: var(--ground); } }

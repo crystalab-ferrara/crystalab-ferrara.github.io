@@ -61,7 +61,7 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
 a:hover { text-decoration-thickness: 2px; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 .hero :focus-visible, .page-hero :focus-visible, .band :focus-visible, .foot-bar :focus-visible { outline-color: var(--accent-soft); }
-h1, h2, h3, h4 { line-height: 1.12; letter-spacing: -0.015em; text-wrap: balance; margin: 0; font-weight: 700; }
+h1, h2, h3, h4 { line-height: 1.12; letter-spacing: -0.015em; text-wrap: balance; margin: 0; font-weight: 600; }
 p { margin: 0; text-wrap: pretty; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter-r); }
 p, li, dd, figcaption { text-wrap: pretty; }
@@ -110,18 +110,13 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 
 /* ---------- home hero ----------
-   The lab photos crossfade under one blue tint so they read as a single series; a network of drifting points (particles.js),
-   a few in beam orange, moves over them. Centre: name, one line per photo, the subtitle. */
+   The lab photos crossfade under one blue tint so they read as a single series, without zoom or overlays. Centre: name, one line per photo, the subtitle. */
 .hero { position: relative; min-height: clamp(600px, 94vh, 1000px); min-height: clamp(600px, 94svh, 1000px); color: #fff; overflow: hidden; background: #071528; display: flex; align-items: center; }
 .slides { position: absolute; inset: 0; }
 .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.6s ease; }
 .slide.on { opacity: 1; }
-.slide img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.55) contrast(1.08) brightness(.82); transform: scale(1.08); transition: transform 8s linear; }
-.slide.on img { transform: scale(1); }
+.slide img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.55) contrast(1.08) brightness(.82); }
 .hero .tint { position: absolute; inset: 0; background: #0b4fa0; mix-blend-mode: color; opacity: .62; pointer-events: none; }
-.hero .particles { position: absolute; inset: 0; z-index: 1;
-  -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, rgba(0,0,0,.55) 25%, #000 80%); mask-image: radial-gradient(ellipse 55% 50% at 50% 50%, rgba(0,0,0,.55) 25%, #000 80%); } /* taste-skill-ignore: mask fading the particle layer */
-.hero .particles canvas { display: block; }
 .hero::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background: radial-gradient(ellipse 58% 52% at 50% 52%, rgba(4,12,26,.76), rgba(4,12,26,.22) 75%), linear-gradient(0deg, rgba(4,12,26,.7), rgba(4,12,26,0) 35%), linear-gradient(180deg, rgba(4,12,26,.45), rgba(4,12,26,0) 25%); } /* taste-skill-ignore: scrim over the photo */
 @media (max-width: 760px) {
@@ -130,9 +125,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero-in { position: relative; z-index: 3; width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; padding-block: calc(var(--nav-h) + 40px) 150px; }
 .hero h1 { margin-top: 18px; font-size: var(--fs-h1); letter-spacing: -0.02em; }
 .hero-sub { margin-top: 8px; font-size: var(--fs-lead); color: #fff; max-width: 62ch; text-wrap: balance; }
-.hero-lines { list-style: none; padding: 0; margin: clamp(36px, 7vh, 80px) 0 0; display: grid; max-width: 24ch; font-size: var(--fs-h1); font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; }
+.hero-lines { list-style: none; padding: 0; margin: clamp(36px, 7vh, 80px) 0 0; display: grid; max-width: 24ch; font-size: var(--fs-h1); font-weight: 600; line-height: 1.12; letter-spacing: -0.02em; }
 /* two type sizes in the header: the rotating line matches the title; the subtitle stresses "physics" */
-.hero-sub b { color: #fff; font-weight: 700; }
+.hero-sub b { color: #fff; font-weight: 600; }
 .hero-lines li { grid-area: 1 / 1; opacity: 0; transform: translateY(22px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); pointer-events: none; text-wrap: balance; }
 .hero-lines li.on { opacity: 1; transform: none; pointer-events: auto; transition-delay: .25s; }
 .hero-lines a { color: #fff; text-decoration: none; }
@@ -179,8 +174,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 @media (max-width: 600px) { .page-hero { min-height: 500px; } }
 @media (max-width: 450px) { .page-hero { min-height: 525px; } }
 @media (max-width: 380px) { .page-hero { min-height: 565px; } }
-.page-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: settle 7s cubic-bezier(.2,.7,.2,1) both; }
-@keyframes settle { from { transform: scale(1.08); } to { transform: none; } }
+.page-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .page-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,12,18,.82), rgba(8,12,18,.35) 70%, rgba(8,12,18,.15)); } /* taste-skill-ignore: scrim over the photo */
 .page-hero::before { content: ""; position: absolute; inset: 0 0 auto; height: 180px; z-index: 1; background: linear-gradient(180deg, rgba(8,12,18,.6), rgba(8,12,18,0)); } /* taste-skill-ignore: scrim over the photo */
 .page-hero .wrap { position: relative; z-index: 2; padding-block: calc(var(--nav-h) + 72px) 56px; }
@@ -369,7 +363,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .labmap-svg .inset-label { font-size: 12px; font-weight: 400; fill: var(--muted); stroke: none; }
 .labmap-svg circle { transform-box: fill-box; transform-origin: center; }
 .home circle { fill: var(--ink); stroke: #fff; stroke-width: 2.5; }
-.home text { font-weight: 700; fill: var(--ink); }
+.home text { font-weight: 600; fill: var(--ink); }
 .lab { cursor: pointer; outline: none; }
 .lab .hit { fill: transparent; }
 .lab .dot { fill: var(--c); stroke: #fff; stroke-width: 2; transition: transform .2s ease; }
@@ -441,7 +435,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* ---------- theses ---------- */
 .steps { list-style: none; counter-reset: step; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .steps li { counter-increment: step; }
-.steps li::before { content: counter(step); display: block; font-size: var(--fs-h2); font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 10px; }
+.steps li::before { content: counter(step); display: block; font-size: var(--fs-h2); font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 10px; }
 .glossary { margin-top: 24px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 24px; max-width: 900px; }
 .glossary dt { font-weight: 600; }
 .glossary dd { margin: 0; color: var(--ink-2); }

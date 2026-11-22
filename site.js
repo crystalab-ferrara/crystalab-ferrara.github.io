@@ -96,49 +96,13 @@
     };
     var play = function () { stop(); timer = setInterval(function () { if (!focusHold()) show(i + 1); }, 6000); };
 
-    // Particle network over the photos (particles.js): drifting points, a few in beam orange,
-    // linked by thin lines when close; lines reach for the pointer. Still when reduced motion is requested.
-    var pJS = null;
-    if (window.particlesJS && document.getElementById('particles')) {
-      window.particlesJS('particles', {
-        particles: {
-          number: { value: 90, density: { enable: true, value_area: 900 } },
-          color: { value: ['#ffffff', '#ffffff', '#ffffff', '#f39a2e'] },
-          shape: { type: 'circle' },
-          opacity: { value: 0.8, random: true },
-          size: { value: 2.8, random: true },
-          line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.36, width: 1 },
-          move: { enable: !reduce, speed: 0.7, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-        },
-        interactivity: {
-          detect_on: 'window',
-          events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: false }, resize: true },
-          modes: { grab: { distance: 190, line_linked: { opacity: 0.55 } } }
-        },
-        retina_detect: true
-      });
-      pJS = window.pJSDom && window.pJSDom.length ? window.pJSDom[window.pJSDom.length - 1].pJS : null;
-    }
-    // particles.js ends its draw loop by itself once move.enable is false; drawing again restarts it
-    var particlesOn = true, heroVisible = true;
-    var syncParticles = function () {
-      if (!pJS || reduce) return;
-      var want = !userPaused && heroVisible && !document.hidden;
-      // cancel any frame still queued, so a quick off/on never leaves two draw loops running
-      if (want && !particlesOn) { pJS.particles.move.enable = true; cancelAnimationFrame(pJS.fn.drawAnimFrame); pJS.fn.vendors.draw(); }
-      if (!want && particlesOn) pJS.particles.move.enable = false;
-      particlesOn = want;
-    };
-    // one state for everything that moves: the user's pause or reduced motion
+    // one state for the slideshow: the user's pause or reduced motion
     var sync = function () {
       setIcon(userPaused || reduce);
       if (userPaused || reduce) stop(); else if (!timer) play();
-      syncParticles();
     };
     dots.forEach(function (d, k) { d.addEventListener('click', function () { show(k); if (timer) play(); }); });
     if (pause) pause.addEventListener('click', function () { userPaused = !userPaused; sync(); });
-    document.addEventListener('visibilitychange', syncParticles);
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { heroVisible = es[0].isIntersecting; syncParticles(); }).observe(hero);
     show(0);
     sync();
   }
